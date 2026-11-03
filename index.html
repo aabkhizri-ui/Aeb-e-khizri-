@@ -446,7 +446,7 @@ header.bar .logo{cursor:pointer}
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.5</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.8</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -1808,7 +1808,7 @@ Object.assign(T.ur,{web_visit:"ہماری ویب سائٹ دیکھیں",web_h:"�
 function shopImgPick(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,720/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);saveShopImg(c.toDataURL("image/jpeg",.82))};im.src=r.result};r.readAsDataURL(f)}
 async function saveShopImg(d){try{const ok=await rpc("aab_set_shop_img",{p_id:S.i,p_h:S.h,p_img:d});if(!ok)return toast(t("savefail"),5000);st.shopImg=d;st.shopImgLoaded=1;toast(t("done"));render(true)}catch(e){toast(errMsg(e),7000)}}
 const shopImgBox=()=>`<div class="card"><h2>${t("simg_h")}</h2><div class="mu">${t("simg_hint")}</div>${st.shopImg?`<img src="${st.shopImg}" alt="" style="max-height:170px;border-radius:12px;margin:10px 0;display:block;background:#fff3cf">`:""}<label style="display:flex;gap:10px;align-items:center;margin:10px 0"><input type="checkbox" id="simg_cut" checked style="width:auto;flex:none"> ${AE("Remove the background (keep only the bottle)","بیک گراؤنڈ ہٹائیں (صرف بوتل رکھیں)")}</label><input type="file" accept="image/*" onchange="shopImgPick(this)">${st.shopImg?`<button class="pr" style="margin-top:10px" onclick="shopImgCut()">✂️ ${AE("Remove background from the current photo","موجودہ تصویر کا بیک گراؤنڈ ہٹائیں")}</button>`:""}<button class="no" style="margin-top:10px" onclick="saveShopImg('')">${t("simg_rm")}</button>
-<h3 style="margin-top:18px">🎬 ${AE("Rotating bottle video","گھومتی بوتل کی ویڈیو")}</h3><div class="mu">${AE("Short MP4/WebM video, up to 3 MB. It plays on the shopkeeper page instead of the picture.","چھوٹی MP4/WebM ویڈیو، 3 MB تک۔ دکاندار پیج پر تصویر کی جگہ چلے گی۔")}</div>${st.shopVid?`<video src="${vidSrc(st.shopVid)}" autoplay muted loop playsinline preload="auto" onloadeddata="vidLoaded(this)" onerror="vidErr(this)" style="max-height:170px;border-radius:12px;margin:10px 0;display:block"></video>`:""}<input type="file" accept="video/mp4,video/webm,video/quicktime" onchange="shopVidPick(this)"><button class="no" style="margin-top:10px" onclick="saveShopVid('')">${AE("Remove video","ویڈیو ہٹائیں")}</button></div>`;
+<h3 style="margin-top:18px">🎬 ${AE("Rotating bottle video","گھومتی بوتل کی ویڈیو")}</h3><div class="mu">${AE("Short MP4/WebM video, up to 3 MB. It plays on the shopkeeper page instead of the picture.","چھوٹی MP4/WebM ویڈیو، 3 MB تک۔ دکاندار پیج پر تصویر کی جگہ چلے گی۔")}</div>${st.shopVid?`<video src="${vidSrc(st.shopVid)}" autoplay muted loop playsinline preload="auto" onloadeddata="vidLoaded(this)" onerror="vidErr(this)" style="max-height:170px;border-radius:12px;margin:10px 0;display:block"></video><div id="vcs" class="mu" style="margin:6px 0;font-weight:600"></div>`:""}<input type="file" accept="video/mp4,video/webm,video/quicktime" onchange="shopVidPick(this)"><button class="no" style="margin-top:10px" onclick="saveShopVid('')">${AE("Remove video","ویڈیو ہٹائیں")}</button></div>`;
 Object.assign(T.en,{welcome:"Welcome — please sign in",again:"Order again"});
 Object.assign(T.ur,{welcome:"خوش آمدید — براہ کرم لاگ اِن کریں",again:"دوبارہ آرڈر"});
 /* Smart header: hides on scroll-down, returns on scroll-up. Layout never changes (sticky + translate only) so no jitter. */
@@ -2882,8 +2882,8 @@ function tokQTab(){
    +(H.length?`<h2 style="font-size:16px;margin-top:18px">${t("tq_hist")}</h2>`+H.map(x=>`<div class="card" style="padding:10px 14px"><div class="row"><b>${x.status==="approved"?"✅":"❌"} ${esc(x.oid)}</b><b dir="ltr">${x.status==="approved"?"+"+x.amt:"—"}</b></div><div class="mu">${esc(x.cid)} · ${x.status==="approved"?t("tq_approved"):t("tq_rejected")} · ${fmtT(x.at)}</div></div>`).join(""):"")}
 
 /* ═══ v9.5 · What's new (shown once per version) ═══ */
-Object.assign(T.en,{wn_h:"What's new in v9.5",wn_ok:"OK, got it",wn_l:["✅ Token approval: shopkeeper's review goes to admin → admin approves → tokens are given","🖨️ Single print button on every approved order (and safer printing)","🛠️ Website editor Save fixed","🗑 Admin can remove a review and give / take back tokens","⚠️ Clearer messages: app errors and server errors are shown differently"]});
-Object.assign(T.ur,{wn_h:"v9.5 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["✅ ٹوکن منظوری: دکاندار کا ریویو ایڈمن کے پاس جاتا ہے → ایڈمن منظور کرے تو ٹوکن ملتے ہیں","🖨️ ہر منظور شدہ آرڈر پر سنگل پرنٹ کا بٹن (اور محفوظ پرنٹنگ)","🛠️ ویب سائٹ ایڈیٹر کا سیو ٹھیک","🗑 ایڈمن ریویو ہٹا سکتا ہے اور ٹوکن دے / واپس لے سکتا ہے","⚠️ واضح پیغامات: ایپ کی خرابی اور سرور کی خرابی الگ دکھائی جاتی ہے"]});
+Object.assign(T.en,{wn_h:"What's new in v9.8",wn_ok:"OK, got it",wn_l:["🛒 Shopkeeper: small fixed header, Order / My Orders / Tokens beside the logo, menu for the rest, tap the logo to search","🔐 Stay signed in for 5 minutes after closing the app","📢 Offer ticker above the product — admin sets text, direction, speed and colors","🖨️ Printing slip is editable by admin; website orders can be printed too","🖼️ Product photo and video: background removed, video plays now","💬 Chat notifications and auto-reply"]});
+Object.assign(T.ur,{wn_h:"v9.8 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["🛒 دکاندار: چھوٹا فکس ہیڈر، لوگو کے ساتھ آرڈر / میرے آرڈر / ٹوکن، باقی بٹن مینو میں، لوگو پر ٹیپ سے سرچ","🔐 ایپ بند کرنے کے بعد 5 منٹ تک لاگ اِن رہتا ہے","📢 پروڈکٹ کے اوپر آفر کی چلتی پٹی — ایڈمن متن، سمت، رفتار اور رنگ طے کرتا ہے","🖨️ پرنٹنگ سلپ ایڈمن بدل سکتا ہے؛ ویب سائٹ آرڈرز بھی پرنٹ ہوتے ہیں","🖼️ پروڈکٹ کی تصویر اور ویڈیو: بیک گراؤنڈ ہٹ گیا، ویڈیو اب چلتی ہے","💬 چیٹ نوٹیفکیشن اور آٹو ریپلائی"]});
 function whatsNew(){try{if(!S||!S.r||localStorage.getItem("aab_wn")===BUILD)return;if(document.getElementById("wnb"))return;
   const d=document.createElement("div");d.id="wnb";d.style.cssText="position:fixed;inset:0;background:#000a;z-index:140;display:flex;align-items:center;justify-content:center;padding:16px";
   d.innerHTML=`<div class="card" style="max-width:420px;max-height:84vh;overflow:auto"><h2 style="margin-top:0">🆕 ${t("wn_h")}</h2>${t("wn_l").map(x=>`<div style="margin:8px 0">${x}</div>`).join("")}<button class="big" id="wnok">${t("wn_ok")}</button></div>`;
@@ -2993,7 +2993,7 @@ function hdrBar(){
  if(sd&&!sd.querySelector(".sdh"))sd.insertAdjacentHTML("afterbegin",`<div class="sdh">☰ ${L==="ur"?"مینو":"Menu"}</div>`);
 }
 /* ---------- Top 3 big buttons for every app (admin / user / shopkeeper) ---------- */
-const BUILD="9.0";
+const BUILD="9.8";
 const TOP3={admin:[["rev","⭐","n_rev"],["appr","⏳","n_appr"],["ship","🚚","n_ship"]],user:[["new","📥","n_new"],["wait","⏳","n_wait"],["ship","🚚","n_ship"]],customer:[["order","🛒","n_order"],["mine","📦","n_mine"],["tok","🪙","n_tok"]]};
 function topBar(){const a=TOP3[cur];if(!a||!me(cur)||cur==="admin"||cur==="user"||cur==="customer")return"";
   const cnt=x=>st.orders.filter(o=>o.status===x).length;
@@ -3207,7 +3207,7 @@ async function saveTkr(){const c=tkForm(),o={},x=st.site||{};Object.keys(x).forE
  try{const ok=await rpc("aab_set_site",{p_id:S.i,p_h:S.h,p_site:o});if(!ok)return toast(t("savefail"),5000);await refresh();render(true);
   if((st.site||{}).tk_on!==c.on)toast(AE("Saved on this phone only — the server did not keep the ticker settings. Server update needed.","صرف اس فون پر محفوظ ہوا — سرور نے پٹی کی سیٹنگ محفوظ نہیں کی۔ سرور اپڈیٹ چاہیے۔"),9000);else toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
 
-/* ===== v9.7: photo background removal + reliable video playback ===== */
+/* ===== v9.6: photo background removal + reliable video playback ===== */
 function bgRemoveCanvas(src,tolIn){
  const w=src.width,h=src.height,ctx=src.getContext("2d"),img=ctx.getImageData(0,0,w,h),d=img.data,N=w*h;
  const med=a=>{a.sort((x,y)=>x-y);return a[a.length>>1]};
@@ -3253,29 +3253,50 @@ async function saveShopVid(d){try{const ok=await rpc("aab_shop_video_set",{p_id:
  if(d){try{const back=await rpc("aab_shop_video_get",{});if(typeof back!=="string"||back.length!==d.length)return toast(AE("The server did not keep the whole video (too big). Use a shorter or smaller video, under 1.5 MB.","سرور نے پوری ویڈیو محفوظ نہیں کی (بہت بڑی ہے)۔ چھوٹی ویڈیو استعمال کریں، 1.5 MB سے کم۔"),9000)}catch(e){}}
  toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
 
-/* ---- v9.7: video background removal (a silhouette mask built from a few frames, applied with CSS) ---- */
+/* ---- v9.8: video background removal (mask built from several frames, with a clear status message) ---- */
 const _VM={};
+function vcsSet(v,msg,ok){try{if(v.classList.contains("btv"))return;const e=document.getElementById("vcs");if(e){e.textContent=msg;e.style.color=ok?"#1b7a3d":"#b3261e"}}catch(x){}}
 function vidSeek(v,t){return new Promise(r=>{let d=0;const f=()=>{if(!d){d=1;r()}};v.onseeked=f;setTimeout(f,700);try{v.currentTime=t}catch(e){f()}})}
-async function vidMask(src){
- const v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";
- await new Promise((ok,no)=>{v.onloadeddata=ok;v.onerror=()=>no(new Error("v"));setTimeout(()=>no(new Error("t")),9000);v.src=src});
- if(!v.videoWidth)return null;
- const dur=isFinite(v.duration)&&v.duration>0?v.duration:0,W=240,H=Math.max(1,Math.round(W*v.videoHeight/v.videoWidth)),c=document.createElement("canvas");c.width=W;c.height=H;
- const x=c.getContext("2d",{willReadFrequently:true}),ts=dur?Array.from({length:6},(_,i)=>dur*(i+.5)/6):[0],fr=[];
- for(const t of ts){await vidSeek(v,t);x.drawImage(v,0,0,W,H);fr.push(x.getImageData(0,0,W,H).data)}
+function vmCompute(fr,W,H){
  const N=W*H,d0=fr[0],R=[],G=[],B=[],add=(px,py)=>{const i=(py*W+px)*4;R.push(d0[i]);G.push(d0[i+1]);B.push(d0[i+2])};
  for(let px=0;px<W;px++){add(px,0);add(px,H-1)}for(let py=0;py<H;py++){add(0,py);add(W-1,py)}
- const med=a=>{a.sort((p,q)=>p-q);return a[a.length>>1]},br=med(R),bg=med(G),bb=med(B),tol=32,like=new Uint8Array(N);
- for(let i=0;i<N;i++){let ok=1;for(const d of fr){const j=i*4,a=d[j]-br,b=d[j+1]-bg,e=d[j+2]-bb;if(a*a+b*b+e*e>=tol*tol){ok=0;break}}like[i]=ok}
- const m=new Uint8Array(N),st=[],push=i=>{if(like[i]&&!m[i]){m[i]=1;st.push(i)}};
- for(let px=0;px<W;px++){push(px);push((H-1)*W+px)}for(let py=0;py<H;py++){push(py*W);push(py*W+W-1)}
- while(st.length){const i=st.pop(),px=i%W;if(px>0)push(i-1);if(px<W-1)push(i+1);if(i>=W)push(i-W);if(i<N-W)push(i+W)}
- let rem=0;for(let i=0;i<N;i++)if(m[i])rem++;const fr2=rem/N;if(fr2>0.93||fr2<0.04)return null;
- const o=document.createElement("canvas");o.width=W;o.height=H;const ox=o.getContext("2d"),id=ox.createImageData(W,H);
- for(let i=0;i<N;i++){id.data[i*4+3]=m[i]?0:255}ox.putImageData(id,0,0);
- const o2=document.createElement("canvas");o2.width=W;o2.height=H;const x2=o2.getContext("2d");try{x2.filter="blur(0.9px)"}catch(e){}x2.drawImage(o,0,0);
- return o2.toDataURL("image/png")}
+ const med=a=>{a.sort((p,q)=>p-q);return a[a.length>>1]},br=med(R),bg=med(G),bb=med(B);let last=0;
+ for(const tol of [32,46,60]){
+  const like=new Uint8Array(N);
+  for(let i=0;i<N;i++){let ok=1;for(const d of fr){const j=i*4,a=d[j]-br,b=d[j+1]-bg,e=d[j+2]-bb;if(a*a+b*b+e*e>=tol*tol){ok=0;break}}like[i]=ok}
+  const m=new Uint8Array(N),st=[],push=i=>{if(like[i]&&!m[i]){m[i]=1;st.push(i)}};
+  for(let px=0;px<W;px++){push(px);push((H-1)*W+px)}for(let py=0;py<H;py++){push(py*W);push(py*W+W-1)}
+  while(st.length){const i=st.pop(),px=i%W;if(px>0)push(i-1);if(px<W-1)push(i+1);if(i>=W)push(i-W);if(i<N-W)push(i+W)}
+  let rem=0;for(let i=0;i<N;i++)if(m[i])rem++;last=rem/N;
+  if(last>0.93)return{err:"leak",frac:last};
+  if(last>=0.06){
+   const o=document.createElement("canvas");o.width=W;o.height=H;const ox=o.getContext("2d"),id=ox.createImageData(W,H);
+   for(let i=0;i<N;i++)id.data[i*4+3]=m[i]?0:255;ox.putImageData(id,0,0);
+   const o2=document.createElement("canvas");o2.width=W;o2.height=H;const x2=o2.getContext("2d");try{x2.filter="blur(0.9px)"}catch(e){}x2.drawImage(o,0,0);
+   return{m:o2.toDataURL("image/png"),frac:last}}}
+ return{err:"none",frac:last}}
+async function vmFrames(src,vis){
+ const W=240;let fr=[],H=0;
+ try{if(window.__vmNoOff)throw 0;
+  const v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";
+  await new Promise((ok,no)=>{v.onloadeddata=ok;v.onerror=()=>no(1);setTimeout(()=>no(2),6000);v.src=src});
+  if(!v.videoWidth)throw 3;
+  H=Math.max(1,Math.round(W*v.videoHeight/v.videoWidth));const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d",{willReadFrequently:true});
+  const dur=isFinite(v.duration)&&v.duration>0?v.duration:0,ts=dur?Array.from({length:6},(_,i)=>dur*(i+.5)/6):[0];
+  for(const t of ts){await vidSeek(v,t);x.drawImage(v,0,0,W,H);fr.push(x.getImageData(0,0,W,H).data)}
+  return{fr,W,H}}catch(e){}
+ // fallback: sample the video that is already playing on screen
+ if(!vis||!vis.videoWidth)return null;
+ H=Math.max(1,Math.round(W*vis.videoHeight/vis.videoWidth));const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d",{willReadFrequently:true});fr=[];
+ for(let k=0;k<8;k++){await new Promise(r=>setTimeout(r,330));try{x.drawImage(vis,0,0,W,H);fr.push(x.getImageData(0,0,W,H).data)}catch(e){}}
+ return fr.length?{fr,W,H}:null}
 async function vidCut(v){try{const src=v.currentSrc||v.src;if(!src||v.dataset.cut)return;v.dataset.cut="1";const un=()=>{try{v.style.visibility=""}catch(e){}};
- let m=_VM[src];if(m===undefined){v.style.visibility="hidden";setTimeout(un,1500);try{m=await vidMask(src)}catch(e){m=null}_VM[src]=m||0;un()}
- if(m){const s=v.style;s.webkitMaskImage=s.maskImage="url("+m+")";s.webkitMaskSize=s.maskSize="contain";s.webkitMaskRepeat=s.maskRepeat="no-repeat";s.webkitMaskPosition=s.maskPosition="center";v.classList.remove("wb")}}catch(e){try{v.style.visibility=""}catch(x){}}}
+ let r=_VM[src];
+ if(r===undefined){v.style.visibility="hidden";setTimeout(un,1500);vcsSet(v,AE("Checking the background…","بیک گراؤنڈ دیکھ رہے ہیں…"),true);
+  try{const f=await vmFrames(src,v);r=f?vmCompute(f.fr,f.W,f.H):{err:"read"}}catch(e){r={err:"read"}}_VM[src]=r;un()}
+ if(r&&r.m){const s=v.style;s.webkitMaskImage=s.maskImage="url("+r.m+")";s.webkitMaskSize=s.maskSize="contain";s.webkitMaskRepeat=s.maskRepeat="no-repeat";s.webkitMaskPosition=s.maskPosition="center";v.classList.remove("wb");
+  vcsSet(v,AE("✂️ Background removed automatically","✂️ بیک گراؤنڈ خود بخود ہٹ گیا"),true)}
+ else{const p=r&&r.frac!=null?Math.round(r.frac*100):0;
+  vcsSet(v,r&&r.err==="leak"?AE("⚠️ Background could not be separated: the bottle blends into the background. Use a plainer, contrasting background.","⚠️ بیک گراؤنڈ الگ نہیں ہو سکا: بوتل بیک گراؤنڈ میں مل رہی ہے۔ سادہ اور مختلف رنگ کا بیک گراؤنڈ استعمال کریں۔"):r&&r.err==="none"?AE("⚠️ No plain background found in this video ("+p+"% matched). Use a video with one plain background color.","⚠️ اس ویڈیو میں سادہ بیک گراؤنڈ نہیں ملا ("+p+"%)۔ ایک سادہ رنگ کے بیک گراؤنڈ والی ویڈیو استعمال کریں۔"):AE("⚠️ Could not read the video frames on this phone.","⚠️ اس فون پر ویڈیو کے فریم نہیں پڑھے جا سکے۔"),false)}
+ }catch(e){try{v.style.visibility=""}catch(x){}}}
 </script></body></html>
