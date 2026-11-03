@@ -396,7 +396,7 @@ html[dir=rtl] #sbup,html[dir=rtl] #sbdn{left:auto;right:calc(min(82vw,300px) - 5
 .cht{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--bd);border-radius:14px;background:var(--card);margin-bottom:8px;cursor:pointer}
 .cht b{flex:1;min-width:0}.cht .mu{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* v9.6 shopkeeper compact header, search, print meta, splash */
+/* v9.5 shopkeeper compact header, search, print meta, splash */
 html[data-role=customer]{--hd1:#3f9ad6;--hd2:#1d5f99}
 html[data-role=customer] #sbup,html[data-role=customer] #sbdn{display:none!important}
 html[data-role=customer] header.bar{flex-wrap:wrap;gap:4px 8px;padding:6px 8px 6px;padding-top:calc(6px + env(safe-area-inset-top,0px))}
@@ -425,7 +425,7 @@ header.bar .logo{cursor:pointer}
 .sl-meta .m-dt{text-align:end}
 #wel.splash{z-index:300}
 
-/* v9.6 offer ticker */
+/* v9.5 offer ticker */
 #tkw{padding:0 12px}
 .tkr{direction:ltr;overflow:hidden;white-space:nowrap;border-radius:12px;background:var(--tkbg,#7a1020);color:var(--tkfg,#fff3c4);font-weight:700;font-size:14px;padding:8px 0;margin:8px 0 8px;box-shadow:0 2px 8px #0003}
 .tkr span{display:inline-block;padding-left:100%;animation:tkl var(--tkd,20s) linear infinite;will-change:transform}
@@ -446,7 +446,7 @@ header.bar .logo{cursor:pointer}
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.6</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.5</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -1548,7 +1548,7 @@ const nid=(r,s)=>r==="customer"?normPh(s):s.trim();
 async function hp(id,p){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("aab-khizri|"+id+"|"+p));return"h:"+[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return p}}
 async function pwOk(a,p){return a.pw.startsWith("h:")?a.pw===await hp(a.id,p):a.pw===p}
 const S={};try{S.r=sessionStorage.getItem("aab_role");S.i=sessionStorage.getItem("aab_id");S.h=sessionStorage.getItem("aab_h");S.n=sessionStorage.getItem("aab_n")}catch(e){}
-/* v9.6: stay signed in for 5 minutes after the app is closed (shopkeeper, user, admin) */
+/* v9.5: stay signed in for 5 minutes after the app is closed (shopkeeper, user, admin) */
 const KEEP_MS=5*60*1000;
 function keepSave(){try{if(S.r&&S.i&&S.h)localStorage.setItem("aab_keep",JSON.stringify({r:S.r,i:S.i,h:S.h,n:S.n||"",t:Date.now()}));else localStorage.removeItem("aab_keep")}catch(e){}}
 let _kt=0;function keepTouch(){const n=Date.now();if(n-_kt<8000)return;_kt=n;keepSave()}
@@ -2842,7 +2842,7 @@ async function webDelAny(id){
   await loadWebOrders();render(true);toast(AE("Order deleted","آرڈر ڈیلیٹ ہو گیا"))}catch(e){toast(errMsg(e),7000)}}
 
 
-/* ═══ v9.6 · TOKEN APPROVAL (review → admin approves → tokens) ═══ */
+/* ═══ v9.5 · TOKEN APPROVAL (review → admin approves → tokens) ═══ */
 Object.assign(T.en,{n_tokq:"✅ Token approval",tq_h:"Token approval",tq_pend:"Waiting for your approval",tq_none:"No reviews waiting 🎉",tq_amt:"Tokens to give",tq_ok:"✔ Approve tokens",tq_no:"✖ Reject",tq_rq:"Reject? The shopkeeper gets no tokens for this order.",tq_done:"Tokens approved ✔",tq_rej:"Rejected — no tokens",tq_dup:"Tokens were already given for this order.",tq_hist:"Decisions",tq_nosql:"Token approval is not installed yet: run token_approval.sql in Supabase → SQL Editor.",tq_nl:"The tokens could not be written. Tap 🧪 Test and send me the screenshot.",tq_adj_h:"Give or take back tokens",tq_adj_c:"Shopkeeper",tq_adj_a:"Tokens (use − to take back)",tq_adj_go:"Apply",tq_rmrv:"🗑 Remove review",tq_rmq:"Remove this review?",tq_wait_c:"⏳ Tokens: waiting for admin approval",tq_ok_c:"🪙 Tokens approved: +{n}",tq_rj_c:"❌ Tokens not approved",tq_sent:"sent to admin for token approval",tq_test:"🧪 Test",tq_approved:"Approved",tq_rejected:"Rejected",tq_pick:"Choose shopkeeper"});
 Object.assign(T.ur,{n_tokq:"✅ ٹوکن منظوری",tq_h:"ٹوکن منظوری",tq_pend:"آپ کی منظوری کے منتظر",tq_none:"کوئی ریویو منتظر نہیں 🎉",tq_amt:"دیے جانے والے ٹوکن",tq_ok:"✔ ٹوکن منظور",tq_no:"✖ مسترد",tq_rq:"مسترد کریں؟ اس آرڈر کے ٹوکن نہیں ملیں گے۔",tq_done:"ٹوکن منظور ہو گئے ✔",tq_rej:"مسترد — ٹوکن نہیں",tq_dup:"اس آرڈر کے ٹوکن پہلے ہی دیے جا چکے ہیں۔",tq_hist:"فیصلے",tq_nosql:"ٹوکن منظوری ابھی انسٹال نہیں: Supabase ← SQL Editor میں token_approval.sql چلائیں۔",tq_nl:"ٹوکن لکھے نہیں جا سکے۔ 🧪 ٹیسٹ دبا کر اسکرین شاٹ بھیجیں۔",tq_adj_h:"ٹوکن دیں یا واپس لیں",tq_adj_c:"دکاندار",tq_adj_a:"ٹوکن (واپس لینے کے لیے −)",tq_adj_go:"لاگو کریں",tq_rmrv:"🗑 ریویو ہٹائیں",tq_rmq:"یہ ریویو ہٹا دیں؟",tq_wait_c:"⏳ ٹوکن: ایڈمن کی منظوری کا انتظار",tq_ok_c:"🪙 ٹوکن منظور: +{n}",tq_rj_c:"❌ ٹوکن منظور نہیں ہوئے",tq_sent:"ٹوکن منظوری کے لیے ایڈمن کو بھیج دیا گیا",tq_test:"🧪 ٹیسٹ",tq_approved:"منظور",tq_rejected:"مسترد",tq_pick:"دکاندار چنیں"});
 st.tokDec=null;st.tokMine=null;st.tokqErr=0;
@@ -2881,9 +2881,9 @@ function tokQTab(){
    +`<div class="card"><h2 style="font-size:16px">${t("tq_adj_h")}</h2><label>${t("tq_adj_c")}</label><select id="ta_c"><option value="">${t("tq_pick")}</option>${C.map(x=>`<option value="${esc(x.cid)}">${esc(x.name||x.cid)} (${x.bal})</option>`).join("")}</select><label>${t("tq_adj_a")}</label><input id="ta_a" type="number" dir="ltr" inputmode="numeric"><button class="big" onclick="tokAdjust()">${t("tq_adj_go")}</button></div>`
    +(H.length?`<h2 style="font-size:16px;margin-top:18px">${t("tq_hist")}</h2>`+H.map(x=>`<div class="card" style="padding:10px 14px"><div class="row"><b>${x.status==="approved"?"✅":"❌"} ${esc(x.oid)}</b><b dir="ltr">${x.status==="approved"?"+"+x.amt:"—"}</b></div><div class="mu">${esc(x.cid)} · ${x.status==="approved"?t("tq_approved"):t("tq_rejected")} · ${fmtT(x.at)}</div></div>`).join(""):"")}
 
-/* ═══ v9.6 · What's new (shown once per version) ═══ */
-Object.assign(T.en,{wn_h:"What's new in v9.6",wn_ok:"OK, got it",wn_l:["✅ Token approval: shopkeeper's review goes to admin → admin approves → tokens are given","🖨️ Single print button on every approved order (and safer printing)","🛠️ Website editor Save fixed","🗑 Admin can remove a review and give / take back tokens","⚠️ Clearer messages: app errors and server errors are shown differently"]});
-Object.assign(T.ur,{wn_h:"v9.6 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["✅ ٹوکن منظوری: دکاندار کا ریویو ایڈمن کے پاس جاتا ہے → ایڈمن منظور کرے تو ٹوکن ملتے ہیں","🖨️ ہر منظور شدہ آرڈر پر سنگل پرنٹ کا بٹن (اور محفوظ پرنٹنگ)","🛠️ ویب سائٹ ایڈیٹر کا سیو ٹھیک","🗑 ایڈمن ریویو ہٹا سکتا ہے اور ٹوکن دے / واپس لے سکتا ہے","⚠️ واضح پیغامات: ایپ کی خرابی اور سرور کی خرابی الگ دکھائی جاتی ہے"]});
+/* ═══ v9.5 · What's new (shown once per version) ═══ */
+Object.assign(T.en,{wn_h:"What's new in v9.5",wn_ok:"OK, got it",wn_l:["✅ Token approval: shopkeeper's review goes to admin → admin approves → tokens are given","🖨️ Single print button on every approved order (and safer printing)","🛠️ Website editor Save fixed","🗑 Admin can remove a review and give / take back tokens","⚠️ Clearer messages: app errors and server errors are shown differently"]});
+Object.assign(T.ur,{wn_h:"v9.5 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["✅ ٹوکن منظوری: دکاندار کا ریویو ایڈمن کے پاس جاتا ہے → ایڈمن منظور کرے تو ٹوکن ملتے ہیں","🖨️ ہر منظور شدہ آرڈر پر سنگل پرنٹ کا بٹن (اور محفوظ پرنٹنگ)","🛠️ ویب سائٹ ایڈیٹر کا سیو ٹھیک","🗑 ایڈمن ریویو ہٹا سکتا ہے اور ٹوکن دے / واپس لے سکتا ہے","⚠️ واضح پیغامات: ایپ کی خرابی اور سرور کی خرابی الگ دکھائی جاتی ہے"]});
 function whatsNew(){try{if(!S||!S.r||localStorage.getItem("aab_wn")===BUILD)return;if(document.getElementById("wnb"))return;
   const d=document.createElement("div");d.id="wnb";d.style.cssText="position:fixed;inset:0;background:#000a;z-index:140;display:flex;align-items:center;justify-content:center;padding:16px";
   d.innerHTML=`<div class="card" style="max-width:420px;max-height:84vh;overflow:auto"><h2 style="margin-top:0">🆕 ${t("wn_h")}</h2>${t("wn_l").map(x=>`<div style="margin:8px 0">${x}</div>`).join("")}<button class="big" id="wnok">${t("wn_ok")}</button></div>`;
@@ -3092,7 +3092,7 @@ window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);cur=win
 checkNotifState();
 render();
 
-/* ===================== v9.6 extras ===================== */
+/* ===================== v9.5 extras ===================== */
 function sideExtra(){try{const b=[];
  if(cur==="customer")b.push(`<button class="sb" onclick="toggleLang()"><span class="si">🌐</span><span>${L==="ur"?"English":"اردو"}</span></button>`);
  if(cur!=="admin"&&("Notification" in window)){checkNotifState();b.push(`<button class="sb" onclick="requestNotifPerm()"><span class="si">🔔</span><span>${AE("Notifications","نوٹیفکیشن")}${_notifEnabled?" ✓":""}</span></button>`)}
@@ -3173,7 +3173,7 @@ chSend=async function(){const i=document.getElementById("chin"),txt=i?i.value.tr
  d.innerHTML=`<div class="wbox"><img class="wlg lg-img" alt="" src="${window.LOGO}"><div class="wh" style="font-size:26px">Aab-e-Khizri</div><div class="wr" style="font-family:'Noto Nastaliq Urdu',serif">آبِ خضری</div></div>`;
  document.body.appendChild(d);setTimeout(()=>{d.classList.add("out");setTimeout(()=>d.remove(),600)},4000)}catch(e){}})();
 
-/* ---- v9.6 offer ticker: admin sets it, shopkeepers see it above the product ---- */
+/* ---- v9.5 offer ticker: admin sets it, shopkeepers see it above the product ---- */
 const TK_DEF={on:"0",text:"",text_ur:"",dir:"l",speed:"n",bg:"#7a1020",fg:"#fff3c4"};
 function tkCfg(){const x=st.site||{};let l={};try{l=JSON.parse(localStorage.getItem("aab_tk")||"{}")}catch(e){}
  const g=k=>x["tk_"+k]!=null?String(x["tk_"+k]):(l[k]!=null?String(l[k]):TK_DEF[k]),o={};
@@ -3207,7 +3207,7 @@ async function saveTkr(){const c=tkForm(),o={},x=st.site||{};Object.keys(x).forE
  try{const ok=await rpc("aab_set_site",{p_id:S.i,p_h:S.h,p_site:o});if(!ok)return toast(t("savefail"),5000);await refresh();render(true);
   if((st.site||{}).tk_on!==c.on)toast(AE("Saved on this phone only — the server did not keep the ticker settings. Server update needed.","صرف اس فون پر محفوظ ہوا — سرور نے پٹی کی سیٹنگ محفوظ نہیں کی۔ سرور اپڈیٹ چاہیے۔"),9000);else toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
 
-/* ===== v9.6: photo background removal + reliable video playback ===== */
+/* ===== v9.7: photo background removal + reliable video playback ===== */
 function bgRemoveCanvas(src,tolIn){
  const w=src.width,h=src.height,ctx=src.getContext("2d"),img=ctx.getImageData(0,0,w,h),d=img.data,N=w*h;
  const med=a=>{a.sort((x,y)=>x-y);return a[a.length>>1]};
@@ -3245,11 +3245,37 @@ function vidSrc(d){if(!d||typeof d!=="string")return"";if(d.indexOf("data:")!==0
  try{const i=d.indexOf(","),mime=(d.slice(5,i).split(";")[0])||"video/mp4",b=atob(d.slice(i+1)),u=new Uint8Array(b.length);for(let j=0;j<b.length;j++)u[j]=b.charCodeAt(j);return(_VU[k]=URL.createObjectURL(new Blob([u],{type:mime})))}catch(e){return d}}
 function vidLoaded(v){try{const c=document.createElement("canvas");c.width=24;c.height=24;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(v,0,0,24,24);const g=(px,py)=>x.getImageData(px,py,2,2).data;let ok=true;
  for(const [a,b] of [[0,0],[22,0],[0,22],[22,22]]){const q=g(a,b);for(let i=0;i<12;i+=4){if(Math.min(q[i],q[i+1],q[i+2])<228)ok=false}}
- v.classList.toggle("wb",ok);try{v.play&&v.play()}catch(e){}}catch(e){}}
+ v.classList.toggle("wb",ok);try{v.play&&v.play()}catch(e){}vidCut(v)}catch(e){}}
 function vidErr(v){try{if(v.classList.contains("btv")){st.shopVid="";render(true)}else{const d=document.createElement("div");d.className="mu";d.style.cssText="margin:10px 0;color:#b3261e;font-weight:600";d.textContent=AE("⚠️ This phone cannot play this video (format). Please use an MP4 (H.264) or WebM video.","⚠️ یہ فون اس ویڈیو کو نہیں چلا سکا (فارمیٹ)۔ MP4 (H.264) یا WebM ویڈیو استعمال کریں۔");v.replaceWith(d)}}catch(e){}}
 async function saveShopVid(d){try{const ok=await rpc("aab_shop_video_set",{p_id:S.i,p_h:S.h,p_data:d});
  if(!ok)return toast(AE("Could not save the video","ویڈیو محفوظ نہیں ہو سکی"),5000);
  st.shopVid=d;render(true);
  if(d){try{const back=await rpc("aab_shop_video_get",{});if(typeof back!=="string"||back.length!==d.length)return toast(AE("The server did not keep the whole video (too big). Use a shorter or smaller video, under 1.5 MB.","سرور نے پوری ویڈیو محفوظ نہیں کی (بہت بڑی ہے)۔ چھوٹی ویڈیو استعمال کریں، 1.5 MB سے کم۔"),9000)}catch(e){}}
  toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
+
+/* ---- v9.7: video background removal (a silhouette mask built from a few frames, applied with CSS) ---- */
+const _VM={};
+function vidSeek(v,t){return new Promise(r=>{let d=0;const f=()=>{if(!d){d=1;r()}};v.onseeked=f;setTimeout(f,700);try{v.currentTime=t}catch(e){f()}})}
+async function vidMask(src){
+ const v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";
+ await new Promise((ok,no)=>{v.onloadeddata=ok;v.onerror=()=>no(new Error("v"));setTimeout(()=>no(new Error("t")),9000);v.src=src});
+ if(!v.videoWidth)return null;
+ const dur=isFinite(v.duration)&&v.duration>0?v.duration:0,W=240,H=Math.max(1,Math.round(W*v.videoHeight/v.videoWidth)),c=document.createElement("canvas");c.width=W;c.height=H;
+ const x=c.getContext("2d",{willReadFrequently:true}),ts=dur?Array.from({length:6},(_,i)=>dur*(i+.5)/6):[0],fr=[];
+ for(const t of ts){await vidSeek(v,t);x.drawImage(v,0,0,W,H);fr.push(x.getImageData(0,0,W,H).data)}
+ const N=W*H,d0=fr[0],R=[],G=[],B=[],add=(px,py)=>{const i=(py*W+px)*4;R.push(d0[i]);G.push(d0[i+1]);B.push(d0[i+2])};
+ for(let px=0;px<W;px++){add(px,0);add(px,H-1)}for(let py=0;py<H;py++){add(0,py);add(W-1,py)}
+ const med=a=>{a.sort((p,q)=>p-q);return a[a.length>>1]},br=med(R),bg=med(G),bb=med(B),tol=32,like=new Uint8Array(N);
+ for(let i=0;i<N;i++){let ok=1;for(const d of fr){const j=i*4,a=d[j]-br,b=d[j+1]-bg,e=d[j+2]-bb;if(a*a+b*b+e*e>=tol*tol){ok=0;break}}like[i]=ok}
+ const m=new Uint8Array(N),st=[],push=i=>{if(like[i]&&!m[i]){m[i]=1;st.push(i)}};
+ for(let px=0;px<W;px++){push(px);push((H-1)*W+px)}for(let py=0;py<H;py++){push(py*W);push(py*W+W-1)}
+ while(st.length){const i=st.pop(),px=i%W;if(px>0)push(i-1);if(px<W-1)push(i+1);if(i>=W)push(i-W);if(i<N-W)push(i+W)}
+ let rem=0;for(let i=0;i<N;i++)if(m[i])rem++;const fr2=rem/N;if(fr2>0.93||fr2<0.04)return null;
+ const o=document.createElement("canvas");o.width=W;o.height=H;const ox=o.getContext("2d"),id=ox.createImageData(W,H);
+ for(let i=0;i<N;i++){id.data[i*4+3]=m[i]?0:255}ox.putImageData(id,0,0);
+ const o2=document.createElement("canvas");o2.width=W;o2.height=H;const x2=o2.getContext("2d");try{x2.filter="blur(0.9px)"}catch(e){}x2.drawImage(o,0,0);
+ return o2.toDataURL("image/png")}
+async function vidCut(v){try{const src=v.currentSrc||v.src;if(!src||v.dataset.cut)return;v.dataset.cut="1";const un=()=>{try{v.style.visibility=""}catch(e){}};
+ let m=_VM[src];if(m===undefined){v.style.visibility="hidden";setTimeout(un,1500);try{m=await vidMask(src)}catch(e){m=null}_VM[src]=m||0;un()}
+ if(m){const s=v.style;s.webkitMaskImage=s.maskImage="url("+m+")";s.webkitMaskSize=s.maskSize="contain";s.webkitMaskRepeat=s.maskRepeat="no-repeat";s.webkitMaskPosition=s.maskPosition="center";v.classList.remove("wb")}}catch(e){try{v.style.visibility=""}catch(x){}}}
 </script></body></html>
