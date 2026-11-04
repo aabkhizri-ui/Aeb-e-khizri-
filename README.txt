@@ -16,3 +16,4 @@ v9.8: Admin Settings mein "Offer ticker" - shopkeeper page par product ke upar c
 v9.8: photo upload mein background khud hat jata hai (sirf bottle), video ab chalti hai (CSP mein media-src add), video ki white background invisible.
 v9.8: video ka background bhi khud hat jata hai (mask se), photo jaisa.
 v9.8: version label theek (footer v9.8), video background removal aur mazboot + admin ko status paigham, "What is new" popup.
+v9.9: opening logo par tap se skip; admin video background on/off; server/diagnose.sql (website order error, AI chatbot aur push ke liye pehle ye chalayen).

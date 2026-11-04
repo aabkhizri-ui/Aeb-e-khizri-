@@ -446,7 +446,7 @@ header.bar .logo{cursor:pointer}
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.8</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.9</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -1808,7 +1808,7 @@ Object.assign(T.ur,{web_visit:"ہماری ویب سائٹ دیکھیں",web_h:"�
 function shopImgPick(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,720/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);saveShopImg(c.toDataURL("image/jpeg",.82))};im.src=r.result};r.readAsDataURL(f)}
 async function saveShopImg(d){try{const ok=await rpc("aab_set_shop_img",{p_id:S.i,p_h:S.h,p_img:d});if(!ok)return toast(t("savefail"),5000);st.shopImg=d;st.shopImgLoaded=1;toast(t("done"));render(true)}catch(e){toast(errMsg(e),7000)}}
 const shopImgBox=()=>`<div class="card"><h2>${t("simg_h")}</h2><div class="mu">${t("simg_hint")}</div>${st.shopImg?`<img src="${st.shopImg}" alt="" style="max-height:170px;border-radius:12px;margin:10px 0;display:block;background:#fff3cf">`:""}<label style="display:flex;gap:10px;align-items:center;margin:10px 0"><input type="checkbox" id="simg_cut" checked style="width:auto;flex:none"> ${AE("Remove the background (keep only the bottle)","بیک گراؤنڈ ہٹائیں (صرف بوتل رکھیں)")}</label><input type="file" accept="image/*" onchange="shopImgPick(this)">${st.shopImg?`<button class="pr" style="margin-top:10px" onclick="shopImgCut()">✂️ ${AE("Remove background from the current photo","موجودہ تصویر کا بیک گراؤنڈ ہٹائیں")}</button>`:""}<button class="no" style="margin-top:10px" onclick="saveShopImg('')">${t("simg_rm")}</button>
-<h3 style="margin-top:18px">🎬 ${AE("Rotating bottle video","گھومتی بوتل کی ویڈیو")}</h3><div class="mu">${AE("Short MP4/WebM video, up to 3 MB. It plays on the shopkeeper page instead of the picture.","چھوٹی MP4/WebM ویڈیو، 3 MB تک۔ دکاندار پیج پر تصویر کی جگہ چلے گی۔")}</div>${st.shopVid?`<video src="${vidSrc(st.shopVid)}" autoplay muted loop playsinline preload="auto" onloadeddata="vidLoaded(this)" onerror="vidErr(this)" style="max-height:170px;border-radius:12px;margin:10px 0;display:block"></video><div id="vcs" class="mu" style="margin:6px 0;font-weight:600"></div>`:""}<input type="file" accept="video/mp4,video/webm,video/quicktime" onchange="shopVidPick(this)"><button class="no" style="margin-top:10px" onclick="saveShopVid('')">${AE("Remove video","ویڈیو ہٹائیں")}</button></div>`;
+<h3 style="margin-top:18px">🎬 ${AE("Rotating bottle video","گھومتی بوتل کی ویڈیو")}</h3><div class="mu">${AE("Short MP4/WebM video, up to 3 MB. It plays on the shopkeeper page instead of the picture.","چھوٹی MP4/WebM ویڈیو، 3 MB تک۔ دکاندار پیج پر تصویر کی جگہ چلے گی۔")}</div>${st.shopVid?`<video src="${vidSrc(st.shopVid)}" autoplay muted loop playsinline preload="auto" onloadeddata="vidLoaded(this)" onerror="vidErr(this)" style="max-height:170px;border-radius:12px;margin:10px 0;display:block"></video><div id="vcs" class="mu" style="margin:6px 0;font-weight:600"></div><label style="display:flex;gap:10px;align-items:center;margin:8px 0"><input type="checkbox" ${vcOff()?"":"checked"} onchange="vcToggle(this.checked)" style="width:auto;flex:none"> ${AE("Remove the video background automatically","ویڈیو کا بیک گراؤنڈ خود بخود ہٹائیں")}</label>`:""}<input type="file" accept="video/mp4,video/webm,video/quicktime" onchange="shopVidPick(this)"><button class="no" style="margin-top:10px" onclick="saveShopVid('')">${AE("Remove video","ویڈیو ہٹائیں")}</button></div>`;
 Object.assign(T.en,{welcome:"Welcome — please sign in",again:"Order again"});
 Object.assign(T.ur,{welcome:"خوش آمدید — براہ کرم لاگ اِن کریں",again:"دوبارہ آرڈر"});
 /* Smart header: hides on scroll-down, returns on scroll-up. Layout never changes (sticky + translate only) so no jitter. */
@@ -2882,8 +2882,8 @@ function tokQTab(){
    +(H.length?`<h2 style="font-size:16px;margin-top:18px">${t("tq_hist")}</h2>`+H.map(x=>`<div class="card" style="padding:10px 14px"><div class="row"><b>${x.status==="approved"?"✅":"❌"} ${esc(x.oid)}</b><b dir="ltr">${x.status==="approved"?"+"+x.amt:"—"}</b></div><div class="mu">${esc(x.cid)} · ${x.status==="approved"?t("tq_approved"):t("tq_rejected")} · ${fmtT(x.at)}</div></div>`).join(""):"")}
 
 /* ═══ v9.5 · What's new (shown once per version) ═══ */
-Object.assign(T.en,{wn_h:"What's new in v9.8",wn_ok:"OK, got it",wn_l:["🛒 Shopkeeper: small fixed header, Order / My Orders / Tokens beside the logo, menu for the rest, tap the logo to search","🔐 Stay signed in for 5 minutes after closing the app","📢 Offer ticker above the product — admin sets text, direction, speed and colors","🖨️ Printing slip is editable by admin; website orders can be printed too","🖼️ Product photo and video: background removed, video plays now","💬 Chat notifications and auto-reply"]});
-Object.assign(T.ur,{wn_h:"v9.8 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["🛒 دکاندار: چھوٹا فکس ہیڈر، لوگو کے ساتھ آرڈر / میرے آرڈر / ٹوکن، باقی بٹن مینو میں، لوگو پر ٹیپ سے سرچ","🔐 ایپ بند کرنے کے بعد 5 منٹ تک لاگ اِن رہتا ہے","📢 پروڈکٹ کے اوپر آفر کی چلتی پٹی — ایڈمن متن، سمت، رفتار اور رنگ طے کرتا ہے","🖨️ پرنٹنگ سلپ ایڈمن بدل سکتا ہے؛ ویب سائٹ آرڈرز بھی پرنٹ ہوتے ہیں","🖼️ پروڈکٹ کی تصویر اور ویڈیو: بیک گراؤنڈ ہٹ گیا، ویڈیو اب چلتی ہے","💬 چیٹ نوٹیفکیشن اور آٹو ریپلائی"]});
+Object.assign(T.en,{wn_h:"What's new in v9.9",wn_ok:"OK, got it",wn_l:["🛒 Shopkeeper: small fixed header, Order / My Orders / Tokens beside the logo, menu for the rest, tap the logo to search","🔐 Stay signed in for 5 minutes after closing the app","📢 Offer ticker above the product — admin sets text, direction, speed and colors","🖨️ Printing slip is editable by admin; website orders can be printed too","🖼️ Product photo and video: background removed, video plays now","💬 Chat notifications and auto-reply","👆 Tap the opening logo to skip it; admin can switch video background removal on/off"]});
+Object.assign(T.ur,{wn_h:"v9.9 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["🛒 دکاندار: چھوٹا فکس ہیڈر، لوگو کے ساتھ آرڈر / میرے آرڈر / ٹوکن، باقی بٹن مینو میں، لوگو پر ٹیپ سے سرچ","🔐 ایپ بند کرنے کے بعد 5 منٹ تک لاگ اِن رہتا ہے","📢 پروڈکٹ کے اوپر آفر کی چلتی پٹی — ایڈمن متن، سمت، رفتار اور رنگ طے کرتا ہے","🖨️ پرنٹنگ سلپ ایڈمن بدل سکتا ہے؛ ویب سائٹ آرڈرز بھی پرنٹ ہوتے ہیں","🖼️ پروڈکٹ کی تصویر اور ویڈیو: بیک گراؤنڈ ہٹ گیا، ویڈیو اب چلتی ہے","💬 چیٹ نوٹیفکیشن اور آٹو ریپلائی","👆 شروع کے لوگو پر ٹیپ سے آگے جائیں؛ ایڈمن ویڈیو کا بیک گراؤنڈ ہٹانا آن/آف کر سکتا ہے"]});
 function whatsNew(){try{if(!S||!S.r||localStorage.getItem("aab_wn")===BUILD)return;if(document.getElementById("wnb"))return;
   const d=document.createElement("div");d.id="wnb";d.style.cssText="position:fixed;inset:0;background:#000a;z-index:140;display:flex;align-items:center;justify-content:center;padding:16px";
   d.innerHTML=`<div class="card" style="max-width:420px;max-height:84vh;overflow:auto"><h2 style="margin-top:0">🆕 ${t("wn_h")}</h2>${t("wn_l").map(x=>`<div style="margin:8px 0">${x}</div>`).join("")}<button class="big" id="wnok">${t("wn_ok")}</button></div>`;
@@ -2993,7 +2993,7 @@ function hdrBar(){
  if(sd&&!sd.querySelector(".sdh"))sd.insertAdjacentHTML("afterbegin",`<div class="sdh">☰ ${L==="ur"?"مینو":"Menu"}</div>`);
 }
 /* ---------- Top 3 big buttons for every app (admin / user / shopkeeper) ---------- */
-const BUILD="9.8";
+const BUILD="9.9";
 const TOP3={admin:[["rev","⭐","n_rev"],["appr","⏳","n_appr"],["ship","🚚","n_ship"]],user:[["new","📥","n_new"],["wait","⏳","n_wait"],["ship","🚚","n_ship"]],customer:[["order","🛒","n_order"],["mine","📦","n_mine"],["tok","🪙","n_tok"]]};
 function topBar(){const a=TOP3[cur];if(!a||!me(cur)||cur==="admin"||cur==="user"||cur==="customer")return"";
   const cnt=x=>st.orders.filter(o=>o.status===x).length;
@@ -3171,7 +3171,7 @@ chSend=async function(){const i=document.getElementById("chin"),txt=i?i.value.tr
 /* ---- app opening splash: logo for 4 seconds, then the login screen ---- */
 (function(){try{if(window.__WEB||!window.LOGO)return;const d=document.createElement("div");d.id="wel";d.className="splash";
  d.innerHTML=`<div class="wbox"><img class="wlg lg-img" alt="" src="${window.LOGO}"><div class="wh" style="font-size:26px">Aab-e-Khizri</div><div class="wr" style="font-family:'Noto Nastaliq Urdu',serif">آبِ خضری</div></div>`;
- document.body.appendChild(d);setTimeout(()=>{d.classList.add("out");setTimeout(()=>d.remove(),600)},4000)}catch(e){}})();
+ d.onclick=()=>{d.classList.add("out");setTimeout(()=>d.remove(),600)};document.body.appendChild(d);setTimeout(()=>{if(d.isConnected)d.click()},4000)}catch(e){}})();
 
 /* ---- v9.5 offer ticker: admin sets it, shopkeepers see it above the product ---- */
 const TK_DEF={on:"0",text:"",text_ur:"",dir:"l",speed:"n",bg:"#7a1020",fg:"#fff3c4"};
@@ -3290,7 +3290,7 @@ async function vmFrames(src,vis){
  H=Math.max(1,Math.round(W*vis.videoHeight/vis.videoWidth));const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d",{willReadFrequently:true});fr=[];
  for(let k=0;k<8;k++){await new Promise(r=>setTimeout(r,330));try{x.drawImage(vis,0,0,W,H);fr.push(x.getImageData(0,0,W,H).data)}catch(e){}}
  return fr.length?{fr,W,H}:null}
-async function vidCut(v){try{const src=v.currentSrc||v.src;if(!src||v.dataset.cut)return;v.dataset.cut="1";const un=()=>{try{v.style.visibility=""}catch(e){}};
+async function vidCut(v){try{const src=v.currentSrc||v.src;if(!src||v.dataset.cut)return;v.dataset.cut="1";if(vcOff()){v.classList.remove("wb");vcsSet(v,AE("Background removal is OFF","بیک گراؤنڈ ہٹانا بند ہے"),false);return}const un=()=>{try{v.style.visibility=""}catch(e){}};
  let r=_VM[src];
  if(r===undefined){v.style.visibility="hidden";setTimeout(un,1500);vcsSet(v,AE("Checking the background…","بیک گراؤنڈ دیکھ رہے ہیں…"),true);
   try{const f=await vmFrames(src,v);r=f?vmCompute(f.fr,f.W,f.H):{err:"read"}}catch(e){r={err:"read"}}_VM[src]=r;un()}
@@ -3299,4 +3299,11 @@ async function vidCut(v){try{const src=v.currentSrc||v.src;if(!src||v.dataset.cu
  else{const p=r&&r.frac!=null?Math.round(r.frac*100):0;
   vcsSet(v,r&&r.err==="leak"?AE("⚠️ Background could not be separated: the bottle blends into the background. Use a plainer, contrasting background.","⚠️ بیک گراؤنڈ الگ نہیں ہو سکا: بوتل بیک گراؤنڈ میں مل رہی ہے۔ سادہ اور مختلف رنگ کا بیک گراؤنڈ استعمال کریں۔"):r&&r.err==="none"?AE("⚠️ No plain background found in this video ("+p+"% matched). Use a video with one plain background color.","⚠️ اس ویڈیو میں سادہ بیک گراؤنڈ نہیں ملا ("+p+"%)۔ ایک سادہ رنگ کے بیک گراؤنڈ والی ویڈیو استعمال کریں۔"):AE("⚠️ Could not read the video frames on this phone.","⚠️ اس فون پر ویڈیو کے فریم نہیں پڑھے جا سکے۔"),false)}
  }catch(e){try{v.style.visibility=""}catch(x){}}}
+
+function vcOff(){try{const x=st.site||{};return String(x.tk_vc!=null?x.tk_vc:(localStorage.getItem("aab_vc")||"1"))==="0"}catch(e){return false}}
+async function vcToggle(on){const o={},x=st.site||{};Object.keys(x).forEach(k=>{o[k]=x[k]});o.tk_vc=on?"1":"0";
+ try{localStorage.setItem("aab_vc",o.tk_vc)}catch(e){}
+ try{const ok=await rpc("aab_set_site",{p_id:S.i,p_h:S.h,p_site:o});if(!ok)return toast(t("savefail"),5000);await refresh();
+  if((st.site||{}).tk_vc!==o.tk_vc)toast(AE("Saved on this phone only — the server did not keep this setting.","صرف اس فون پر محفوظ ہوا — سرور نے یہ سیٹنگ محفوظ نہیں کی۔"),8000);
+  render(true)}catch(e){toast(errMsg(e),7000)}}
 </script></body></html>
