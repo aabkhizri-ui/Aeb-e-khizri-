@@ -30,3 +30,4 @@ v9.14: Admin 📈 Dashboard naye design mein: pastel KPI cards, tokens bar chart
 v9.15: Admin 📈 Dashboard poora naye sire se: upar live date aur time, scorecard tiles, pastel shopkeeper cards, sales line chart, navy donut, tokens bar chart, is mahine ka calendar, discount cards aur leaderboard.
 v9.16: Admin Dashboard ab main bar mein. Purana 📊 Dashboard aur 🤖 AI hata diye. Date range select karke aaya/gaya/bana, sale, tokens aur din-ba-din table dekhein. Auto-chat active hai.
 v9.17: Dashboard: city/state filter, date range, aur har card/bar/dukandar/din par click karke poori list khulti hai (orders, tokens, balance).
+v9.19: Video aur picture ke liye zoom, crop, IN/OUT cut aur background removal (promo, pack, bottle photo). Dashboard mein Previous/Next se agli cheez khulti hai.
