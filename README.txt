@@ -24,3 +24,6 @@ v9.11: Admin mein 🎬 Videos tab: bottle/promo video (order page par bottle ki 
 v9.11: Admin mein 🤖 AI tab (read-only): live sales, dukandar, discount aur tokens ke sawal. Edge Function "admin-ai" use karta hai.
 v9.11 SETUP: Supabase > Edge Functions > Secrets mein ANTHROPIC_API_KEY add karein, phir AI tab kaam karega.
 v9.11: CSP mein media-src mein Supabase storage allow kiya.
+v9.12: Chat auto-reply ab server par, sirf EK dafa (Walaikum Assalam), phir tab tak nahi jab tak user/admin reply na kare.
+v9.13: Chat auto-reply: pehla message par greeting (ek dafa); uske baad har message par "team masroof hai" reply, jab tak user/admin reply na kare.
+v9.14: Admin 📈 Dashboard naye design mein: pastel KPI cards, tokens bar chart, redemption donut, 14 din ki sale line, leaderboard aur discount cards.

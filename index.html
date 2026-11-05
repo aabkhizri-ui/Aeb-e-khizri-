@@ -446,7 +446,7 @@ header.bar .logo{cursor:pointer}
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.11</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.14</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -1714,23 +1714,67 @@ Object.assign(T.en,{n_dtd:"📈 Dashboard",dtd_h:"Discount & token overview",dtd
 Object.assign(T.ur,{n_dtd:"📈 ڈیش بورڈ",dtd_h:"ڈسکاؤنٹ اور ٹوکن کا خلاصہ",dtd_kt:"جاری ٹوکن",dtd_kr:"استعمال ٹوکن",dtd_kb:"باقی ٹوکن",dtd_kv:"استعمال کی رقم (₨)",dtd_ks:"ٹوکن والے دکاندار",dtd_ka:"منظور ڈسکاؤنٹ",dtd_kp:"منتظر ڈسکاؤنٹ",dtd_kavg:"اوسط ڈسکاؤنٹ",dtd_top:"ٹوکن کمانے والے دکاندار",dtd_rate:"استعمال کی شرح",dtd_earn:"کمائے",dtd_used:"استعمال",dtd_bal:"بیلنس",dtd_none:"ابھی کوئی ٹوکن سرگرمی نہیں",dtd_disc:"ڈسکاؤنٹ کی فہرست",dtd_note:"استعمال کی رقم = استعمال ٹوکن × ₨ 1۔ ڈسکاؤنٹ کی رقم ہر آرڈر پر مختلف ہوتی ہے۔",dc_period:"پرومو کی مدت",dc_days_bad:"5 سے 10 دن چنیں"});
 
 function dtdTab(){
- const TK=st.tokAdm||[],DA=st.discAdm||[];
- const sum=(a,k)=>a.reduce((n,x)=>n+(+x[k]||0),0);
- const earned=sum(TK,"earned"),used=sum(TK,"used"),bal=sum(TK,"bal");
- const rate=earned?Math.round(used*100/earned):0;
+ const TK=(st.tokAdm||[]).map(x=>({n:String(x.name||x.cid||""),e:+x.earned||0,u:+x.used||0,b:+x.bal||0}));
+ const DA=st.discAdm||[];
+ const sum=k=>TK.reduce((a,x)=>a+x[k],0);
+ const E=sum("e"),U=sum("u"),B=sum("b");
+ const rate=E?Math.round(U*100/E):0;
  const ap=DA.filter(x=>x.st==="approved"),pd=DA.filter(x=>x.st==="pending");
- const avg=ap.length?Math.round(ap.reduce((n,x)=>n+(+x.pct||0),0)/ap.length):0;
- const top=TK.slice().sort((a,b)=>(+b.earned||0)-(+a.earned||0)).slice(0,10);
- const mx=Math.max(1,...top.map(x=>+x.earned||0));
- const card=(ic,l,v,c)=>`<div style="background:#fff;border:1px solid #e6e9f0;border-radius:14px;padding:14px;border-top:3px solid ${c}"><div style="font-size:12px;color:#6b7280">${ic} ${t(l)}</div><div dir="ltr" style="font-size:22px;font-weight:700;margin-top:4px;color:#1f2937">${v}</div></div>`;
- const kpis=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0">`+
-  card("🪙","dtd_kt",earned,"#7c3aed")+card("🔁","dtd_kr",used,"#0ea5e9")+card("💰","dtd_kb",bal,"#f59e0b")+card("💵","dtd_kv","₨ "+used,"#10b981")+
-  card("🏪","dtd_ks",TK.length,"#6366f1")+card("✅","dtd_ka",ap.length,"#16a34a")+card("⏳","dtd_kp",pd.length,"#d97706")+card("🏷️","dtd_kavg",avg+"%","#db2777")+`</div>`;
- const rows=top.length?top.map((x,i)=>{const w=Math.round((+x.earned||0)*100/mx);const rr=+x.earned?Math.round((+x.used||0)*100/(+x.earned)):0;return `<div style="background:#fff;border:1px solid #e6e9f0;border-radius:12px;padding:12px;margin:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${i+1}. ${esc(x.name||x.cid)}</b><span dir="ltr" style="font-size:13px;color:#6b7280">🪙 ${x.bal}</span></div><div style="height:8px;background:#eef2f7;border-radius:6px;margin:8px 0;overflow:hidden"><div style="height:100%;width:${w}%;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div></div><div class="mu" dir="ltr">${t("dtd_earn")}: <b>${x.earned}</b> · ${t("dtd_used")}: <b>${x.used}</b> · ${t("dtd_bal")}: <b>${x.bal}</b> · ${t("dtd_rate")}: ${rr}%</div></div>`}).join(""):`<div class="empty">${t("dtd_none")}</div>`;
- return `<div class="card"><h2>📈 ${t("dtd_h")}</h2>${kpis}<div class="mu">${t("dtd_note")}</div></div><div class="card"><h2 style="font-size:16px">🏆 ${t("dtd_top")}</h2>${rows}</div>`+
-  `<div class="card"><h2 style="font-size:16px">🏷️ ${t("dtd_disc")}</h2><div class="mu">${ap.length} ✅ · ${pd.length} ⏳</div></div>`;
-}
+ const avg=ap.length?Math.round(ap.reduce((a,x)=>a+(+x.pct||0),0)/ap.length):0;
+ const kpi=(bg,lbl,val)=>`<div class="dtd-k" style="background:${bg}"><div class="dtd-kl">${lbl}</div><div class="dtd-kv" dir="ltr">${val}</div><div class="dtd-ka">↗</div></div>`;
+ const kpis=`<div class="dtd-kg">${kpi("#d7f0e8",t("dtd_kt"),E)}${kpi("#ffeaa7",t("dtd_kr"),U)}${kpi("#dcd3f5",t("dtd_kb"),B)}${kpi("#ffd6e8",t("dtd_kv"),"₨ "+U)}</div>`;
 
+ // bar chart: earned vs redeemed, top 6
+ const top=TK.slice().sort((a,b)=>b.e-a.e).slice(0,6);
+ const mx=Math.max(1,...top.map(x=>Math.max(x.e,x.u)));
+ const W=320,H=170,pad=28,gw=(W-pad*2)/Math.max(1,top.length),bw=Math.min(22,gw*0.32);
+ const bars=top.map((x,i)=>{const cx=pad+gw*i+gw/2,he=(x.e/mx)*(H-50),hu=(x.u/mx)*(H-50);const lab=esc(x.n.slice(0,8));return `<rect x="${(cx-bw-2).toFixed(1)}" y="${(H-30-he).toFixed(1)}" width="${bw.toFixed(1)}" height="${he.toFixed(1)}" rx="5" fill="#1e3a5f"/><rect x="${(cx+2).toFixed(1)}" y="${(H-30-hu).toFixed(1)}" width="${bw.toFixed(1)}" height="${hu.toFixed(1)}" rx="5" fill="#f5b942"/><text x="${cx.toFixed(1)}" y="${H-12}" text-anchor="middle" font-size="10" fill="#6b7280">${lab}</text>`}).join("");
+ const barSvg=top.length?`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img">${bars}</svg>`:`<div class="empty">${t("dtd_none")}</div>`;
+
+ // donut: redemption rate
+ const C=2*Math.PI*44,dash=(rate/100)*C;
+ const donut=`<svg viewBox="0 0 120 120" width="150" height="150"><circle cx="60" cy="60" r="44" fill="none" stroke="#2c4d70" stroke-width="14"/><circle cx="60" cy="60" r="44" fill="none" stroke="#f5b942" stroke-width="14" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 60 60)"/><text x="60" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">${rate}%</text></svg>`;
+
+ // line/area chart: revenue per day, last 14 days
+ const day=86400000,today=Math.floor(Date.now()/day)*day;
+ const buckets=Array.from({length:14},(_,i)=>({d:today-(13-i)*day,v:0}));
+ (st.orders||[]).forEach(o=>{if(o.archived||o.status==="cancelled")return;const ts=+o.created||0;const b=buckets.find(x=>ts>=x.d&&ts<x.d+day);if(b)b.v+=+o.total||0});
+ const vm=Math.max(1,...buckets.map(x=>x.v)),LW=320,LH=150;
+ const pts=buckets.map((x,i)=>[10+i*((LW-20)/13),LH-20-(x.v/vm)*(LH-40)]);
+ const line=pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+ const area=`M${pts[0][0].toFixed(1)},${LH-20} L${line.split(" ").join(" L")} L${pts[pts.length-1][0].toFixed(1)},${LH-20} Z`;
+ const hasRev=buckets.some(x=>x.v>0);
+ const lineSvg=hasRev?`<svg viewBox="0 0 ${LW} ${LH}" width="100%"><path d="${area}" fill="#7c5cd6" opacity=".18"/><polyline points="${line}" fill="none" stroke="#5b3fc4" stroke-width="2.5" stroke-linejoin="round"/></svg>`:`<div class="empty">${AE("No sales in the last 14 days","پچھلے 14 دن میں کوئی سیل نہیں")}</div>`;
+
+ // leaderboard with progress bars
+ const lb=top.length?top.map((x,i)=>{const w=Math.round(x.e*100/Math.max(1,top[0].e));return `<div class="dtd-row"><div class="dtd-rh"><b>${i+1}. ${esc(x.n)}</b><span dir="ltr">🪙 ${x.b}</span></div><div class="dtd-bar"><i style="width:${w}%"></i></div><div class="mu" dir="ltr">${t("dtd_earn")}: <b>${x.e}</b> · ${t("dtd_used")}: <b>${x.u}</b> · ${t("dtd_rate")}: ${x.e?Math.round(x.u*100/x.e):0}%</div></div>`}).join(""):`<div class="empty">${t("dtd_none")}</div>`;
+
+ const disc=`<div class="dtd-dg"><div class="dtd-dc" style="background:#e4f1ff"><div class="dtd-kl">✅ ${t("dtd_ka")}</div><div class="dtd-kv" dir="ltr">${ap.length}</div></div><div class="dtd-dc" style="background:#fff1d6"><div class="dtd-kl">⏳ ${t("dtd_kp")}</div><div class="dtd-kv" dir="ltr">${pd.length}</div></div><div class="dtd-dc" style="background:#f3e8ff"><div class="dtd-kl">🏷️ ${t("dtd_kavg")}</div><div class="dtd-kv" dir="ltr">${avg}%</div></div></div>`;
+
+ const css=`<style>
+ .dtd-kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:10px 0}
+ .dtd-k{border-radius:18px;padding:14px;position:relative;min-height:96px}
+ .dtd-kl{font-size:12px;color:#4b5563}.dtd-kv{font-size:24px;font-weight:700;color:#111827;margin-top:4px}
+ .dtd-ka{position:absolute;right:10px;bottom:10px;width:30px;height:30px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+ .dtd-g2{display:grid;grid-template-columns:1.5fr 1fr;gap:12px}
+ @media(max-width:640px){.dtd-g2{grid-template-columns:1fr}}
+ .dtd-p{background:#fff;border:1px solid #e6e9f0;border-radius:18px;padding:14px;margin-bottom:12px}
+ .dtd-dark{background:#15283f;color:#fff;border-radius:18px;padding:14px;margin-bottom:12px;display:flex;flex-direction:column;align-items:center}
+ .dtd-dark .mu{color:#c9d6e6}
+ .dtd-row{padding:10px 0;border-top:1px solid #eef2f7}.dtd-rh{display:flex;justify-content:space-between;gap:8px}
+ .dtd-bar{height:8px;background:#eef2f7;border-radius:8px;margin:8px 0;overflow:hidden}.dtd-bar i{display:block;height:100%;background:linear-gradient(90deg,#7c5cd6,#c4b5fd);border-radius:8px}
+ .dtd-dg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.dtd-dc{border-radius:16px;padding:12px}
+ .dtd-lg{display:flex;gap:12px;font-size:12px;color:#4b5563;margin-top:4px}.dtd-lg span:before{content:"■ ";color:var(--c)}
+ </style>`;
+
+ return css+`<div class="card" style="background:transparent;border:none;box-shadow:none;padding:0"><h2>📈 ${t("dtd_h")}</h2>${kpis}</div>`+
+  `<div class="dtd-g2"><div class="dtd-p"><b>${AE("Tokens: earned vs redeemed","ٹوکن: کمائے بمقابلہ استعمال")}</b><div class="dtd-lg"><span style="--c:#1e3a5f">${t("dtd_earn")}</span><span style="--c:#f5b942">${t("dtd_used")}</span></div>${barSvg}</div>`+
+  `<div><div class="dtd-dark"><div class="mu">${t("dtd_rate")}</div>${donut}</div></div></div>`+
+  `<div class="dtd-p"><b>${AE("Sales last 14 days","پچھلے 14 دن کی سیل")}</b>${lineSvg}</div>`+
+  `<div class="dtd-p"><b>🏆 ${t("dtd_top")}</b>${lb}</div>`+
+  `<div class="dtd-p"><b>🏷️ ${t("dtd_disc")}</b><div style="margin-top:10px">${disc}</div></div>`+
+  `<div class="mu" style="margin:6px 4px">${t("dtd_note")}</div>`;
+}
 /* ═══ v9.11 · PROMO & PACKING VIDEOS · ADMIN AI ═══ */
 const MEDIA_RX=/\.(mp4|webm|mov)$/i;
 function mvTag(u,cls){return `<video class="${cls||"bt"}" src="${esc(u)}" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" onerror="vidErr(this)"></video>`}
@@ -3202,7 +3246,7 @@ function botWait(txt,t0){setTimeout(async()=>{try{
  const box=document.getElementById("chmsgs");if(!box)return;
  box.insertAdjacentHTML("beforeend",`<div class="chb u"><b>🤖 ${AE("Auto-reply","آٹو ریپلائی")}</b> ${esc(botAnswer(txt))}<small>${AE("Our team will also reply when online","ٹیم آن لائن ہوتے ہی خود بھی جواب دے گی")}</small></div>`);box.scrollTop=box.scrollHeight}catch(e){}},BOT_MS)}
 const _chSend1=chSend;
-chSend=async function(){const i=document.getElementById("chin"),txt=i?i.value.trim():"",t0=Date.now();BG.sent[chCid()||"x"]=t0;await _chSend1.apply(this,arguments);if(S.r==="customer"&&txt&&i&&i.value==="")botWait(txt,t0)};
+chSend=async function(){const i=document.getElementById("chin"),txt=i?i.value.trim():"",t0=Date.now();BG.sent[chCid()||"x"]=t0;await _chSend1.apply(this,arguments);/* v9.12: auto-reply now comes from the server, once */};
 
 /* ---- app opening splash: logo for 4 seconds, then the login screen ---- */
 (function(){try{if(window.__WEB||!window.LOGO)return;const d=document.createElement("div");d.id="wel";d.className="splash";
