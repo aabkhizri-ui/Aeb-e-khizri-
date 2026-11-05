@@ -35,3 +35,5 @@ v9.20: Video aur photo ka real crop (upload se pehle). Photo par promo banner (t
 v9.21: Chat bubbles: jo hum bhejein wo ek side par, jo doosra bheje wo dusri side par (server field "sender" ke mutabiq).
 v9.22: Dashboard ka naam "Khoobsurat Dashboard" (🌸). Naya city-wise sales map: shehar ki bubble par tap karke pura dashboard us shehar par filter hota hai.
 v9.23: Admin 🔘 Buttons tab: promo buttons banaye, edit, hide/show, delete. Customer page par rangeen buttons (order form, page top, ya https link). Date se start/end.
+
+v10.0: Customer header: bigger logo fills the empty left space beside Menu and the 3 buttons. Version now 10.0 (next: 10.01, 10.02 ...).
