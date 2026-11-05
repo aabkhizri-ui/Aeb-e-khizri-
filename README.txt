@@ -34,3 +34,4 @@ v9.19: Video aur picture ke liye zoom, crop, IN/OUT cut aur background removal (
 v9.20: Video aur photo ka real crop (upload se pehle). Photo par promo banner (tap = order form). Dashboard: pichle muddat se comparison, funnel aur insight.
 v9.21: Chat bubbles: jo hum bhejein wo ek side par, jo doosra bheje wo dusri side par (server field "sender" ke mutabiq).
 v9.22: Dashboard ka naam "Khoobsurat Dashboard" (🌸). Naya city-wise sales map: shehar ki bubble par tap karke pura dashboard us shehar par filter hota hai.
+v9.23: Admin 🔘 Buttons tab: promo buttons banaye, edit, hide/show, delete. Customer page par rangeen buttons (order form, page top, ya https link). Date se start/end.
