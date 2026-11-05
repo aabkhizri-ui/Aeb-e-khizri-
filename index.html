@@ -400,16 +400,17 @@ html[dir=rtl] #sbup,html[dir=rtl] #sbdn{left:auto;right:calc(min(82vw,300px) - 5
 html[data-role=customer]{--hd1:#3f9ad6;--hd2:#1d5f99}
 html[data-role=customer] #sbup,html[data-role=customer] #sbdn{display:none!important}
 html[data-role=customer] header.bar{flex-wrap:wrap;gap:4px 8px;padding:6px 8px 6px;padding-top:calc(6px + env(safe-area-inset-top,0px))}
-html[data-role=customer] header.bar .logo{width:38px;order:1}
-html[data-role=customer] header.bar #hbw{order:2;flex:1 1 0;min-width:0;padding:6px 2px 7px;margin:-6px 0 -7px;overflow:visible}
-html[data-role=customer] header.bar #hmb{order:3;width:38px;height:38px}
+html[data-role=customer] header.bar .logo{width:54px;order:1}
+html[data-role=customer] header.bar #hbw{order:4;flex:1 1 100%;min-width:0;padding:4px 2px 2px;margin:0;overflow:visible}
+html[data-role=customer] header.bar #hmb{order:3;width:46px;height:46px;margin-inline-start:auto}
 html[data-role=customer] header.bar .hdr-btns,html[data-role=customer] #hlo{display:none!important}
-html[data-role=customer] .hbt{flex:1 1 0;min-width:0;padding:5px 2px;font-size:10.5px;border-radius:12px}
-html[data-role=customer] .hbt .si{font-size:16px}
+html[data-role=customer] .hbt{flex:1 1 0;min-width:0;padding:9px 4px;font-size:13px;border-radius:14px}
+html[data-role=customer] .hbt .si{font-size:19px}
 #hid{order:5;flex:1 1 100%;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;padding:0 4px;color:var(--ht);flex-wrap:wrap}
 #hid b{font-size:15px}
 #hid button{margin-inline-start:auto;padding:3px 10px;font-size:11px;border-radius:99px;background:#fff;color:#1d4a68;border:1px solid #0003;box-shadow:none}
 header.bar .logo{cursor:pointer}
+.pk{display:block;width:100%;height:auto;max-height:280px;object-fit:contain;border-radius:12px;background:#111}
 #hmb{position:relative}#hmb[data-n]::after{content:attr(data-n);position:absolute;top:-4px;inset-inline-end:-4px;background:#d93025;color:#fff;border-radius:99px;font-size:11px;font-weight:700;padding:1px 6px}
 #srch{position:fixed;inset:0;z-index:120;background:#0008;display:flex;align-items:flex-start;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 10px 10px}
 #srch .sbx{width:100%;max-width:560px;max-height:88vh;display:flex;flex-direction:column;background:#fff;border-radius:18px;box-shadow:0 12px 40px #0006;overflow:hidden;color:#10283a}
@@ -3363,7 +3364,7 @@ async function loadShops(force){
 const shopNoOf=id=>{const n=(st.shopMap||{})[id];return n?`<b style="color:var(--g)">#${n}</b> · `:""};
 async function shopExtra(){
   if(!S.r||!S.h)return;
-  if(!st._vidReq){st._vidReq=1;rpc("aab_shop_video_get",{}).then(v=>{if(typeof v==="string"&&v){st.shopVid=v;render()}}).catch(()=>{})}
+  if(!st.shopVid&&!st._vidBusy&&Date.now()-(st._vidTry||0)>10000){st._vidBusy=1;st._vidTry=Date.now();rpc("aab_shop_video_get",{}).then(v=>{st._vidBusy=0;if(typeof v==="string"&&v){st.shopVid=v;render()}}).catch(()=>{st._vidBusy=0})}
   if(S.r==="customer"){
     if(st._shopFor!==S.i){const x=await rpc("aab_shop_me",{p_id:S.i,p_h:S.h});if(x&&x.no){st.shopNo=x.no;st._shopFor=S.i;render()}}
     shopLocAuto();return}
@@ -3550,7 +3551,7 @@ function vidSrc(d){if(!d||typeof d!=="string")return"";if(d.indexOf("data:")!==0
 function vidLoaded(v){try{const c=document.createElement("canvas");c.width=24;c.height=24;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(v,0,0,24,24);const g=(px,py)=>x.getImageData(px,py,2,2).data;let ok=true;
  for(const [a,b] of [[0,0],[22,0],[0,22],[22,22]]){const q=g(a,b);for(let i=0;i<12;i+=4){if(Math.min(q[i],q[i+1],q[i+2])<228)ok=false}}
  v.classList.toggle("wb",ok);try{v.play&&v.play()}catch(e){}vidCut(v)}catch(e){}}
-function vidErr(v){try{if(v.classList.contains("btv")){st.shopVid="";render(true)}else{const d=document.createElement("div");d.className="mu";d.style.cssText="margin:10px 0;color:#b3261e;font-weight:600";d.textContent=AE("⚠️ This phone cannot play this video (format). Please use an MP4 (H.264) or WebM video.","⚠️ یہ فون اس ویڈیو کو نہیں چلا سکا (فارمیٹ)۔ MP4 (H.264) یا WebM ویڈیو استعمال کریں۔");v.replaceWith(d)}}catch(e){}}
+function vidErr(v){try{if(v.classList.contains("btv")){const d=document.createElement("div");d.className="mu";d.style.cssText="margin:10px 0;color:#b3261e;font-weight:600";d.textContent=AE("⚠️ This phone cannot play the rotating video. Admin: upload a plain MP4 (H.264), under 3 MB.","⚠️ یہ فون گھومتی ویڈیو نہیں چلا سکا۔ ایڈمن: سادہ MP4 (H.264)، 3 MB سے کم اپ لوڈ کریں۔");v.replaceWith(d)}else{const d=document.createElement("div");d.className="mu";d.style.cssText="margin:10px 0;color:#b3261e;font-weight:600";d.textContent=AE("⚠️ This phone cannot play this video (format). Please use an MP4 (H.264) or WebM video.","⚠️ یہ فون اس ویڈیو کو نہیں چلا سکا (فارمیٹ)۔ MP4 (H.264) یا WebM ویڈیو استعمال کریں۔");v.replaceWith(d)}}catch(e){}}
 async function saveShopVid(d){try{const ok=await rpc("aab_shop_video_set",{p_id:S.i,p_h:S.h,p_data:d});
  if(!ok)return toast(AE("Could not save the video","ویڈیو محفوظ نہیں ہو سکی"),5000);
  st.shopVid=d;render(true);
