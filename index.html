@@ -446,7 +446,7 @@ header.bar .logo{cursor:pointer}
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.15</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v9.16</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -1571,7 +1571,7 @@ function pwf(id,extra=""){return `<div class="pw"><input id="${id}" type="passwo
 function eye(id){const e=$("#"+id);e.type=e.type==="password"?"text":"password"}
 async function loadCreds(){if(S.r!=="admin"||!S.h)return;const a=await rpc("aab_accounts_list",{p_id:S.i,p_h:S.h});const g=r=>a.filter(x=>x.role===r).map(({id,name,rc})=>({id,name,rc}));st.creds={admins:g("admin"),users:g("user"),customers:g("customer")}}
 function expire(){killTok();setSess(null);st.orders=[];st.resets=[];st.audit=[];fgOn=false;render(true);toast(t("exp"));}
-async function refresh(){if(!S.r||!S.h)return;const SF=S.r!=="customer"||!st._sa||Date.now()-st._sa>6e5;if(SF)st._sa=Date.now();if(SF){try{const pr=await rpc("aab_products_list",{});st.products=pr||[]}catch(e){try{st.products=JSON.parse(localStorage.getItem("aak_products")||"[]")}catch(e2){}}applyContact();try{const sx=await rpc("aab_site",{});st.site=sx||{}}catch(e){}if(!st.shopImgLoaded){try{const im=await rpc("aab_shop_img",{});st.shopImg=typeof im==="string"?im:"";st.shopImgLoaded=1}catch(e){}}try{const ct=await rpc("aab_contact",{});st.contact=(ct&&(ct.n||ct.p||ct.p2))?ct:null}catch(e){}}try{if(SF){try{const c=await rpc("aab_cfg",{});st.tax=+c.tax||0;if(c&&+c.rate>0){st.cfg={rate:+c.rate,rate_bulk:+c.rate_bulk,bulk_from:+c.bulk_from,min_qty:+c.min_qty,free_per:+c.free_per,free_qty:+c.free_qty,delivery:+c.delivery||0,bundle:c.bundle==null?12:(+c.bundle||0),ml:+c.ml||0,sizes:Array.isArray(c.sizes)?c.sizes.map(x=>typeof x==="object"&&x?{ml:+x.ml,rate:+x.rate,bulk:+x.bulk}:{ml:+x,rate:+c.rate,bulk:+c.rate_bulk}).filter(x=>x.ml>0):[]};applyCfg()}}catch(e){}try{const cs=await rpc("aab_city_ship_list",{});if(Array.isArray(cs)){window.CITY_SHIP_S={};cs.forEach(x=>{if(+x.ship>=0)window.CITY_SHIP_S[x.city]=+x.ship})}}catch(e){}try{const pc=await rpc("aab_pay_cfg",{});if(pc){st.pay={title:pc.title||"",acct:pc.acct||"",bank:pc.bank||"",adv:+pc.adv>=0?+pc.adv:1000,qrv:+pc.qrv||0};st.payOk=true;if(st.pay.qrv!==st.qrvLoaded){st.qrImg=st.pay.qrv?((await rpc("aab_pay_qr",{}))||""):"";st.qrvLoaded=st.pay.qrv}}}catch(e){st.payOk=false}}try{const md=await rpc("aab_media_get",{});if(md&&typeof md==="object")st.media=md}catch(e){}const o=await rpc("aab_orders_list",{p_role:S.r,p_id:S.i,p_h:S.h});if(o===null){expire();return}st.orders=o;try{const ad=await rpc("aab_adv_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.adv={};(ad||[]).forEach(x=>{st.adv[x.oid]=x})}catch(e){}try{const rv=await rpc("aab_reviews_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.rev={};st.revList=Array.isArray(rv)?rv:[];st.revList.forEach(x=>{st.rev[x.oid]=x})}catch(e){}try{const tc=await rpc("aab_tokens_cfg",{});if(tc)st.tcfg=tc}catch(e){}if(S.r==="customer"){try{const tm=await rpc("aab_tokens_me",{p_id:S.i,p_h:S.h});if(tm)st.tok=tm}catch(e){}try{const tq=await rpc("aab_tok_mine",{p_id:S.i,p_h:S.h});if(tq&&typeof tq==="object"&&!Array.isArray(tq))st.tokMine=tq}catch(e){}}if(S.r==="customer"){try{const dm=await rpc("aab_disc_me",{p_id:S.i,p_h:S.h});if(dm)st.disc=dm}catch(e){}}if(S.r==="admin"){try{const pg=await rpc("aab_promo_get",{p_id:S.i,p_h:S.h});if(pg)st.promo=pg}catch(e){}try{const da=await rpc("aab_disc_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(da))st.discAdm=da}catch(e){}try{await loadShops()}catch(e){}}if(S.r==="admin"){try{const ta=await rpc("aab_tokens_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(ta))st.tokAdm=ta}catch(e){}try{const td=await rpc("aab_tok_decisions",{p_id:S.i,p_h:S.h});if(Array.isArray(td)){st.tokDec=td;st.tokqErr=0}else st.tokqErr="x"}catch(e){st.tokqErr=(e&&e.status===404)?"nosql":"x"}}try{if(S.r==="admin"){st.cx=st.cx||{};st._cxt=st._cxt||{};const nd=st.orders.filter(o=>o.status==="cancelled"&&!st._cxt[o.id]);if(nd.length){((await rpc("aab_cancel_reasons_list",{p_id:S.i,p_h:S.h}))||[]).forEach(x=>{st.cx[x.oid]=x});nd.forEach(o=>{st._cxt[o.id]=1})}}}catch(e){}try{await loadWebOrders()}catch(e){}st.resets=(S.r==="admin"||S.r==="user")?await rpc("aab_resets_list",{p_role:S.r,p_id:S.i,p_h:S.h}):[];st.audit=S.r==="admin"?await rpc("aab_audit_list",{p_id:S.i,p_h:S.h}):[];await loadCreds()}catch(e){}}
+async function refresh(){if(!S.r||!S.h)return;const SF=S.r!=="customer"||!st._sa||Date.now()-st._sa>6e5;if(SF)st._sa=Date.now();if(SF){try{const pr=await rpc("aab_products_list",{});st.products=pr||[]}catch(e){try{st.products=JSON.parse(localStorage.getItem("aak_products")||"[]")}catch(e2){}}applyContact();try{const sx=await rpc("aab_site",{});st.site=sx||{}}catch(e){}if(!st.shopImgLoaded){try{const im=await rpc("aab_shop_img",{});st.shopImg=typeof im==="string"?im:"";st.shopImgLoaded=1}catch(e){}}try{const ct=await rpc("aab_contact",{});st.contact=(ct&&(ct.n||ct.p||ct.p2))?ct:null}catch(e){}}try{if(SF){try{const c=await rpc("aab_cfg",{});st.tax=+c.tax||0;if(c&&+c.rate>0){st.cfg={rate:+c.rate,rate_bulk:+c.rate_bulk,bulk_from:+c.bulk_from,min_qty:+c.min_qty,free_per:+c.free_per,free_qty:+c.free_qty,delivery:+c.delivery||0,bundle:c.bundle==null?12:(+c.bundle||0),ml:+c.ml||0,sizes:Array.isArray(c.sizes)?c.sizes.map(x=>typeof x==="object"&&x?{ml:+x.ml,rate:+x.rate,bulk:+x.bulk}:{ml:+x,rate:+c.rate,bulk:+c.rate_bulk}).filter(x=>x.ml>0):[]};applyCfg()}}catch(e){}try{const cs=await rpc("aab_city_ship_list",{});if(Array.isArray(cs)){window.CITY_SHIP_S={};cs.forEach(x=>{if(+x.ship>=0)window.CITY_SHIP_S[x.city]=+x.ship})}}catch(e){}try{const pc=await rpc("aab_pay_cfg",{});if(pc){st.pay={title:pc.title||"",acct:pc.acct||"",bank:pc.bank||"",adv:+pc.adv>=0?+pc.adv:1000,qrv:+pc.qrv||0};st.payOk=true;if(st.pay.qrv!==st.qrvLoaded){st.qrImg=st.pay.qrv?((await rpc("aab_pay_qr",{}))||""):"";st.qrvLoaded=st.pay.qrv}}}catch(e){st.payOk=false}}try{const md=await rpc("aab_media_get",{});if(md&&typeof md==="object")st.media=md}catch(e){}const o=await rpc("aab_orders_list",{p_role:S.r,p_id:S.i,p_h:S.h});if(o===null){expire();return}st.orders=o;try{const ad=await rpc("aab_adv_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.adv={};(ad||[]).forEach(x=>{st.adv[x.oid]=x})}catch(e){}try{const rv=await rpc("aab_reviews_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.rev={};st.revList=Array.isArray(rv)?rv:[];st.revList.forEach(x=>{st.rev[x.oid]=x})}catch(e){}try{const tc=await rpc("aab_tokens_cfg",{});if(tc)st.tcfg=tc}catch(e){}if(S.r==="customer"){try{const tm=await rpc("aab_tokens_me",{p_id:S.i,p_h:S.h});if(tm)st.tok=tm}catch(e){}try{const tq=await rpc("aab_tok_mine",{p_id:S.i,p_h:S.h});if(tq&&typeof tq==="object"&&!Array.isArray(tq))st.tokMine=tq}catch(e){}}if(S.r==="customer"){try{const dm=await rpc("aab_disc_me",{p_id:S.i,p_h:S.h});if(dm)st.disc=dm}catch(e){}}if(S.r==="admin"){try{const pg=await rpc("aab_promo_get",{p_id:S.i,p_h:S.h});if(pg)st.promo=pg}catch(e){}try{const da=await rpc("aab_disc_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(da))st.discAdm=da}catch(e){}try{await loadShops()}catch(e){}try{const tl=await rpc("aab_tok_ledger_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(tl))st.tokLedger=tl}catch(e){}}if(S.r==="admin"){try{const ta=await rpc("aab_tokens_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(ta))st.tokAdm=ta}catch(e){}try{const td=await rpc("aab_tok_decisions",{p_id:S.i,p_h:S.h});if(Array.isArray(td)){st.tokDec=td;st.tokqErr=0}else st.tokqErr="x"}catch(e){st.tokqErr=(e&&e.status===404)?"nosql":"x"}}try{if(S.r==="admin"){st.cx=st.cx||{};st._cxt=st._cxt||{};const nd=st.orders.filter(o=>o.status==="cancelled"&&!st._cxt[o.id]);if(nd.length){((await rpc("aab_cancel_reasons_list",{p_id:S.i,p_h:S.h}))||[]).forEach(x=>{st.cx[x.oid]=x});nd.forEach(o=>{st._cxt[o.id]=1})}}}catch(e){}try{await loadWebOrders()}catch(e){}st.resets=(S.r==="admin"||S.r==="user")?await rpc("aab_resets_list",{p_role:S.r,p_id:S.i,p_h:S.h}):[];st.audit=S.r==="admin"?await rpc("aab_audit_list",{p_id:S.i,p_h:S.h}):[];await loadCreds()}catch(e){}}
 async function setAcct(r){try{const i=nid(r,$("#n_"+r).value),p=$("#p_"+r).value;if(!i||!p)return toast(t("need"));if(!okPw(p,i))return toast(t("pwl"));
   const h=await hp(i,p);const x=await rpc("aab_set_account",{p_id:S.i,p_h:S.h,p_role:r,p_target:i,p_newh:h});if(x==="dup")return toast(t("dup"));if(x!=="ok")return toast(t("bad"));
   $("#n_"+r).value="";$("#p_"+r).value="";document.activeElement.blur();await refresh();render(true);toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
@@ -1715,70 +1715,69 @@ Object.assign(T.ur,{n_dtd:"📈 ڈیش بورڈ",dtd_h:"ڈسکاؤنٹ اور ٹ
 
 function dtdFmtNow(){return new Date().toLocaleString("en-GB",{weekday:"short",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"})}
 setInterval(()=>{const e=document.getElementById("dtdClock");if(e)e.textContent=dtdFmtNow()},1000);
+let DTR=null;
+function dtdRng(){if(!DTR){const n=new Date();DTR={f:dk(new Date(n.getFullYear(),n.getMonth(),1).getTime()),t:dk(n.getTime())}}return DTR}
+function dtdSet(kind){const n=new Date(),iso=d=>dk(d.getTime());let f,to=iso(n);
+ if(kind==="today")f=to;else if(kind==="week")f=iso(new Date(n.getTime()-6*864e5));else if(kind==="month")f=iso(new Date(n.getFullYear(),n.getMonth(),1));
+ else if(kind==="last"){f=iso(new Date(n.getFullYear(),n.getMonth()-1,1));to=iso(new Date(n.getFullYear(),n.getMonth(),0))}
+ DTR={f,t:to};render(true)}
+function dtdPick(){const a=document.getElementById("dtdF"),b=document.getElementById("dtdT");if(!a||!b||!a.value||!b.value)return;if(a.value>b.value)return toast(AE("Start date must be before the end date","شروع کی تاریخ آخری تاریخ سے پہلے ہو"),4000);DTR={f:a.value,t:b.value};render(true)}
 function dtdTab(){
- const TK=(st.tokAdm||[]).map(x=>({n:String(x.name||x.cid||""),e:+x.earned||0,u:+x.used||0,b:+x.bal||0}));
- const DA=st.discAdm||[];
- const ORD=(st.orders||[]).filter(o=>!o.archived&&o.status!=="cancelled");
- const sum=k=>TK.reduce((a,x)=>a+x[k],0);
- const E=sum("e"),U=sum("u"),B=sum("b");
- const rate=E?Math.round(U*100/E):0;
- const ap=DA.filter(x=>x.st==="approved"),pd=DA.filter(x=>x.st==="pending");
- const avg=ap.length?Math.round(ap.reduce((a,x)=>a+(+x.pct||0),0)/ap.length):0;
- const rev=ORD.reduce((a,o)=>a+(+o.total||0),0);
- const top=TK.slice().sort((a,b)=>b.e-a.e||b.b-a.b);
- const day=86400000,now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+ const R=dtdRng(),DAY=864e5;
+ const t0=new Date(R.f+"T00:00:00").getTime(),t1=new Date(R.t+"T00:00:00").getTime()+DAY-1;
+ const inR=ms=>ms>=t0&&ms<=t1;
+ const names={};(st.tokAdm||[]).forEach(x=>names[x.cid]=String(x.name||x.cid));
+ const nm=o=>names[o.cid]||String(o.name||o.cid||"");
+ const ORD=st.orders||[];
+ const cr=o=>+o.created||+o.ts||0;
+ const rec=ORD.filter(o=>inR(cr(o)));
+ const canc=rec.filter(o=>o.status==="cancelled").length;
+ const sale=rec.filter(o=>o.status!=="cancelled");
+ const S=sale.reduce((a,o)=>a+(+o.total||0),0),Q=sale.reduce((a,o)=>a+(+o.qty||0),0);
+ const dlv=ORD.filter(o=>o.status==="delivered"&&inR(+o.deliv||0)).length;
+ const disp=ORD.filter(o=>inR(+o.shipped_at||+o.out_at||0)).length;
+ const apr=ORD.filter(o=>o.status!=="cancelled"&&inR(+o.approvedAt||+o.at||0)).length;
+ const LED=(st.tokLedger||[]).filter(l=>inR(+l.ts||0));
+ const tE=LED.filter(l=>l.kind==="earn").reduce((a,l)=>a+(+l.amt||0),0),tU=LED.filter(l=>l.kind==="use").reduce((a,l)=>a+(+l.amt||0),0);
+ const pend=rec.length-canc-dlv;
 
- // ---- scorecard tiles (big numbers, image 1 style)
- const tile=(lbl,val,sub,col)=>`<div class="dz-sc"><div class="dz-scl">${lbl}</div><div class="dz-scv" dir="ltr">${val}</div><div class="dz-scs" style="color:${col}">${sub}</div></div>`;
- const score=`<div class="dz-scg">${tile(t("dtd_kt"),E,"🪙 "+AE("all shopkeepers","تمام دکاندار"),"#6b7280")}${tile(t("dtd_kr"),U,rate+"% "+AE("of issued","جاری کا"),"#0d9f6e")}${tile(t("dtd_kb"),B,"💰 "+AE("in wallets","والٹ میں"),"#7c5cd6")}${tile(t("dtd_kv"),"₨ "+U,"💵 "+AE("token value","ٹوکن ویلیو"),"#e0a100")}</div>`;
+ // ---- daily table
+ const days=[];for(let d=t0;d<=t1&&days.length<62;d+=DAY)days.push({k:dk(d),ts:d,n:0,q:0,s:0,e:0,u:0});
+ const idx={};days.forEach((x,i)=>idx[x.k]=i);
+ rec.forEach(o=>{const i=idx[dk(cr(o))];if(i==null)return;days[i].n++;if(o.status!=="cancelled"){days[i].q+=+o.qty||0;days[i].s+=+o.total||0}});
+ LED.forEach(l=>{const i=idx[dk(+l.ts||0)];if(i==null)return;if(l.kind==="earn")days[i].e+=+l.amt||0;if(l.kind==="use")days[i].u+=+l.amt||0});
+ const maxS=Math.max(1,...days.map(x=>x.s));
 
- // ---- pastel shopkeeper cards (image 3 style)
+ // ---- per shop in range
+ const per={};sale.forEach(o=>{const k=o.cid;per[k]=per[k]||{n:nm(o),s:0,c:0,q:0};per[k].s+=+o.total||0;per[k].c++;per[k].q+=+o.qty||0});
+ const shops=Object.values(per).sort((a,b)=>b.s-a.s);
+ const maxSh=Math.max(1,...shops.map(x=>x.s));
  const PAL=["#d7f0e8","#ffeaa7","#dcd3f5","#ffd6e8"];
- const pcards=top.slice(0,4).map((x,i)=>`<div class="dz-pc" style="background:${PAL[i%4]}"><div class="dz-av">${esc((x.n||"?").charAt(0).toUpperCase())}</div><div class="dz-pn">${esc(x.n)}</div><div class="dz-pm" dir="ltr">🪙 ${x.b} · ${t("dtd_earn")} ${x.e}</div><div class="dz-pa">↗</div></div>`).join("")||`<div class="empty">${t("dtd_none")}</div>`;
 
- // ---- donut (image 2 style, navy card)
- const C=2*Math.PI*46,dash=(Math.min(100,rate)/100)*C;
- const donut=`<svg viewBox="0 0 130 130" width="160" height="160"><circle cx="65" cy="65" r="46" fill="none" stroke="#2c4d70" stroke-width="16"/><circle cx="65" cy="65" r="46" fill="none" stroke="#f5b942" stroke-width="16" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 65 65)"/><text x="65" y="72" text-anchor="middle" font-size="24" font-weight="700" fill="#fff">${rate}%</text></svg>`;
- const legend=top.slice(0,3).map((x,i)=>`<div class="dz-lg"><i style="background:${["#f5b942","#7c5cd6","#4fd1a5"][i]}"></i>${esc(x.n)} <b dir="ltr">${E?Math.round(x.u*100/Math.max(1,E)):0}%</b></div>`).join("");
+ // ---- donut: order status in range
+ const tot=Math.max(1,rec.length),pDl=Math.round(dlv*100/tot),pCa=Math.round(canc*100/tot);
+ const C=2*Math.PI*46,dl=(dlv/tot)*C,dc=(canc/tot)*C;
+ const donut=`<svg viewBox="0 0 130 130" width="170" height="170"><circle cx="65" cy="65" r="46" fill="none" stroke="#2c4d70" stroke-width="16"/><circle cx="65" cy="65" r="46" fill="none" stroke="#4fd1a5" stroke-width="16" stroke-dasharray="${dl.toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 65 65)"/><circle cx="65" cy="65" r="46" fill="none" stroke="#ff7a8a" stroke-width="16" stroke-dasharray="${dc.toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-dl).toFixed(1)}" transform="rotate(-90 65 65)"/><text x="65" y="70" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">${pDl}%</text></svg>`;
 
- // ---- sales line, last 14 days (image 2 style)
- const bk=Array.from({length:14},(_,i)=>({d:today-(13-i)*day,v:0}));
- ORD.forEach(o=>{const ts=+o.created||0;const b=bk.find(x=>ts>=x.d&&ts<x.d+day);if(b)b.v+=+o.total||0});
- const vm=Math.max(1,...bk.map(x=>x.v)),LW=560,LH=190,P=18;
- const pts=bk.map((x,i)=>[P+i*((LW-P*2)/13),LH-26-(x.v/vm)*(LH-60)]);
- const ln=pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
- const ar=`M${pts[0][0].toFixed(1)},${LH-26} L${ln.split(" ").join(" L")} L${pts[13][0].toFixed(1)},${LH-26} Z`;
- const grid=[0,1,2,3].map(g=>`<line x1="${P}" x2="${LW-P}" y1="${(LH-26-g*(LH-60)/3).toFixed(1)}" y2="${(LH-26-g*(LH-60)/3).toFixed(1)}" stroke="#eef2f7"/>`).join("");
- const dl=bk.filter((_,i)=>i%3===0).map(x=>`<text x="${(P+bk.indexOf(x)*((LW-P*2)/13)).toFixed(1)}" y="${LH-6}" font-size="11" fill="#6b7280" text-anchor="middle">${new Date(x.d).getDate()}/${new Date(x.d).getMonth()+1}</text>`).join("");
- const hasRev=bk.some(x=>x.v>0);
- const lineSvg=hasRev?`<svg viewBox="0 0 ${LW} ${LH}" width="100%">${grid}<path d="${ar}" fill="url(#dzg)"/><polyline points="${ln}" fill="none" stroke="#5b3fc4" stroke-width="3" stroke-linejoin="round"/><defs><linearGradient id="dzg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7c5cd6" stop-opacity=".35"/><stop offset="1" stop-color="#7c5cd6" stop-opacity="0"/></linearGradient></defs>${dl}</svg><div class="mu" dir="ltr">${AE("Revenue: ₨ ","آمدنی: ₨ ")}${rev}</div>`:`<div class="empty">${AE("No sales in the last 14 days","پچھلے 14 دن میں کوئی سیل نہیں")}</div>`;
+ // ---- bar chart: sale per day
+ const BW=640,BH=190,n=Math.max(1,days.length),gw=(BW-30)/n,bw=Math.max(4,Math.min(26,gw*0.62));
+ const bars=days.map((x,i)=>{const h=(x.s/maxS)*(BH-50),cx=15+gw*i+gw/2;const lab=new Date(x.ts).getDate();return `<rect x="${(cx-bw/2).toFixed(1)}" y="${(BH-26-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" rx="5" fill="${x.s?"#7c5cd6":"#e5e7eb"}"/>${n<=16||i%3===0?`<text x="${cx.toFixed(1)}" y="${BH-8}" text-anchor="middle" font-size="10" fill="#6b7280">${lab}</text>`:""}`}).join("");
+ const barSvg=`<svg viewBox="0 0 ${BW} ${BH}" width="100%">${bars}</svg>`;
 
- // ---- bar chart: earned vs redeemed (top 6)
- const t6=top.slice(0,6),mx=Math.max(1,...t6.map(x=>Math.max(x.e,x.u)));
- const BW=560,BH=200,gw=(BW-30)/Math.max(1,t6.length),bw=Math.min(24,gw*0.3);
- const bars=t6.map((x,i)=>{const cx=15+gw*i+gw/2,he=(x.e/mx)*(BH-60),hu=(x.u/mx)*(BH-60);return `<rect x="${(cx-bw-2).toFixed(1)}" y="${(BH-26-he).toFixed(1)}" width="${bw.toFixed(1)}" height="${he.toFixed(1)}" rx="6" fill="#15283f"/><rect x="${(cx+2).toFixed(1)}" y="${(BH-26-hu).toFixed(1)}" width="${bw.toFixed(1)}" height="${hu.toFixed(1)}" rx="6" fill="#f5b942"/><text x="${cx.toFixed(1)}" y="${BH-8}" text-anchor="middle" font-size="11" fill="#6b7280">${esc(x.n.slice(0,9))}</text>`}).join("");
- const barSvg=t6.length?`<svg viewBox="0 0 ${BW} ${BH}" width="100%">${bars}</svg>`:`<div class="empty">${t("dtd_none")}</div>`;
-
- // ---- calendar (image 1 style): days with orders highlighted
- const ym=now.getFullYear(),mo=now.getMonth(),first=new Date(ym,mo,1),dim=new Date(ym,mo+1,0).getDate(),off=(first.getDay()+6)%7;
- const hit=new Set(ORD.map(o=>new Date(+o.created||0)).filter(d=>d.getMonth()===mo&&d.getFullYear()===ym).map(d=>d.getDate()));
- let cells="";for(let i=0;i<off;i++)cells+="<span></span>";
- for(let d=1;d<=dim;d++){const cls=(d===now.getDate()?"today":hit.has(d)?"hit":"");cells+=`<span class="${cls}">${d}</span>`}
- const cal=`<div class="dz-cal"><div class="dz-cw">${["M","T","W","T","F","S","S"].map(x=>`<span>${x}</span>`).join("")}</div><div class="dz-cd">${cells}</div></div>`;
-
- // ---- discount cards (image 2 style white)
- const dcard=(ic,l,v,bg)=>`<div class="dz-dc" style="background:${bg}"><div class="dz-dci">${ic}</div><div class="dz-dcl">${l}</div><div class="dz-dcv" dir="ltr">${v}</div></div>`;
- const disc=`<div class="dz-dg">${dcard("✅",t("dtd_ka"),ap.length,"#e8f4ff")}${dcard("⏳",t("dtd_kp"),pd.length,"#fff4dc")}${dcard("🏷️",t("dtd_kavg"),avg+"%","#f3ebff")}</div>`;
-
+ // ---- styles
  const css=`<style>
  .dz-h{background:linear-gradient(120deg,#15283f,#22456e);color:#fff;border-radius:22px;padding:18px 20px;margin-bottom:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
  .dz-h h2{margin:0;font-size:22px;color:#fff}.dz-h .dz-sub{color:#c9d6e6;font-size:13px;margin-top:4px}
  .dz-clk{font-size:14px;font-weight:600;background:#ffffff1f;padding:8px 12px;border-radius:12px;direction:ltr}
+ .dz-rg{background:#fff;border:1px solid #e6e9f0;border-radius:18px;padding:12px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+ .dz-rg input{width:auto;min-width:140px}
+ .dz-qb{background:#f3f4f6;color:#111827;border:none;border-radius:99px;padding:7px 12px;font-size:13px;cursor:pointer}
+ .dz-qb:hover{background:#e5e7eb}
  .dz-scg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
  .dz-sc{background:#fff;border:1px solid #e6e9f0;border-radius:18px;padding:14px;box-shadow:0 2px 10px #0000000a}
- .dz-scl{font-size:12px;color:#6b7280}.dz-scv{font-size:26px;font-weight:700;color:#111827;margin-top:4px}.dz-scs{font-size:12px;margin-top:4px;font-weight:600}
+ .dz-scl{font-size:12px;color:#6b7280}.dz-scv{font-size:26px;font-weight:700;color:#111827;margin-top:4px}.dz-scs{font-size:12px;margin-top:4px;font-weight:600;color:#6b7280}
  .dz-pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
- .dz-pc{border-radius:20px;padding:14px;position:relative;min-height:130px}
+ .dz-pc{border-radius:20px;padding:14px;position:relative;min-height:120px}
  .dz-av{width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:#15283f;font-size:17px;box-shadow:0 2px 6px #0001}
  .dz-pn{font-weight:700;margin-top:10px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
  .dz-pm{font-size:12px;color:#374151;margin-top:4px}
@@ -1789,30 +1788,50 @@ function dtdTab(){
  .dz-p h3{margin:0 0 8px;font-size:15px;color:#111827}
  .dz-navy{background:#15283f;color:#fff;border-radius:20px;padding:16px;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;gap:8px}
  .dz-navy h3{color:#fff;margin:0;font-size:15px;align-self:flex-start}
- .dz-lg{font-size:13px;color:#dbe5f1;display:flex;gap:8px;align-items:center;margin-top:4px}.dz-lg i{width:10px;height:10px;border-radius:50%;display:inline-block}
- .dz-cal{margin-top:6px}.dz-cw,.dz-cd{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
- .dz-cw span{font-size:11px;color:#6b7280}.dz-cd span{font-size:12px;padding:7px 0;border-radius:10px;color:#111827}
- .dz-cd .hit{background:#d7f0e8;font-weight:700}.dz-cd .today{background:#111827;color:#fff;font-weight:700}
- .dz-dg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
- .dz-dc{border-radius:18px;padding:14px;position:relative}.dz-dci{font-size:20px}.dz-dcl{font-size:12px;color:#4b5563;margin-top:6px}.dz-dcv{font-size:22px;font-weight:700;color:#111827}
+ .dz-lg{font-size:13px;color:#dbe5f1;display:flex;gap:8px;align-items:center}.dz-lg i{width:10px;height:10px;border-radius:50%;display:inline-block}
+ .dz-tb{width:100%;border-collapse:collapse;font-size:13px}
+ .dz-tb th,.dz-tb td{padding:8px 6px;border-bottom:1px solid #eef2f7;text-align:center;white-space:nowrap}
+ .dz-tb th{background:#f8fafc;color:#374151;font-weight:600}
+ .dz-tw{overflow-x:auto;max-height:340px;overflow-y:auto;border-radius:12px}
  .dz-row{padding:10px 0;border-top:1px solid #eef2f7}.dz-rh{display:flex;justify-content:space-between;gap:8px}
  .dz-bar{height:8px;background:#eef2f7;border-radius:8px;margin:8px 0;overflow:hidden}.dz-bar i{display:block;height:100%;background:linear-gradient(90deg,#7c5cd6,#c4b5fd)}
+ .dz-dg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+ .dz-dc{border-radius:18px;padding:14px}.dz-dcl{font-size:12px;color:#4b5563}.dz-dcv{font-size:22px;font-weight:700;color:#111827;margin-top:4px}
  .dz-foot{font-size:12px;color:#6b7280;margin:4px 4px 16px}
  </style>`;
 
- const lb=top.length?top.map((x,i)=>{const w=Math.round(x.e*100/Math.max(1,top[0].e));return `<div class="dz-row"><div class="dz-rh"><b>${i+1}. ${esc(x.n)}</b><span dir="ltr">🪙 ${x.b}</span></div><div class="dz-bar"><i style="width:${w}%"></i></div><div class="mu" dir="ltr">${t("dtd_earn")}: <b>${x.e}</b> · ${t("dtd_used")}: <b>${x.u}</b> · ${t("dtd_rate")}: ${x.e?Math.round(x.u*100/x.e):0}%</div></div>`}).join(""):`<div class="empty">${t("dtd_none")}</div>`;
+ // ---- cards
+ const tile=(l,v,s)=>`<div class="dz-sc"><div class="dz-scl">${l}</div><div class="dz-scv" dir="ltr">${v}</div><div class="dz-scs">${s}</div></div>`;
+ const score=`<div class="dz-scg">`+
+  tile(AE("Received (आया)","آیا"),rec.length,AE("orders in range","رینج میں آرڈر"))+
+  tile(AE("Dispatched (گیا)","گیا"),disp,AE("sent out","روانہ ہوئے"))+
+  tile(AE("Approved (بنا)","منظور"),apr,AE("approved orders","منظور آرڈر"))+
+  tile(AE("Delivered","پہنچے"),dlv,AE("delivered","ڈیلیور ہوئے"))+
+  tile(AE("Sale","سیل"),"₨ "+S,Q+" "+AE("bottles","بوتلیں"))+
+  tile(AE("Tokens","ٹوکن"),"+"+tE+" / −"+tU,AE("earned / used","کمائے / استعمال"))+
+ `</div>`;
+
+ const top4=shops.slice(0,4).map((x,i)=>`<div class="dz-pc" style="background:${PAL[i%4]}"><div class="dz-av">${esc((x.n||"?").charAt(0).toUpperCase())}</div><div class="dz-pn">${esc(x.n)}</div><div class="dz-pm" dir="ltr">₨ ${x.s} · ${x.c} ${AE("orders","آرڈر")}</div><div class="dz-pa">↗</div></div>`).join("")||`<div class="empty">${AE("No sales in this range","اس رینج میں کوئی سیل نہیں")}</div>`;
+
+ const table=days.length?`<div class="dz-tw"><table class="dz-tb"><thead><tr><th>${AE("Date","تاریخ")}</th><th>${AE("Orders","آرڈر")}</th><th>${AE("Bottles","بوتل")}</th><th>${AE("Sale ₨","سیل ₨")}</th><th>${AE("Tokens +","ٹوکن +")}</th><th>${AE("Tokens −","ٹوکن −")}</th></tr></thead><tbody>${days.map(x=>`<tr><td dir="ltr">${new Date(x.ts).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})}</td><td>${x.n}</td><td>${x.q}</td><td dir="ltr"><b>${x.s}</b></td><td>${x.e}</td><td>${x.u}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">—</div>`;
+
+ const lb=shops.length?shops.slice(0,8).map((x,i)=>{const w=Math.round(x.s*100/maxSh);return `<div class="dz-row"><div class="dz-rh"><b>${i+1}. ${esc(x.n)}</b><span dir="ltr">₨ ${x.s}</span></div><div class="dz-bar"><i style="width:${w}%"></i></div><div class="mu" dir="ltr">${x.c} ${AE("orders","آرڈر")} · ${x.q} ${AE("bottles","بوتل")}</div></div>`}).join(""):`<div class="empty">${AE("No sales in this range","اس رینج میں کوئی سیل نہیں")}</div>`;
+
+ const DA=st.discAdm||[],ST_ap=DA.filter(x=>x.st==="approved").length,ST_pd=DA.filter(x=>x.st==="pending").length,ST_avg=ST_ap?Math.round(DA.filter(x=>x.st==="approved").reduce((a,x)=>a+(+x.pct||0),0)/ST_ap):0;
+ const disc=`<div class="dz-dg"><div class="dz-dc" style="background:#e8f4ff"><div class="dz-dcl">✅ ${t("dtd_ka")}</div><div class="dz-dcv" dir="ltr">${ST_ap}</div></div><div class="dz-dc" style="background:#fff4dc"><div class="dz-dcl">⏳ ${t("dtd_kp")}</div><div class="dz-dcv" dir="ltr">${ST_pd}</div></div><div class="dz-dc" style="background:#f3ebff"><div class="dz-dcl">🏷️ ${t("dtd_kavg")}</div><div class="dz-dcv" dir="ltr">${ST_avg}%</div></div></div>`;
+
+ const dq=(k,l)=>`<button class="dz-qb" onclick="dtdSet('${k}')">${l}</button>`;
+ const range=`<div class="dz-rg"><span class="mu">${AE("From","سے")}</span><input type="date" id="dtdF" value="${R.f}" dir="ltr" onchange="dtdPick()"><span class="mu">${AE("To","تک")}</span><input type="date" id="dtdT" value="${R.t}" dir="ltr" onchange="dtdPick()">${dq("today",AE("Today","آج"))}${dq("week",AE("Last 7 days","پچھلے 7 دن"))}${dq("month",AE("This month","یہ مہینہ"))}${dq("last",AE("Last month","پچھلا مہینہ"))}</div>`;
 
  return css+
- `<div class="dz-h"><div><h2>${AE("Welcome back 👋","خوش آمدید 👋")}</h2><div class="dz-sub">${AE("Discounts, tokens and sales overview","ڈسکاؤنٹ، ٹوکن اور سیل کا خلاصہ")}</div></div><div class="dz-clk" id="dtdClock">${dtdFmtNow()}</div></div>`+
- score+
- `<div class="dz-pg">${pcards}</div>`+
- `<div class="dz-g"><div class="dz-p"><h3>${AE("Sales last 14 days","پچھلے 14 دن کی سیل")}</h3>${lineSvg}</div><div class="dz-navy"><h3>${t("dtd_rate")}</h3>${donut}<div style="width:100%">${legend}</div></div></div>`+
- `<div class="dz-g"><div class="dz-p"><h3>${AE("Tokens: earned vs redeemed","ٹوکن: کمائے بمقابلہ استعمال")}</h3><div class="mu" style="margin-bottom:6px"><span style="color:#15283f">■ ${t("dtd_earn")}</span> &nbsp; <span style="color:#d99a00">■ ${t("dtd_used")}</span></div>${barSvg}</div><div class="dz-p"><h3>📅 ${AE("This month","اس مہینے")}</h3>${cal}</div></div>`+
- `<div class="dz-p"><h3>🏷️ ${t("dtd_disc")}</h3>${disc}</div>`+
- `<div class="dz-p"><h3>🏆 ${t("dtd_top")}</h3>${lb}</div>`+
- `<div class="dz-foot">${t("dtd_note")}</div>`;
+ `<div class="dz-h"><div><h2>${AE("Welcome back 👋","خوش آمدید 👋")}</h2><div class="dz-sub">${AE("Review: what came in, went out, was made, sales and tokens","ریویو: کیا آیا، کیا گیا، کیا بنا، سیل اور ٹوکن")}</div></div><div class="dz-clk" id="dtdClock">${dtdFmtNow()}</div></div>`+
+ range+score+
+ `<div class="dz-pg">${top4}</div>`+
+ `<div class="dz-g"><div class="dz-p"><h3>${AE("Sale per day","روز کی سیل")}</h3>${barSvg}</div><div class="dz-navy"><h3>${AE("Order status in range","رینج میں آرڈر کی حالت")}</h3>${donut}<div class="dz-lg"><i style="background:#4fd1a5"></i>${AE("Delivered","پہنچے")} ${dlv} · <i style="background:#ff7a8a"></i>${AE("Cancelled","منسوخ")} ${canc}</div><div class="dz-lg">${AE("Pending","باقی")}: ${Math.max(0,pend)}</div></div></div>`+
+ `<div class="dz-p"><h3>📅 ${AE("Day by day review","روز بروز ریویو")}</h3>${table}</div>`+
+ `<div class="dz-g"><div class="dz-p"><h3>🏆 ${AE("Shopkeepers in this range","اس رینج میں دکاندار")}</h3>${lb}</div><div class="dz-p"><h3>🏷️ ${t("dtd_disc")}</h3>${disc}</div></div>`+
+ `<div class="dz-foot">${AE("Sale excludes cancelled orders. Tokens are from the token ledger in the same date range. Archived or hidden orders are not counted.","سیل میں منسوخ آرڈر شامل نہیں۔ ٹوکن اسی تاریخ کی رینج کے ہیں۔ آرکائیو یا چھپے ہوئے آرڈر شامل نہیں۔")}</div>`;
 }
-
 /* ═══ v9.11 · PROMO & PACKING VIDEOS · ADMIN AI ═══ */
 const MEDIA_RX=/\.(mp4|webm|mov)$/i;
 function mvTag(u,cls){return `<video class="${cls||"bt"}" src="${esc(u)}" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" onerror="vidErr(this)"></video>`}
@@ -1820,9 +1839,6 @@ function packBlk(){const u=st.media.pack,tt=(st.media.pack_t||"").trim();return 
 function vidAdminTab(){const m=st.media||{};const slot=(k,l)=>`<div class="card"><h2 style="font-size:16px">${l}</h2>${m[k]?`<video src="${esc(m[k])}" controls playsinline style="width:100%;max-height:200px;border-radius:12px"></video><div class="mu" dir="auto">${esc(m[k+"_t"]||"")}</div><button class="no" onclick="mediaClear('${k}')">✖ ${AE("Remove","ہٹائیں")}</button>`:`<div class="mu">${AE("No video yet","ابھی کوئی ویڈیو نہیں")}</div>`}<label>${AE("Title / note (optional)","عنوان (اختیاری)")}</label><input id="vt_${k}" maxlength="80"><label>${AE("Video file (mp4, webm or mov, max 30 MB)","ویڈیو فائل (mp4، webm یا mov، 30 MB تک)")}</label><input id="vf_${k}" type="file" accept="video/mp4,video/webm,video/quicktime"><button class="big" onclick="mediaUp('${k}')">⬆️ ${AE("Upload","اپ لوڈ")}</button></div>`;return `<div class="mu" style="margin:6px 0 10px">${AE("Promo video shows on the order page above the bottle. Packing video shows just above “Place your order”.","پروموشن ویڈیو آرڈر پیج پر بوتل کے اوپر چلے گی۔ پیکنگ ویڈیو “Place your order” کے اوپر چلے گی۔")}</div>`+slot("promo",AE("🧴 Bottle / promo video","🧴 بوتل / پروموشن ویڈیو"))+slot("pack",AE("📦 Bundle packing video (12×4)","📦 بنڈل پیکنگ ویڈیو (12×4)"))}
 async function mediaUp(k){const f=(document.getElementById("vf_"+k)||{}).files;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);if(file.size>30*1024*1024)return toast(AE("Video is bigger than 15 MB","ویڈیو 30 MB سے بڑی ہے"),6000);const name=k+"-"+Date.now()+"."+ext;toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);try{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});if(!r.ok)throw new Error("upload "+r.status);const url=SB+"/storage/v1/object/public/aab-media/"+name;const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہیں کیا"),6000);await refresh();render(true);toast(AE("Video live ✔","ویڈیو چل رہی ہے ✔"))}catch(e){toast(AE("Upload failed: check internet or file size","اپ لوڈ ناکام: انٹرنیٹ یا فائل سائز چیک کریں"),7000)}}
 async function mediaClear(k){if(!await confirmBox(AE("Remove this video?","یہ ویڈیو ہٹائیں؟")))return;try{const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:"",p_title:""});if(ok!=="ok")return toast(t("ship_bad"),5000);await refresh();render(true);toast(t("dc_done"))}catch(e){toast(errMsg(e),7000)}}
-function aiTab(){const H=st.aiHist||[];const log=H.map(m=>`<div class="card" style="padding:10px 14px;${m.r==="u"?"background:#f3f0ff":""}"><div class="mu">${m.r==="u"?"🧑‍💼 "+AE("You","آپ"):"🤖 AI"}</div><div style="white-space:pre-wrap">${esc(m.t)}</div></div>`).join("");return `<div class="card"><h2>🤖 ${AE("Admin AI assistant","ایڈمن AI اسسٹنٹ")}</h2><div class="mu">${AE("Reads live sales, shopkeeper, discount and token data. It only reads; it changes nothing. Make changes in the panel.","لائیو سیل، دکاندار، ڈسکاؤنٹ اور ٹوکن کا ڈیٹا پڑھتا ہے۔ یہ صرف پڑھتا ہے، کچھ بدلتا نہیں۔ تبدیلی پینل سے کریں۔")}</div><div style="margin-top:8px">${[AE("Who earned the most tokens?","سب سے زیادہ ٹوکن کس نے کمائے؟"),AE("Pending discount requests?","منتظر ڈسکاؤنٹ کتنے ہیں؟"),AE("Total revenue and orders?","کل آمدنی اور آرڈر کتنے؟")].map(q=>`<button class="pr" style="margin:3px" onclick="aiPreset(this.textContent)">${esc(q)}</button>`).join("")}</div></div><div id="aiLog">${log||`<div class="empty">${AE("Ask a question below","نیچے سوال لکھیں")}</div>`}</div><div class="card"><textarea id="aiq" rows="2" maxlength="1000" placeholder="${AE("Type your question…","سوال لکھیں…")}" style="width:100%"></textarea><button class="big" id="aiGo" onclick="aiAsk()">🤖 ${AE("Ask","پوچھیں")}</button></div>`}
-function aiPreset(q){const e=document.getElementById("aiq");if(e)e.value=q}
-async function aiAsk(){const e=document.getElementById("aiq");const q=((e&&e.value)||"").trim();if(!q)return;st.aiHist=(st.aiHist||[]).concat([{r:"u",t:q}]);render(true);const b=document.getElementById("aiGo");if(b)b.disabled=true;let ans;try{const r=await fetch(SB+"/functions/v1/admin-ai",{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify({p_id:S.i,p_h:S.h,question:q})});const j=await r.json().catch(()=>({}));ans=j.answer?j.answer:(r.status===403?AE("Admin login needed","ایڈمن لاگ اِن ضروری ہے"):AE("AI is not ready yet: ","AI ابھی تیار نہیں: ")+(j.error||r.status))}catch(err){ans=AE("No internet connection","انٹرنیٹ کنکشن نہیں")}st.aiHist=st.aiHist.concat([{r:"a",t:ans}]).slice(-30);render(true)}
 Object.assign(T.en,{n_vid:"🎬 Videos",n_ai:"🤖 AI"});
 Object.assign(T.ur,{n_vid:"🎬 ویڈیوز",n_ai:"🤖 AI"});
 
@@ -1860,7 +1876,7 @@ function pickRole(r){viaPick=true;cur=r;try{history.replaceState(null,"","#"+r)}
 function backToRoles(){killTok();setSess(null);st.orders=[];st.resets=[];st.audit=[];fgOn=false;regOn=false;editP=null;cur=PUBLIC_ROLE;viaPick=false;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}render(true)}
 const NAV={customer:[["order","🛒","n_order"],["mine","📦","n_mine"],["tok","🪙","n_tok"],["chat","💬","n_chat"],["prods","🧴","n_prods"],["help","🆘","n_help"],["pw","🔑","n_pw"]],
 user:[["new","📥","n_new"],["wait","⏳","n_wait"],["ship","🚚","n_ship"],["webo","🌐","n_webo"],["xls","📥","n_xls"],["done","✔","n_done"],["rev","⭐","n_rev"],["dash","📊","n_dash"],["sheet","📑","n_sheet"],["chat","💬","n_chat"],["pw","🔑","n_pw"]],
-admin:[["rev","⭐","n_rev"],["appr","⏳","n_appr"],["ship","🚚","n_ship"],["reg","📝","n_reg"],["tokq","✅","n_tokq"],["tok","🪙","n_tok"],["disc","🏷️","n_disc"],["dtd","📈","n_dtd"],["vid","🎬","n_vid"],["ai","🤖","n_ai"],["dash","📊","n_dash"],["sheet","📑","n_sheet"],["prod","🧴","n_prods"],["webo","🌐","n_webo"],["web","🛠️","n_web"],["xls","📥","n_xls"],["acct","👥","n_acct"],["set","⚙️","n_set"],["chat","💬","n_chat"],["log","🔒","n_log"]]};
+admin:[["rev","⭐","n_rev"],["appr","⏳","n_appr"],["ship","🚚","n_ship"],["reg","📝","n_reg"],["tokq","✅","n_tokq"],["tok","🪙","n_tok"],["disc","🏷️","n_disc"],["dtd","📈","n_dtd"],["vid","🎬","n_vid"],["sheet","📑","n_sheet"],["prod","🧴","n_prods"],["webo","🌐","n_webo"],["web","🛠️","n_web"],["xls","📥","n_xls"],["acct","👥","n_acct"],["set","⚙️","n_set"],["chat","💬","n_chat"],["log","🔒","n_log"]]};
 function renderSide(){const e=$("#side");if(!cur||!me(cur)){e.classList.remove("vis");e.innerHTML="";return}
  const cnt=x=>st.orders.filter(o=>o.status===x).length,bd=({user:{webo:wcnt("new"),new:cnt("new"),ship:st.orders.filter(o=>o.status==="approved"&&o.ship==="shipping").length},admin:{tokq:tokQueue().length,reg:(st.regPend||[]).length,webo:wcnt("new")+wcnt("submitted"),appr:cnt("submitted")+st.orders.filter(o=>o.status==="cancelled"&&!isHid(o.id)).length,acct:(st.resets||[]).length,ship:st.orders.filter(o=>o.status==="approved"&&(o.ship==="review"||o.ship==="apply")).length,disc:(st.discAdm||[]).filter(x=>x.st==="pending").length}})[cur]||{};
  e.classList.add("vis");e.innerHTML=NAV[cur].filter(a=>!((window.DUPN||{})[cur]||[]).includes(a[0])).map(([k,ic,lb],ix)=>`<button class="sb ${SEC[cur]===k?"on":""}" onclick="tab('${k}')"><span class="si">${ic}</span><span>${t(lb)}${bd[k]?` (${bd[k]})`:""}</span></button>`+(ix===2&&cur!=="customer"?`<hr class="side-sep">`:"")).join("")+sideExtra()+`<hr class="side-sep"><button class="sb danger" onclick="logout()"><span class="si">🚪</span><span>${t("n_out")}</span></button>`}
@@ -2185,7 +2201,7 @@ function pickQR(inp){const f=inp.files&&inp.files[0];if(!f)return;if(!/^image\//
 async function delQR(){try{if(!await rpc("aab_set_qr",{p_id:S.i,p_h:S.h,p_qr:""}))return toast(t("savefail"));await refresh();render(true);toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
 async function setPay(){try{const a=$("#pac").value.trim(),v=parseInt($("#pad").value,10);if(!(v>=0))return toast(t("bad"));if(v>0&&!a)return toast(t("needacct"));if(!await rpc("aab_set_pay",{p_id:S.i,p_h:S.h,p_title:$("#ptt").value.trim(),p_acct:a,p_bank:$("#pbk").value.trim(),p_adv:v}))return toast(t("savefail"));await refresh();render(true);toast(t("done"))}catch(e){toast(e&&/ 404$/.test(e.message||"")?t("sqlmiss"):(e&&e.message?e.message:"Network error"))}}
 function user(){return ({chat:chatTab,xls:excelTab,webo:()=>webOrders("user"),new:userNew,wait:userNew,ship:userNew,rev:rvTab,done:userNew,dash,sheet,pw:()=>rsBox()+pwBox()})[SEC.user]()}
-function admin(){return ({tokq:tokQTab,chat:chatTab,reg:regTab,xls:excelTab,webo:()=>webOrders("admin"),web:webEditor,appr:adminAppr,ship:()=>shipTab("admin"),rev:rvTab,tok:tokAdminTab,disc:discAdminTab,dtd:dtdTab,vid:vidAdminTab,ai:aiTab,dash,sheet,prod:prodAdmin,acct:()=>foldBar()+fold("rs",rsBox())+fold("adm",acctBox("admin"))+fold("usr",acctBox("user"))+fold("cus",custBox()),set:()=>foldBar()+fold("net",netBox())+fold("arc",arcBox())+fold("pay",payBox())+fold("pr",priceBox())+fold("tax",taxBox())+fold("ship",shipBox())+fold("ct",ctBox())+fold("shopimg",shopImgBox())+fold("site",siteBox())+fold("prt",printBox())+fold("tk",tickerBox())+fold("rc",rcBox())+fold("pw",pwBox()),log:auditView})[SEC.admin]()}
+function admin(){return ({tokq:tokQTab,chat:chatTab,reg:regTab,xls:excelTab,webo:()=>webOrders("admin"),web:webEditor,appr:adminAppr,ship:()=>shipTab("admin"),rev:rvTab,tok:tokAdminTab,disc:discAdminTab,dtd:dtdTab,vid:vidAdminTab,dash,sheet,prod:prodAdmin,acct:()=>foldBar()+fold("rs",rsBox())+fold("adm",acctBox("admin"))+fold("usr",acctBox("user"))+fold("cus",custBox()),set:()=>foldBar()+fold("net",netBox())+fold("arc",arcBox())+fold("pay",payBox())+fold("pr",priceBox())+fold("tax",taxBox())+fold("ship",shipBox())+fold("ct",ctBox())+fold("shopimg",shopImgBox())+fold("site",siteBox())+fold("prt",printBox())+fold("tk",tickerBox())+fold("rc",rcBox())+fold("pw",pwBox()),log:auditView})[SEC.admin]()}
 function adminAppr(){const s=by("submitted"),c=by("cancelled");return hidBar()+`<h2 style="font-size:16px">${t("forap")} (${s.length})</h2>`+(fifo(s).map((o,i)=>card(o,qch(o,i)+`<button class="ok" onclick="setS('${o.id}','approved')">${t("ok")}</button><button class="no" onclick="setS('${o.id}','rejected')">${t("no")}</button><button class="no" style="border:2px solid #c0392b;font-weight:700" onclick="adminRemove('${o.id}')">🚫 ${t("cxl")}</button>`)).join("")||`<div class="empty">${t("clear")}</div>`)+(c.length?`<h2 style="font-size:16px;margin-top:18px">🚫 ${t("cancelled")} (${c.length})</h2>`+c.map(o=>card(o,`<button class="pr" onclick="reopenO('${o.id}')">${t("reopen")}</button>`)).join(""):"")}
 function adminRowRm(id){const o=st.orders.find(x=>x.id===id);if(!o)return;if(isHid(id))return togHid(id);if(o.status==="new"||o.status==="submitted")return adminRemove(id);archiveO(id)}
 async function loadArc(){try{st.arc=(await rpc("aab_archive_list",{p_id:S.i,p_h:S.h}))||[];render(true)}catch(e){toast(errMsg(e),7000)}}
@@ -3081,10 +3097,10 @@ let last=Date.now();const lim=()=>(S.r==="customer"?60:120)*60000,bump=()=>{last
 const chk=()=>{if(S.r&&S.h&&Date.now()-last>lim()){last=Date.now();expire()}};
 setInterval(chk,30000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk()})})();
 /* ---------- v8: top bar for admin / user: logo · ☰ · Approval · Registration · Dispatch · Review ---------- */
-const HB={admin:["dash","appr","reg","ship","rev"],user:["new","wait","done","ship","rev"],customer:["order","mine","tok"]};
+const HB={admin:["dtd","appr","reg","ship","rev"],user:["new","wait","done","ship","rev"],customer:["order","mine","tok"]};
 window.DUPN={admin:HB.admin,user:HB.user,customer:["order","mine","tok"]};
-const HBI={order:"🛒",mine:"📦",dash:"📊",appr:"⏳",wait:"⏳",done:"✅",reg:"📝",new:"📥",ship:"🚚",rev:"⭐",tok:"🪙",disc:"🏷️"};
-const HBL={order:["Order","آرڈر"],mine:["My Orders","میرے آرڈر"],dash:["Dashboard","ڈیش بورڈ"],done:["Approved","منظور شدہ"],tok:["Tokens","ٹوکن"],disc:["Discount","ڈسکاؤنٹ"],appr:["Approval","منظوری"],wait:["Approval","منظوری"],reg:["Registration","رجسٹریشن"],new:["New","نئے آرڈر"],ship:["Dispatch","ڈسپیچ"],rev:["Review","ریویو"]};
+const HBI={order:"🛒",mine:"📦",dtd:"📈",dash:"📊",appr:"⏳",wait:"⏳",done:"✅",reg:"📝",new:"📥",ship:"🚚",rev:"⭐",tok:"🪙",disc:"🏷️"};
+const HBL={dtd:["Dashboard","ڈیش بورڈ"],order:["Order","آرڈر"],mine:["My Orders","میرے آرڈر"],dash:["Dashboard","ڈیش بورڈ"],done:["Approved","منظور شدہ"],tok:["Tokens","ٹوکن"],disc:["Discount","ڈسکاؤنٹ"],appr:["Approval","منظوری"],wait:["Approval","منظوری"],reg:["Registration","رجسٹریشن"],new:["New","نئے آرڈر"],ship:["Dispatch","ڈسپیچ"],rev:["Review","ریویو"]};
 function sbToggle(){document.body.classList.toggle("sbopen")}
 function hdrBar(){
  const h=document.getElementById("hdr");if(!h)return;
