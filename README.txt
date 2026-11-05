@@ -31,3 +31,6 @@ v9.15: Admin 📈 Dashboard poora naye sire se: upar live date aur time, scoreca
 v9.16: Admin Dashboard ab main bar mein. Purana 📊 Dashboard aur 🤖 AI hata diye. Date range select karke aaya/gaya/bana, sale, tokens aur din-ba-din table dekhein. Auto-chat active hai.
 v9.17: Dashboard: city/state filter, date range, aur har card/bar/dukandar/din par click karke poori list khulti hai (orders, tokens, balance).
 v9.19: Video aur picture ke liye zoom, crop, IN/OUT cut aur background removal (promo, pack, bottle photo). Dashboard mein Previous/Next se agli cheez khulti hai.
+v9.20: Video aur photo ka real crop (upload se pehle). Photo par promo banner (tap = order form). Dashboard: pichle muddat se comparison, funnel aur insight.
+v9.21: Chat bubbles: jo hum bhejein wo ek side par, jo doosra bheje wo dusri side par (server field "sender" ke mutabiq).
+v9.22: Dashboard ka naam "Khoobsurat Dashboard" (🌸). Naya city-wise sales map: shehar ki bubble par tap karke pura dashboard us shehar par filter hota hai.
