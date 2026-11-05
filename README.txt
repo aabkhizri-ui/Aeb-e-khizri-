@@ -27,3 +27,4 @@ v9.11: CSP mein media-src mein Supabase storage allow kiya.
 v9.12: Chat auto-reply ab server par, sirf EK dafa (Walaikum Assalam), phir tab tak nahi jab tak user/admin reply na kare.
 v9.13: Chat auto-reply: pehla message par greeting (ek dafa); uske baad har message par "team masroof hai" reply, jab tak user/admin reply na kare.
 v9.14: Admin 📈 Dashboard naye design mein: pastel KPI cards, tokens bar chart, redemption donut, 14 din ki sale line, leaderboard aur discount cards.
+v9.15: Admin 📈 Dashboard poora naye sire se: upar live date aur time, scorecard tiles, pastel shopkeeper cards, sales line chart, navy donut, tokens bar chart, is mahine ka calendar, discount cards aur leaderboard.
