@@ -1934,35 +1934,40 @@ function fxPanel(k,isVid){const d=fxDraft(k);const pv=isVid?(st.media&&st.media[
 function vidAdminTab(){const m=st.media||{};const slot=(k,l)=>`<div class="card"><h2 style="font-size:16px">${l}</h2>${m[k]?`${fxPanel(k,true)}<div class="mu" dir="auto" style="margin-top:6px">${esc(m[k+"_t"]||"")}</div><button class="no" onclick="mediaClear('${k}')">✖ ${AE("Remove","ہٹائیں")}</button>`:`<div class="mu">${AE("No video yet","ابھی کوئی ویڈیو نہیں")}</div>`}<label>${AE("Title / note (optional)","عنوان (اختیاری)")}</label><input id="vt_${k}" maxlength="80"><label>${AE("Video file (mp4, webm or mov, max 30 MB)","ویڈیو فائل (mp4، webm یا mov، 30 MB تک)")}</label><input id="vf_${k}" type="file" accept="video/mp4,video/webm,video/quicktime" onchange="cropPick('${k}')"><div id="cr_${k}"></div><button class="big" onclick="mediaUp('${k}')">⬆️ ${AE("Upload","اپ لوڈ")}</button></div>`;
  return `<div class="mu" style="margin:6px 0 10px">${AE("Promo video shows above the bottle. Packing video shows above “Place your order”. You can zoom, crop and cut each one.","پروموشن ویڈیو بوتل کے اوپر چلے گی۔ پیکنگ ویڈیو “Place your order” کے اوپر۔ ہر ایک کو زوم، کراپ اور کٹ کر سکتے ہیں۔")}</div>`+slot("promo",AE("🧴 Bottle / promo video","🧴 بوتل / پروموشن ویڈیو"))+slot("pack",AE("📦 Bundle packing video (12×4)","📦 بنڈل پیکنگ ویڈیو (12×4)"))}
 function closeMaskJS(m,W,H,r){const d=new Uint8Array(W*H),e=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let v=0;for(let dy=-r;dy<=r&&!v;dy++){const yy=y+dy;if(yy<0||yy>=H)continue;for(let dx=-r;dx<=r;dx++){const xx=x+dx;if(xx<0||xx>=W)continue;if(m[yy*W+xx]){v=1;break}}}d[y*W+x]=v}for(let y=0;y<H;y++)for(let x=0;x<W;x++){let v=1;for(let dy=-r;dy<=r&&v;dy++){const yy=y+dy;if(yy<0||yy>=H){v=0;break}for(let dx=-r;dx<=r;dx++){const xx=x+dx;if(xx<0||xx>=W||!d[yy*W+xx]){v=0;break}}}e[y*W+x]=v}return e}
+let WB_BUSY=false;
+function wbWait(v,ms){return new Promise((res,rej)=>{let done=false;const to=setTimeout(()=>{if(!done){done=true;res()}},ms);v.onseeked=()=>{if(!done){done=true;clearTimeout(to);res()}}})}
 async function webBotUp(){
+ if(WB_BUSY)return toast(AE("Already working, please wait","کام جاری ہے، انتظار کریں"),4000);
  const f=(document.getElementById("vf_webbot")||{}).files;if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);
  const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();
  if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);
  if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);
  const title=((document.getElementById("vt_webbot")||{}).value||"").trim().slice(0,80);
- toast(AE("Removing background… keep this page open","بیک گراؤنڈ ہٹایا جا رہا ہے… صفحہ کھلا رکھیں"),120000);
- let vurl=null;
+ const prog=(n,tot)=>toast(AE("Removing background… "+n+"/"+tot+" (keep this page open)","بیک گراؤنڈ ہٹ رہا ہے… "+n+"/"+tot+" (صفحہ کھلا رکھیں)"),60000);
+ WB_BUSY=true;let vurl=null,v=null;
  try{
-  // 1) read the video and sample frames across its length
+  prog(0,1);
   vurl=URL.createObjectURL(file);
-  const v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";v.src=vurl;
-  await new Promise((res,rej)=>{v.onloadeddata=res;v.onerror=()=>rej(new Error("video"))});
+  v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";v.src=vurl;
+  v.setAttribute("playsinline","");v.style.cssText="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none";
+  document.body.appendChild(v);
+  // the phone must read the file; give it 20 seconds, otherwise the codec is not supported
+  await new Promise((res,rej)=>{const to=setTimeout(()=>rej(new Error("video")),20000);v.onloadeddata=()=>{clearTimeout(to);res()};v.onerror=()=>{clearTimeout(to);rej(new Error("video"))};v.load()});
   const vw=v.videoWidth,vh=v.videoHeight;if(!vw||!vh)throw new Error("video");
   const W=180,H=Math.max(2,Math.round(180*vh/vw));
   const cv=document.createElement("canvas");cv.width=W;cv.height=H;const cx=cv.getContext("2d",{willReadFrequently:true});
   const N=24,D=v.duration&&isFinite(v.duration)?v.duration:1,P=W*H;
   const sum=new Float64Array(P),sq=new Float64Array(P);
   for(let i=0;i<N;i++){
+   prog(i+1,N);
    v.currentTime=Math.min(Math.max(0,D-0.05),(i+0.5)*D/N);
-   await new Promise(r=>{v.onseeked=()=>r();setTimeout(r,800)});
+   await wbWait(v,1500);
    cx.drawImage(v,0,0,W,H);const d=cx.getImageData(0,0,W,H).data;
    for(let q=0;q<P;q++){const l=d[q*4]*0.3+d[q*4+1]*0.59+d[q*4+2]*0.11;sum[q]+=l;sq[q]+=l*l}
   }
-  // 2) pixels that change over time are the moving bottle; the background stays still
   let m=new Uint8Array(P);
   for(let q=0;q<P;q++){const mu=sum[q]/N;const va=Math.max(0,sq[q]/N-mu*mu);m[q]=Math.sqrt(va)>4?1:0}
   m=closeMaskJS(m,W,H,4);
-  // 3) fill holes: anything not reachable from the border (through background) is the bottle
   const reach=new Uint8Array(P),stack=[];
   const push=(q)=>{if(!reach[q]&&!m[q]){reach[q]=1;stack.push(q)}};
   for(let x=0;x<W;x++){push(x);push((H-1)*W+x)}
@@ -1972,15 +1977,14 @@ async function webBotUp(){
   const cover=on/P;
   if(cover<0.03)throw new Error("nomove");
   if(cover>0.9)throw new Error("camera");
-  // 4) build a soft transparent mask image
   const mc=document.createElement("canvas");mc.width=W;mc.height=H;const mx=mc.getContext("2d");
   const id=mx.createImageData(W,H);for(let q=0;q<P;q++){id.data[q*4]=255;id.data[q*4+1]=255;id.data[q*4+2]=255;id.data[q*4+3]=m[q]?255:0}
   mx.putImageData(id,0,0);
   const soft=document.createElement("canvas");soft.width=W;soft.height=H;const sx=soft.getContext("2d");
-  sx.filter="blur(1px)";sx.drawImage(mc,0,0);
+  if("filter" in sx)sx.filter="blur(1px)";sx.drawImage(mc,0,0);
   const blob=await new Promise(r=>soft.toBlob(r,"image/png"));
   if(!blob)throw new Error("mask");
-  // 5) upload the video and the mask, then save both
+  prog(N,N);
   const stamp=Date.now();const vname="webbot-"+stamp+"."+ext,mname="webbotm-"+stamp+".png";
   const up=async(name,body,type)=>{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":type,"x-upsert":"true"},body});if(!r.ok)throw new Error("upload "+r.status)};
   await up(vname,file,file.type||"video/mp4");
@@ -1992,9 +1996,15 @@ async function webBotUp(){
   toast(AE("Done: background removed automatically","ہو گیا: بیک گراؤنڈ خودکار طور پر ہٹ گیا"),5000);
   await refresh();render(true);
  }catch(e){
-  const msg=e&&e.message==="nomove"?AE("No moving bottle found. Use a video where the bottle turns and the background stays still.","کوئی گھومتی بوتل نہیں ملی۔ ایسی ویڈیو لگائیں جس میں بوتل گھومے اور پس منظر ساکن ہو۔"):e&&e.message==="camera"?AE("The background moves too much. Keep the camera still.","پس منظر بہت ہل رہا ہے۔ کیمرہ ساکن رکھیں۔"):AE("Could not process this video","یہ ویڈیو پروسیس نہیں ہو سکی");
-  toast(msg,8000);
- }finally{if(vurl)URL.revokeObjectURL(vurl)}
+  const m=e&&e.message||"";
+  let msg;
+  if(m==="nomove")msg=AE("No moving bottle found. Turn the bottle in the video and keep the background still, or untick the box to upload as it is.","کوئی گھومتی بوتل نہیں ملی۔ ویڈیو میں بوتل گھمائیں اور پس منظر ساکن رکھیں، یا باکس ان چیک کر کے ویڈیو جیسی ہے ویسی اپ لوڈ کریں۔");
+  else if(m==="camera")msg=AE("The background moves too much. Keep the camera still, or untick the box to upload as it is.","پس منظر بہت ہل رہا ہے۔ کیمرہ ساکن رکھیں، یا باکس ان چیک کر کے ویڈیو جیسی ہے ویسی اپ لوڈ کریں۔");
+  else if(m==="video")msg=AE("This phone cannot read this video. Use an MP4 (H.264) file.","یہ فون یہ ویڈیو نہیں پڑھ سکتا۔ MP4 (H.264) فائل استعمال کریں۔");
+  else if(m.indexOf("upload")===0)msg=AE("Upload failed ("+m.slice(7)+"). Check the file size and try again.","اپ لوڈ ناکام ("+m.slice(7)+")۔ فائل کا سائز چیک کر کے دوبارہ کوشش کریں۔");
+  else msg=AE("Could not process this video. Try again or untick the box.","یہ ویڈیو پروسیس نہیں ہو سکی۔ دوبارہ کوشش کریں یا باکس ان چیک کریں۔");
+  toast(msg,9000);
+ }finally{WB_BUSY=false;if(v&&v.parentNode)v.parentNode.removeChild(v);if(vurl)URL.revokeObjectURL(vurl)}
 }
 function webVidTab(){const m=st.media||{};const cur=m.webbot;
  return `<div class="mu" style="margin:6px 0 10px">${AE("This video shows on the website, above the order form. Upload here, then it appears on the website automatically.","یہ ویڈیو ویب سائٹ پر آرڈر فارم کے اوپر دکھے گی۔ یہاں اپ لوڈ کریں، پھر وہ خود ویب سائٹ پر آ جائے گی۔")}</div>
