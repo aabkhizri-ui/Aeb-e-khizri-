@@ -1933,6 +1933,7 @@ function fxPanel(k,isVid){const d=fxDraft(k);const pv=isVid?(st.media&&st.media[
   `<button class="big" style="margin-top:10px" onclick="fxSave('${k}')">💾 ${AE("Save look","انداز محفوظ کریں")}</button>`}
 function vidAdminTab(){const m=st.media||{};const slot=(k,l)=>`<div class="card"><h2 style="font-size:16px">${l}</h2>${m[k]?`${fxPanel(k,true)}<div class="mu" dir="auto" style="margin-top:6px">${esc(m[k+"_t"]||"")}</div><button class="no" onclick="mediaClear('${k}')">✖ ${AE("Remove","ہٹائیں")}</button>`:`<div class="mu">${AE("No video yet","ابھی کوئی ویڈیو نہیں")}</div>`}<label>${AE("Title / note (optional)","عنوان (اختیاری)")}</label><input id="vt_${k}" maxlength="80"><label>${AE("Video file (mp4, webm or mov, max 30 MB)","ویڈیو فائل (mp4، webm یا mov، 30 MB تک)")}</label><input id="vf_${k}" type="file" accept="video/mp4,video/webm,video/quicktime" onchange="cropPick('${k}')"><div id="cr_${k}"></div><button class="big" onclick="mediaUp('${k}')">⬆️ ${AE("Upload","اپ لوڈ")}</button></div>`;
  return `<div class="mu" style="margin:6px 0 10px">${AE("Promo video shows above the bottle. Packing video shows above “Place your order”. You can zoom, crop and cut each one.","پروموشن ویڈیو بوتل کے اوپر چلے گی۔ پیکنگ ویڈیو “Place your order” کے اوپر۔ ہر ایک کو زوم، کراپ اور کٹ کر سکتے ہیں۔")}</div>`+slot("promo",AE("🧴 Bottle / promo video","🧴 بوتل / پروموشن ویڈیو"))+slot("pack",AE("📦 Bundle packing video (12×4)","📦 بنڈل پیکنگ ویڈیو (12×4)"))+slot("webbot",AE("🍾 Website bottle video (above the order form, website only)","🍾 ویب سائٹ پر بوتل کی ویڈیو (آرڈر فارم کے اوپر، صرف ویب سائٹ)"))}
+function closeMaskJS(m,W,H,r){const d=new Uint8Array(W*H),e=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let v=0;for(let dy=-r;dy<=r&&!v;dy++){const yy=y+dy;if(yy<0||yy>=H)continue;for(let dx=-r;dx<=r;dx++){const xx=x+dx;if(xx<0||xx>=W)continue;if(m[yy*W+xx]){v=1;break}}}d[y*W+x]=v}for(let y=0;y<H;y++)for(let x=0;x<W;x++){let v=1;for(let dy=-r;dy<=r&&v;dy++){const yy=y+dy;if(yy<0||yy>=H){v=0;break}for(let dx=-r;dx<=r;dx++){const xx=x+dx;if(xx<0||xx>=W||!d[yy*W+xx]){v=0;break}}}e[y*W+x]=v}return e}
 async function webBotUp(){
  const f=(document.getElementById("vf_webbot")||{}).files;if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);
  const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();
@@ -1958,8 +1959,9 @@ async function webBotUp(){
    for(let q=0;q<P;q++){const l=d[q*4]*0.3+d[q*4+1]*0.59+d[q*4+2]*0.11;sum[q]+=l;sq[q]+=l*l}
   }
   // 2) pixels that change over time are the moving bottle; the background stays still
-  const m=new Uint8Array(P);
+  let m=new Uint8Array(P);
   for(let q=0;q<P;q++){const mu=sum[q]/N;const va=Math.max(0,sq[q]/N-mu*mu);m[q]=Math.sqrt(va)>4?1:0}
+  m=closeMaskJS(m,W,H,4);
   // 3) fill holes: anything not reachable from the border (through background) is the bottle
   const reach=new Uint8Array(P),stack=[];
   const push=(q)=>{if(!reach[q]&&!m[q]){reach[q]=1;stack.push(q)}};
