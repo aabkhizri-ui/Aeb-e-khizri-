@@ -1933,7 +1933,68 @@ function fxPanel(k,isVid){const d=fxDraft(k);const pv=isVid?(st.media&&st.media[
   `<button class="big" style="margin-top:10px" onclick="fxSave('${k}')">💾 ${AE("Save look","انداز محفوظ کریں")}</button>`}
 function vidAdminTab(){const m=st.media||{};const slot=(k,l)=>`<div class="card"><h2 style="font-size:16px">${l}</h2>${m[k]?`${fxPanel(k,true)}<div class="mu" dir="auto" style="margin-top:6px">${esc(m[k+"_t"]||"")}</div><button class="no" onclick="mediaClear('${k}')">✖ ${AE("Remove","ہٹائیں")}</button>`:`<div class="mu">${AE("No video yet","ابھی کوئی ویڈیو نہیں")}</div>`}<label>${AE("Title / note (optional)","عنوان (اختیاری)")}</label><input id="vt_${k}" maxlength="80"><label>${AE("Video file (mp4, webm or mov, max 30 MB)","ویڈیو فائل (mp4، webm یا mov، 30 MB تک)")}</label><input id="vf_${k}" type="file" accept="video/mp4,video/webm,video/quicktime" onchange="cropPick('${k}')"><div id="cr_${k}"></div><button class="big" onclick="mediaUp('${k}')">⬆️ ${AE("Upload","اپ لوڈ")}</button></div>`;
  return `<div class="mu" style="margin:6px 0 10px">${AE("Promo video shows above the bottle. Packing video shows above “Place your order”. You can zoom, crop and cut each one.","پروموشن ویڈیو بوتل کے اوپر چلے گی۔ پیکنگ ویڈیو “Place your order” کے اوپر۔ ہر ایک کو زوم، کراپ اور کٹ کر سکتے ہیں۔")}</div>`+slot("promo",AE("🧴 Bottle / promo video","🧴 بوتل / پروموشن ویڈیو"))+slot("pack",AE("📦 Bundle packing video (12×4)","📦 بنڈل پیکنگ ویڈیو (12×4)"))+slot("webbot",AE("🍾 Website bottle video (above the order form, website only)","🍾 ویب سائٹ پر بوتل کی ویڈیو (آرڈر فارم کے اوپر، صرف ویب سائٹ)"))}
-async function mediaUp(k){const f=(document.getElementById("vf_"+k)||{}).files;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);const name=k+"-"+Date.now()+"."+ext;toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);try{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});if(!r.ok)throw new Error("upload "+r.status);const url=SB+"/storage/v1/object/public/aab-media/"+name;const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہیں کیا"),6000);await refresh();render(true);toast(AE("Video live ✔","ویڈیو چل رہی ہے ✔"))}catch(e){toast(AE("Upload failed: check internet or file size","اپ لوڈ ناکام: انٹرنیٹ یا فائل سائز چیک کریں"),7000)}}
+async function webBotUp(){
+ const f=(document.getElementById("vf_webbot")||{}).files;if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);
+ const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();
+ if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);
+ if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);
+ const title=((document.getElementById("vt_webbot")||{}).value||"").trim().slice(0,80);
+ toast(AE("Removing background… keep this page open","بیک گراؤنڈ ہٹایا جا رہا ہے… صفحہ کھلا رکھیں"),120000);
+ let vurl=null;
+ try{
+  // 1) read the video and sample frames across its length
+  vurl=URL.createObjectURL(file);
+  const v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";v.src=vurl;
+  await new Promise((res,rej)=>{v.onloadeddata=res;v.onerror=()=>rej(new Error("video"))});
+  const vw=v.videoWidth,vh=v.videoHeight;if(!vw||!vh)throw new Error("video");
+  const W=180,H=Math.max(2,Math.round(180*vh/vw));
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const cx=cv.getContext("2d",{willReadFrequently:true});
+  const N=24,D=v.duration&&isFinite(v.duration)?v.duration:1,P=W*H;
+  const sum=new Float64Array(P),sq=new Float64Array(P);
+  for(let i=0;i<N;i++){
+   v.currentTime=Math.min(Math.max(0,D-0.05),(i+0.5)*D/N);
+   await new Promise(r=>{v.onseeked=()=>r();setTimeout(r,800)});
+   cx.drawImage(v,0,0,W,H);const d=cx.getImageData(0,0,W,H).data;
+   for(let q=0;q<P;q++){const l=d[q*4]*0.3+d[q*4+1]*0.59+d[q*4+2]*0.11;sum[q]+=l;sq[q]+=l*l}
+  }
+  // 2) pixels that change over time are the moving bottle; the background stays still
+  const m=new Uint8Array(P);
+  for(let q=0;q<P;q++){const mu=sum[q]/N;const va=Math.max(0,sq[q]/N-mu*mu);m[q]=Math.sqrt(va)>4?1:0}
+  // 3) fill holes: anything not reachable from the border (through background) is the bottle
+  const reach=new Uint8Array(P),stack=[];
+  const push=(q)=>{if(!reach[q]&&!m[q]){reach[q]=1;stack.push(q)}};
+  for(let x=0;x<W;x++){push(x);push((H-1)*W+x)}
+  for(let y=0;y<H;y++){push(y*W);push(y*W+W-1)}
+  while(stack.length){const q=stack.pop();const x=q%W,y=(q-x)/W;if(x>0)push(q-1);if(x<W-1)push(q+1);if(y>0)push(q-W);if(y<H-1)push(q+W)}
+  let on=0;for(let q=0;q<P;q++){if(!reach[q])m[q]=1;on+=m[q]}
+  const cover=on/P;
+  if(cover<0.03)throw new Error("nomove");
+  if(cover>0.9)throw new Error("camera");
+  // 4) build a soft transparent mask image
+  const mc=document.createElement("canvas");mc.width=W;mc.height=H;const mx=mc.getContext("2d");
+  const id=mx.createImageData(W,H);for(let q=0;q<P;q++){id.data[q*4]=255;id.data[q*4+1]=255;id.data[q*4+2]=255;id.data[q*4+3]=m[q]?255:0}
+  mx.putImageData(id,0,0);
+  const soft=document.createElement("canvas");soft.width=W;soft.height=H;const sx=soft.getContext("2d");
+  sx.filter="blur(1px)";sx.drawImage(mc,0,0);
+  const blob=await new Promise(r=>soft.toBlob(r,"image/png"));
+  if(!blob)throw new Error("mask");
+  // 5) upload the video and the mask, then save both
+  const stamp=Date.now();const vname="webbot-"+stamp+"."+ext,mname="webbotm-"+stamp+".png";
+  const up=async(name,body,type)=>{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":type,"x-upsert":"true"},body});if(!r.ok)throw new Error("upload "+r.status)};
+  await up(vname,file,file.type||"video/mp4");
+  await up(mname,blob,"image/png");
+  const vpub=SB+"/storage/v1/object/public/aab-media/"+vname,mpub=SB+"/storage/v1/object/public/aab-media/"+mname;
+  const ok1=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbot",p_url:vpub,p_title:title});
+  const ok2=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:mpub,p_title:title});
+  if(ok1!=="ok"||ok2!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہ کیا"),6000);
+  toast(AE("Done: background removed automatically","ہو گیا: بیک گراؤنڈ خودکار طور پر ہٹ گیا"),5000);
+  await refresh();render(true);
+ }catch(e){
+  const msg=e&&e.message==="nomove"?AE("No moving bottle found. Use a video where the bottle turns and the background stays still.","کوئی گھومتی بوتل نہیں ملی۔ ایسی ویڈیو لگائیں جس میں بوتل گھومے اور پس منظر ساکن ہو۔"):e&&e.message==="camera"?AE("The background moves too much. Keep the camera still.","پس منظر بہت ہل رہا ہے۔ کیمرہ ساکن رکھیں۔"):AE("Could not process this video","یہ ویڈیو پروسیس نہیں ہو سکی");
+  toast(msg,8000);
+ }finally{if(vurl)URL.revokeObjectURL(vurl)}
+}
+async function mediaUp(k){if(k==="webbot")return webBotUp();const f=(document.getElementById("vf_"+k)||{}).files;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);const name=k+"-"+Date.now()+"."+ext;toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);try{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});if(!r.ok)throw new Error("upload "+r.status);const url=SB+"/storage/v1/object/public/aab-media/"+name;const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہیں کیا"),6000);await refresh();render(true);toast(AE("Video live ✔","ویڈیو چل رہی ہے ✔"))}catch(e){toast(AE("Upload failed: check internet or file size","اپ لوڈ ناکام: انٹرنیٹ یا فائل سائز چیک کریں"),7000)}}
 async function mediaClear(k){if(!await confirmBox(AE("Remove this video?","یہ ویڈیو ہٹائیں؟")))return;try{const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:"",p_title:""});if(ok!=="ok")return toast(t("ship_bad"),5000);await refresh();render(true);toast(t("dc_done"))}catch(e){toast(errMsg(e),7000)}}
 Object.assign(T.en,{n_vid:"🎬 Videos",n_btn:"🔘 Buttons"});
 Object.assign(T.ur,{n_vid:"🎬 ویڈیوز",n_btn:"🔘 بٹن"});
