@@ -41,3 +41,5 @@ v10.0: Customer header: bigger logo fills the empty left space beside Menu and t
 v11.0: Website video upload now saves the video first and removes the background as a separate step (so the video always appears). Live refresh every 30 s in the app; website live sales, tokens and contact. Shopkeeper sales (booked and sold) and token table on every tab. Website footer shows the version.
 
 v11.0 (fixes): auto-reply now replies at once in English and Urdu (Walaikum Assalam; team contacts within 1 hour; after 1 hour "surely soon"). Admin gets chat notifications (asks permission on first tap). Customers get a notification when a token request changes. Old embedded website code removed. Website video background mask uploads now allowed by storage policy.
+
+v11.0 (reset + tracker): all data cleared except the admin login; website tracking shown as a route-map with stops (received, approved, dispatched, on the way, delivered), also on order confirmation.

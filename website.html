@@ -199,6 +199,23 @@ footer a{display:block;margin:7px 0;color:#e9d3d4;font-size:14px}footer a:hover{
 .wamid-s{background:#f8f0df;padding:26px 0;text-align:center}
 .wamid-s .btn{font-size:18px;padding:16px 26px}
 .bottle-s{padding:18px 0 4px;background:transparent}
+.rmap{border:1px solid #e3cba5;border-radius:18px;background:#fffdf7;overflow:hidden;text-align:start;box-shadow:0 12px 30px rgba(90,12,18,.12);margin-top:16px;font-weight:400}
+.rmap-h{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:14px 16px;background:linear-gradient(90deg,#5a0c12,#7a1a22);color:#fff}
+.rmap-h small{opacity:.85;font-size:12px}
+.rmap-h b{font-size:17px;letter-spacing:.3px}
+.rmap-steps{position:relative;padding:16px 18px 10px 58px;background-color:#fffdf7;background-image:linear-gradient(rgba(201,168,106,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,106,.12) 1px,transparent 1px);background-size:22px 22px}
+.rmap-steps:before{content:"";position:absolute;left:35px;top:34px;bottom:34px;width:4px;border-radius:4px;background:repeating-linear-gradient(#b89255 0 8px,transparent 8px 14px)}
+.rs{position:relative;padding:6px 0 14px}
+.rs .dot{position:absolute;left:-40px;top:4px;width:36px;height:36px;border-radius:50%;background:#efe4cf;border:3px solid #e3cba5;display:flex;align-items:center;justify-content:center;font-size:17px;box-sizing:border-box}
+.rs.done .dot{background:#2e7d4f;border-color:#2e7d4f}
+.rs.cur .dot{background:#fff;border-color:#c0392b;animation:rmPulse 1.6s infinite}
+.rs .t{font-weight:700;color:#3a0a0e;font-size:15px}
+.rs .s{font-size:12.5px;color:#6b5a4e;margin-top:2px}
+.rs.todo .t{color:#9c8f80}
+.rs.todo .dot{opacity:.7}
+@keyframes rmPulse{0%,100%{box-shadow:0 0 0 4px rgba(192,57,43,.18)}50%{box-shadow:0 0 0 11px rgba(192,57,43,0)}}
+.rmap-f{padding:12px 16px;border-top:1px dashed #e3cba5;font-size:14px;color:#5a0c12;font-weight:600;background:#fffdf7}
+.rmap-x{background:#fdecea;color:#8a1c12}
 </style>
 </head>
 <body>
@@ -404,6 +421,7 @@ $("#go").addEventListener("click",function(){
  rpc("aab_web_place",{p_name:n,p_phone:normPK(p),p_addr:(cy==="Other"?a:cy+", "+a),p_bundles:B}).then(function(r){
   btn.disabled=false;
   if(r&&r.ok){m.textContent="";last={id:r.id,total:r.total,name:n,phone:normPK(p),b:B,addr:(cy==="Other"?a:cy+", "+a)};
+  var okx=$("#ok");if(okx){var oldm=okx.querySelector(".rmap");if(oldm)oldm.remove();okx.insertAdjacentHTML("afterbegin",routeMap(r.id,"new",r.total,last.addr,""))}
    $("#oid").textContent=r.id;$("#otot").textContent=T("Total to pay: ","کل ادائیگی: ")+rs(r.total)+T(" (pay on delivery)"," (ڈیلیوری پر)");
    $("#ok").classList.add("show");$("#ok").scrollIntoView({behavior:"smooth",block:"center"});
    $("#tId").value=r.id;$("#tPh").value=normPK(p);
@@ -420,8 +438,8 @@ $("#tGo").addEventListener("click",function(){
  m.textContent="…";
  rpc("aab_web_track",{p_id:id,p_phone:p}).then(function(r){
   if(!r||!r.ok){m.textContent=T("Order not found. Check the number and phone.","آرڈر نہیں ملا۔ نمبر اور فون چیک کریں۔");return}
-  var x=TS[r.status]||[r.status,r.status];m.className="tres ok";
-  m.textContent=T("Order ","آرڈر ")+r.id+" · "+T(x[0],x[1])+(r.note?" · "+r.note:"")+" · "+rs(r.total);var tb=document.createElement("button");tb.type="button";tb.className="btn btn-line";tb.style.marginTop="8px";tb.textContent=T("🖨️ Print","🖨️ پرنٹ");tb.onclick=function(){printSlip([[T("Order no.","آرڈر نمبر"),r.id],[T("Status","حیثیت"),T(x[0],x[1])],[T("Total","کل"),rs(r.total)]],"Aab-e-Khizri · آب خضری")};m.appendChild(tb);
+  var x=TS[r.status]||[r.status,r.status];m.className="tres";
+  m.innerHTML=routeMap(r.id,r.status,r.total,r.addr,r.note);var tb=document.createElement("button");tb.type="button";tb.className="btn btn-line";tb.style.marginTop="8px";tb.textContent=T("🖨️ Print","🖨️ پرنٹ");tb.onclick=function(){printSlip([[T("Order no.","آرڈر نمبر"),r.id],[T("Status","حیثیت"),T(x[0],x[1])],[T("Total","کل"),rs(r.total)]],"Aab-e-Khizri · آب خضری")};m.appendChild(tb);
  }).catch(function(){m.textContent=T("Could not check right now.","ابھی چیک نہیں ہو سکا۔")});
 });
 rpc("aab_contact").then(function(c){if(!c)return;var raw=String(c.p||c.p2||"");var d=raw.replace(/\D/g,"");if(d.indexOf("00")===0)d=d.slice(2);if(d.charAt(0)==="0")d="92"+d.slice(1);if(!d)return;WA=d;
@@ -459,6 +477,21 @@ function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]
  if(pubLast!==null&&fp!==pubLast){var f=document.activeElement;if(!(f&&/INPUT|TEXTAREA|SELECT/.test(f.tagName))){location.reload();return}}
  pubLast=fp;tokBox(d.tokens);salesBox(d.sales)}).catch(function(){})}
 setInterval(function(){if(!document.hidden)pubPoll()},30000);
+function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function routeMap(id,st,total,addr,note){
+ var stops=[["🧾",T("Order received","آرڈر موصول")],["✅",T("Approved","منظور")],["📦",T("Dispatched","روانہ")],["🚚",T("On the way","راستے میں")],["📍",T("Delivered","پہنچ گیا")]];
+ var idx={"new":0,"submitted":0,"approved":1,"dispatched":2,"shipped":3,"delivered":4}[st];if(idx===undefined)idx=0;
+ var h='<div class="rmap"><div class="rmap-h"><div><small>'+T("Order","آرڈر")+'</small><br><b dir="ltr">'+escH(id)+'</b></div><div style="text-align:end"><small>'+T("Total","کل")+'</small><br><b dir="ltr">'+escH(rs(total||0))+'</b></div></div>';
+ if(st==="rejected"){h+='<div class="rmap-f rmap-x">❌ '+T("This order was cancelled.","یہ آرڈر منسوخ ہو گیا۔")+'</div>'}
+ else{
+  h+='<div class="rmap-steps">';
+  stops.forEach(function(s,i){var cls=(i<idx||(idx===4&&i===4))?"done":(i===idx?"cur":"todo");
+   var sub=cls==="done"?T("Completed","مکمل"):cls==="cur"?T("In progress","جاری ہے"):T("Pending","باقی");
+   h+='<div class="rs '+cls+'"><span class="dot">'+s[0]+'</span><div class="t">'+s[1]+'</div><div class="s">'+sub+'</div></div>'});
+  h+='</div>'}
+ if(addr)h+='<div class="rmap-f">📍 '+escH(addr)+'</div>';
+ if(note)h+='<div class="rmap-f">ℹ️ '+escH(note)+'</div>';
+ return h+'</div>'}
 function printSlip(rows,title){var s=$("#slip");s.textContent="";var h=document.createElement("h2");h.textContent=title;s.appendChild(h);var tb=document.createElement("table");rows.forEach(function(r){prow(tb,r[0],r[1])});s.appendChild(tb);var f=document.createElement("div");f.style.marginTop="12px";f.textContent=T("Thank you for ordering!","آرڈر کا شکریہ!");s.appendChild(f);document.body.classList.add("printing");var done=function(){document.body.classList.remove("printing");window.removeEventListener("afterprint",done)};window.addEventListener("afterprint",done);setTimeout(function(){window.print()},50)}
 $("#prn").addEventListener("click",function(){if(!last)return;printSlip([[T("Order no.","آرڈر نمبر"),last.id],[T("Name","نام"),last.name],[T("Phone","فون"),last.phone],[T("Address","پتہ"),last.addr||""],[T("Bundles","بنڈل"),last.b+" × "+PAID+" "+T("bottles","بوتلیں")],[T("Total","کل"),rs(last.total)],[T("Payment","ادائیگی"),T("Cash on delivery","ڈیلیوری پر")],[T("Date","تاریخ"),new Date().toLocaleString()]],"Aab-e-Khizri · آب خضری")});
 bottleInit();
