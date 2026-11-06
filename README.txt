@@ -37,3 +37,5 @@ v9.22: Dashboard ka naam "Khoobsurat Dashboard" (🌸). Naya city-wise sales map
 v9.23: Admin 🔘 Buttons tab: promo buttons banaye, edit, hide/show, delete. Customer page par rangeen buttons (order form, page top, ya https link). Date se start/end.
 
 v10.0: Customer header: bigger logo fills the empty left space beside Menu and the 3 buttons. Version now 10.0 (next: 10.01, 10.02 ...).
+
+v11.0: Website video upload now saves the video first and removes the background as a separate step (so the video always appears). Live refresh every 30 s in the app; website live sales, tokens and contact. Shopkeeper sales (booked and sold) and token table on every tab. Website footer shows the version.

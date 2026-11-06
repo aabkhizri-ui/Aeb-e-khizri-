@@ -449,7 +449,7 @@ header.bar .logo{cursor:pointer}
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v10.0</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v11.0</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -1575,7 +1575,7 @@ function pwf(id,extra=""){return `<div class="pw"><input id="${id}" type="passwo
 function eye(id){const e=$("#"+id);e.type=e.type==="password"?"text":"password"}
 async function loadCreds(){if(S.r!=="admin"||!S.h)return;const a=await rpc("aab_accounts_list",{p_id:S.i,p_h:S.h});const g=r=>a.filter(x=>x.role===r).map(({id,name,rc})=>({id,name,rc}));st.creds={admins:g("admin"),users:g("user"),customers:g("customer")}}
 function expire(){killTok();setSess(null);st.orders=[];st.resets=[];st.audit=[];fgOn=false;render(true);toast(t("exp"));}
-async function refresh(){if(!S.r||!S.h)return;const SF=S.r!=="customer"||!st._sa||Date.now()-st._sa>6e5;if(SF)st._sa=Date.now();if(SF){try{const pr=await rpc("aab_products_list",{});st.products=pr||[]}catch(e){try{st.products=JSON.parse(localStorage.getItem("aak_products")||"[]")}catch(e2){}}applyContact();try{const sx=await rpc("aab_site",{});st.site=sx||{}}catch(e){}if(!st.shopImgLoaded){try{const im=await rpc("aab_shop_img",{});st.shopImg=typeof im==="string"?im:"";st.shopImgLoaded=1}catch(e){}}try{const ct=await rpc("aab_contact",{});st.contact=(ct&&(ct.n||ct.p||ct.p2))?ct:null}catch(e){}}try{if(SF){try{const c=await rpc("aab_cfg",{});st.tax=+c.tax||0;if(c&&+c.rate>0){st.cfg={rate:+c.rate,rate_bulk:+c.rate_bulk,bulk_from:+c.bulk_from,min_qty:+c.min_qty,free_per:+c.free_per,free_qty:+c.free_qty,delivery:+c.delivery||0,bundle:c.bundle==null?12:(+c.bundle||0),ml:+c.ml||0,sizes:Array.isArray(c.sizes)?c.sizes.map(x=>typeof x==="object"&&x?{ml:+x.ml,rate:+x.rate,bulk:+x.bulk}:{ml:+x,rate:+c.rate,bulk:+c.rate_bulk}).filter(x=>x.ml>0):[]};applyCfg()}}catch(e){}try{const cs=await rpc("aab_city_ship_list",{});if(Array.isArray(cs)){window.CITY_SHIP_S={};cs.forEach(x=>{if(+x.ship>=0)window.CITY_SHIP_S[x.city]=+x.ship})}}catch(e){}try{const pc=await rpc("aab_pay_cfg",{});if(pc){st.pay={title:pc.title||"",acct:pc.acct||"",bank:pc.bank||"",adv:+pc.adv>=0?+pc.adv:1000,qrv:+pc.qrv||0};st.payOk=true;if(st.pay.qrv!==st.qrvLoaded){st.qrImg=st.pay.qrv?((await rpc("aab_pay_qr",{}))||""):"";st.qrvLoaded=st.pay.qrv}}}catch(e){st.payOk=false}}try{const md=await rpc("aab_media_get",{});if(md&&typeof md==="object")st.media=md}catch(e){}try{const fxr=await rpc("aab_media_fx_get",{});if(fxr&&typeof fxr==="object")st.fx=fxr}catch(e){}mediaBlobs();try{const bl=await rpc("aab_btn_list",{});if(Array.isArray(bl))st.btns=bl}catch(e){}if(S.r==="admin"){try{const ba=await rpc("aab_btn_admin_list",{p_id:S.i,p_h:S.h});if(Array.isArray(ba))st.btnAdm=ba}catch(e){}}const o=await rpc("aab_orders_list",{p_role:S.r,p_id:S.i,p_h:S.h});if(o===null){expire();return}st.orders=o;try{const ad=await rpc("aab_adv_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.adv={};(ad||[]).forEach(x=>{st.adv[x.oid]=x})}catch(e){}try{const rv=await rpc("aab_reviews_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.rev={};st.revList=Array.isArray(rv)?rv:[];st.revList.forEach(x=>{st.rev[x.oid]=x})}catch(e){}try{const tc=await rpc("aab_tokens_cfg",{});if(tc)st.tcfg=tc}catch(e){}if(S.r==="customer"){try{const tm=await rpc("aab_tokens_me",{p_id:S.i,p_h:S.h});if(tm)st.tok=tm}catch(e){}try{const tq=await rpc("aab_tok_mine",{p_id:S.i,p_h:S.h});if(tq&&typeof tq==="object"&&!Array.isArray(tq))st.tokMine=tq}catch(e){}}if(S.r==="customer"){try{const dm=await rpc("aab_disc_me",{p_id:S.i,p_h:S.h});if(dm)st.disc=dm}catch(e){}}if(S.r==="admin"){try{const pg=await rpc("aab_promo_get",{p_id:S.i,p_h:S.h});if(pg)st.promo=pg}catch(e){}try{const da=await rpc("aab_disc_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(da))st.discAdm=da}catch(e){}try{await loadShops()}catch(e){}try{const tl=await rpc("aab_tok_ledger_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(tl))st.tokLedger=tl}catch(e){}}if(S.r==="admin"){try{const ta=await rpc("aab_tokens_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(ta))st.tokAdm=ta}catch(e){}try{const td=await rpc("aab_tok_decisions",{p_id:S.i,p_h:S.h});if(Array.isArray(td)){st.tokDec=td;st.tokqErr=0}else st.tokqErr="x"}catch(e){st.tokqErr=(e&&e.status===404)?"nosql":"x"}}try{if(S.r==="admin"){st.cx=st.cx||{};st._cxt=st._cxt||{};const nd=st.orders.filter(o=>o.status==="cancelled"&&!st._cxt[o.id]);if(nd.length){((await rpc("aab_cancel_reasons_list",{p_id:S.i,p_h:S.h}))||[]).forEach(x=>{st.cx[x.oid]=x});nd.forEach(o=>{st._cxt[o.id]=1})}}}catch(e){}try{await loadWebOrders()}catch(e){}st.resets=(S.r==="admin"||S.r==="user")?await rpc("aab_resets_list",{p_role:S.r,p_id:S.i,p_h:S.h}):[];st.audit=S.r==="admin"?await rpc("aab_audit_list",{p_id:S.i,p_h:S.h}):[];await loadCreds()}catch(e){}}
+async function refresh(){if(!S.r||!S.h)return;const SF=S.r!=="customer"||!st._sa||Date.now()-st._sa>6e5;if(SF)st._sa=Date.now();if(SF){try{const pr=await rpc("aab_products_list",{});st.products=pr||[]}catch(e){try{st.products=JSON.parse(localStorage.getItem("aak_products")||"[]")}catch(e2){}}applyContact();try{const sx=await rpc("aab_site",{});st.site=sx||{}}catch(e){}if(!st.shopImgLoaded){try{const im=await rpc("aab_shop_img",{});st.shopImg=typeof im==="string"?im:"";st.shopImgLoaded=1}catch(e){}}try{const ct=await rpc("aab_contact",{});st.contact=(ct&&(ct.n||ct.p||ct.p2))?ct:null}catch(e){}}try{if(SF){try{const c=await rpc("aab_cfg",{});st.tax=+c.tax||0;if(c&&+c.rate>0){st.cfg={rate:+c.rate,rate_bulk:+c.rate_bulk,bulk_from:+c.bulk_from,min_qty:+c.min_qty,free_per:+c.free_per,free_qty:+c.free_qty,delivery:+c.delivery||0,bundle:c.bundle==null?12:(+c.bundle||0),ml:+c.ml||0,sizes:Array.isArray(c.sizes)?c.sizes.map(x=>typeof x==="object"&&x?{ml:+x.ml,rate:+x.rate,bulk:+x.bulk}:{ml:+x,rate:+c.rate,bulk:+c.rate_bulk}).filter(x=>x.ml>0):[]};applyCfg()}}catch(e){}try{const cs=await rpc("aab_city_ship_list",{});if(Array.isArray(cs)){window.CITY_SHIP_S={};cs.forEach(x=>{if(+x.ship>=0)window.CITY_SHIP_S[x.city]=+x.ship})}}catch(e){}try{const pc=await rpc("aab_pay_cfg",{});if(pc){st.pay={title:pc.title||"",acct:pc.acct||"",bank:pc.bank||"",adv:+pc.adv>=0?+pc.adv:1000,qrv:+pc.qrv||0};st.payOk=true;if(st.pay.qrv!==st.qrvLoaded){st.qrImg=st.pay.qrv?((await rpc("aab_pay_qr",{}))||""):"";st.qrvLoaded=st.pay.qrv}}}catch(e){st.payOk=false}}try{const md=await rpc("aab_media_get",{});if(md&&typeof md==="object")st.media=md}catch(e){}try{const fxr=await rpc("aab_media_fx_get",{});if(fxr&&typeof fxr==="object")st.fx=fxr}catch(e){}mediaBlobs();try{const bl=await rpc("aab_btn_list",{});if(Array.isArray(bl))st.btns=bl}catch(e){}if(S.r==="admin"){try{const ba=await rpc("aab_btn_admin_list",{p_id:S.i,p_h:S.h});if(Array.isArray(ba))st.btnAdm=ba}catch(e){}}const o=await rpc("aab_orders_list",{p_role:S.r,p_id:S.i,p_h:S.h});if(o===null){expire();return}st.orders=o;try{const ad=await rpc("aab_adv_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.adv={};(ad||[]).forEach(x=>{st.adv[x.oid]=x})}catch(e){}try{const rv=await rpc("aab_reviews_list",{p_role:S.r,p_id:S.i,p_h:S.h});st.rev={};st.revList=Array.isArray(rv)?rv:[];st.revList.forEach(x=>{st.rev[x.oid]=x})}catch(e){}try{const pi=await rpc("aab_public_info",{});if(pi)st.pub=pi}catch(e){}try{const tc=await rpc("aab_tokens_cfg",{});if(tc)st.tcfg=tc}catch(e){}if(S.r==="customer"){try{const tm=await rpc("aab_tokens_me",{p_id:S.i,p_h:S.h});if(tm)st.tok=tm}catch(e){}try{const tq=await rpc("aab_tok_mine",{p_id:S.i,p_h:S.h});if(tq&&typeof tq==="object"&&!Array.isArray(tq))st.tokMine=tq}catch(e){}}if(S.r==="customer"){try{const dm=await rpc("aab_disc_me",{p_id:S.i,p_h:S.h});if(dm)st.disc=dm}catch(e){}}if(S.r==="admin"){try{const pg=await rpc("aab_promo_get",{p_id:S.i,p_h:S.h});if(pg)st.promo=pg}catch(e){}try{const da=await rpc("aab_disc_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(da))st.discAdm=da}catch(e){}try{await loadShops()}catch(e){}try{const tl=await rpc("aab_tok_ledger_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(tl))st.tokLedger=tl}catch(e){}}if(S.r==="admin"){try{const ta=await rpc("aab_tokens_admin",{p_id:S.i,p_h:S.h});if(Array.isArray(ta))st.tokAdm=ta}catch(e){}try{const td=await rpc("aab_tok_decisions",{p_id:S.i,p_h:S.h});if(Array.isArray(td)){st.tokDec=td;st.tokqErr=0}else st.tokqErr="x"}catch(e){st.tokqErr=(e&&e.status===404)?"nosql":"x"}}try{if(S.r==="admin"){st.cx=st.cx||{};st._cxt=st._cxt||{};const nd=st.orders.filter(o=>o.status==="cancelled"&&!st._cxt[o.id]);if(nd.length){((await rpc("aab_cancel_reasons_list",{p_id:S.i,p_h:S.h}))||[]).forEach(x=>{st.cx[x.oid]=x});nd.forEach(o=>{st._cxt[o.id]=1})}}}catch(e){}try{await loadWebOrders()}catch(e){}st.resets=(S.r==="admin"||S.r==="user")?await rpc("aab_resets_list",{p_role:S.r,p_id:S.i,p_h:S.h}):[];st.audit=S.r==="admin"?await rpc("aab_audit_list",{p_id:S.i,p_h:S.h}):[];await loadCreds()}catch(e){}}
 async function setAcct(r){try{const i=nid(r,$("#n_"+r).value),p=$("#p_"+r).value;if(!i||!p)return toast(t("need"));if(!okPw(p,i))return toast(t("pwl"));
   const h=await hp(i,p);const x=await rpc("aab_set_account",{p_id:S.i,p_h:S.h,p_role:r,p_target:i,p_newh:h});if(x==="dup")return toast(t("dup"));if(x!=="ok")return toast(t("bad"));
   $("#n_"+r).value="";$("#p_"+r).value="";document.activeElement.blur();await refresh();render(true);toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
@@ -1935,23 +1935,15 @@ function vidAdminTab(){const m=st.media||{};const slot=(k,l)=>`<div class="card"
  return `<div class="mu" style="margin:6px 0 10px">${AE("Promo video shows above the bottle. Packing video shows above “Place your order”. You can zoom, crop and cut each one.","پروموشن ویڈیو بوتل کے اوپر چلے گی۔ پیکنگ ویڈیو “Place your order” کے اوپر۔ ہر ایک کو زوم، کراپ اور کٹ کر سکتے ہیں۔")}</div>`+slot("promo",AE("🧴 Bottle / promo video","🧴 بوتل / پروموشن ویڈیو"))+slot("pack",AE("📦 Bundle packing video (12×4)","📦 بنڈل پیکنگ ویڈیو (12×4)"))}
 function closeMaskJS(m,W,H,r){const d=new Uint8Array(W*H),e=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let v=0;for(let dy=-r;dy<=r&&!v;dy++){const yy=y+dy;if(yy<0||yy>=H)continue;for(let dx=-r;dx<=r;dx++){const xx=x+dx;if(xx<0||xx>=W)continue;if(m[yy*W+xx]){v=1;break}}}d[y*W+x]=v}for(let y=0;y<H;y++)for(let x=0;x<W;x++){let v=1;for(let dy=-r;dy<=r&&v;dy++){const yy=y+dy;if(yy<0||yy>=H){v=0;break}for(let dx=-r;dx<=r;dx++){const xx=x+dx;if(xx<0||xx>=W||!d[yy*W+xx]){v=0;break}}}e[y*W+x]=v}return e}
 let WB_BUSY=false;
-function wbWait(v,ms){return new Promise((res,rej)=>{let done=false;const to=setTimeout(()=>{if(!done){done=true;res()}},ms);v.onseeked=()=>{if(!done){done=true;clearTimeout(to);res()}}})}
-async function webBotUp(){
- if(WB_BUSY)return toast(AE("Already working, please wait","کام جاری ہے، انتظار کریں"),4000);
- const f=(document.getElementById("vf_webbot")||{}).files;if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);
- const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();
- if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);
- if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);
- const title=((document.getElementById("vt_webbot")||{}).value||"").trim().slice(0,80);
- const prog=(n,tot)=>toast(AE("Removing background… "+n+"/"+tot+" (keep this page open)","بیک گراؤنڈ ہٹ رہا ہے… "+n+"/"+tot+" (صفحہ کھلا رکھیں)"),60000);
- WB_BUSY=true;let vurl=null,v=null;
+function wbWait(v,ms){return new Promise(res=>{let done=false;const to=setTimeout(()=>{if(!done){done=true;res()}},ms);v.onseeked=()=>{if(!done){done=true;clearTimeout(to);res()}}})}
+// builds a soft transparent mask (PNG blob) from a video whose bottle turns and whose background is still
+async function wbMakeMask(file,onProg){
+ let vurl=null,v=null;
  try{
-  prog(0,1);
   vurl=URL.createObjectURL(file);
   v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";v.src=vurl;
   v.setAttribute("playsinline","");v.style.cssText="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none";
   document.body.appendChild(v);
-  // the phone must read the file; give it 20 seconds, otherwise the codec is not supported
   await new Promise((res,rej)=>{const to=setTimeout(()=>rej(new Error("video")),20000);v.onloadeddata=()=>{clearTimeout(to);res()};v.onerror=()=>{clearTimeout(to);rej(new Error("video"))};v.load()});
   const vw=v.videoWidth,vh=v.videoHeight;if(!vw||!vh)throw new Error("video");
   const W=180,H=Math.max(2,Math.round(180*vh/vw));
@@ -1959,7 +1951,7 @@ async function webBotUp(){
   const N=24,D=v.duration&&isFinite(v.duration)?v.duration:1,P=W*H;
   const sum=new Float64Array(P),sq=new Float64Array(P);
   for(let i=0;i<N;i++){
-   prog(i+1,N);
+   if(onProg)onProg(i+1,N);
    v.currentTime=Math.min(Math.max(0,D-0.05),(i+0.5)*D/N);
    await wbWait(v,1500);
    cx.drawImage(v,0,0,W,H);const d=cx.getImageData(0,0,W,H).data;
@@ -1984,28 +1976,15 @@ async function webBotUp(){
   if("filter" in sx)sx.filter="blur(1px)";sx.drawImage(mc,0,0);
   const blob=await new Promise(r=>soft.toBlob(r,"image/png"));
   if(!blob)throw new Error("mask");
-  prog(N,N);
-  const stamp=Date.now();const vname="webbot-"+stamp+"."+ext,mname="webbotm-"+stamp+".png";
-  const up=async(name,body,type)=>{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":type,"x-upsert":"true"},body});if(!r.ok)throw new Error("upload "+r.status)};
-  await up(vname,file,file.type||"video/mp4");
-  await up(mname,blob,"image/png");
-  const vpub=SB+"/storage/v1/object/public/aab-media/"+vname,mpub=SB+"/storage/v1/object/public/aab-media/"+mname;
-  const ok1=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbot",p_url:vpub,p_title:title});
-  const ok2=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:mpub,p_title:title});
-  if(ok1!=="ok"||ok2!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہ کیا"),6000);
-  toast(AE("Done: background removed automatically","ہو گیا: بیک گراؤنڈ خودکار طور پر ہٹ گیا"),5000);
-  await refresh();render(true);
- }catch(e){
-  const m=e&&e.message||"";
-  let msg;
-  if(m==="nomove")msg=AE("No moving bottle found. Turn the bottle in the video and keep the background still, or untick the box to upload as it is.","کوئی گھومتی بوتل نہیں ملی۔ ویڈیو میں بوتل گھمائیں اور پس منظر ساکن رکھیں، یا باکس ان چیک کر کے ویڈیو جیسی ہے ویسی اپ لوڈ کریں۔");
-  else if(m==="camera")msg=AE("The background moves too much. Keep the camera still, or untick the box to upload as it is.","پس منظر بہت ہل رہا ہے۔ کیمرہ ساکن رکھیں، یا باکس ان چیک کر کے ویڈیو جیسی ہے ویسی اپ لوڈ کریں۔");
-  else if(m==="video")msg=AE("This phone cannot read this video. Use an MP4 (H.264) file.","یہ فون یہ ویڈیو نہیں پڑھ سکتا۔ MP4 (H.264) فائل استعمال کریں۔");
-  else if(m.indexOf("upload")===0)msg=AE("Upload failed ("+m.slice(7)+"). Check the file size and try again.","اپ لوڈ ناکام ("+m.slice(7)+")۔ فائل کا سائز چیک کر کے دوبارہ کوشش کریں۔");
-  else msg=AE("Could not process this video. Try again or untick the box.","یہ ویڈیو پروسیس نہیں ہو سکی۔ دوبارہ کوشش کریں یا باکس ان چیک کریں۔");
-  toast(msg,9000);
- }finally{WB_BUSY=false;if(v&&v.parentNode)v.parentNode.removeChild(v);if(vurl)URL.revokeObjectURL(vurl)}
+  return blob;
+ }finally{if(v&&v.parentNode)v.parentNode.removeChild(v);if(vurl)URL.revokeObjectURL(vurl)}
 }
+function wbErrText(e){const m=(e&&e.message)||"";
+ if(m==="nomove")return AE("no moving bottle found (turn the bottle in the video, keep the background still)","کوئی گھومتی بوتل نہیں ملی (ویڈیو میں بوتل گھمائیں، پس منظر ساکن رکھیں)");
+ if(m==="camera")return AE("background moves too much (keep the camera still)","پس منظر بہت ہل رہا ہے (کیمرہ ساکن رکھیں)");
+ if(m==="video")return AE("this phone cannot read the video (use MP4 H.264)","یہ فون ویڈیو نہیں پڑھ سکتا (MP4 H.264 استعمال کریں)");
+ if(m.indexOf("upload")===0)return AE("upload failed ("+m.slice(7)+")","اپ لوڈ ناکام ("+m.slice(7)+")");
+ return AE("could not process the video","ویڈیو پروسیس نہیں ہو سکی");}
 function webVidTab(){const m=st.media||{};const cur=m.webbot;
  return `<div class="mu" style="margin:6px 0 10px">${AE("This video shows on the website, above the order form. Upload here, then it appears on the website automatically.","یہ ویڈیو ویب سائٹ پر آرڈر فارم کے اوپر دکھے گی۔ یہاں اپ لوڈ کریں، پھر وہ خود ویب سائٹ پر آ جائے گی۔")}</div>
  <div class="card"><h2 style="font-size:16px">🌐 ${AE("Website video","ویب سائٹ ویڈیو")}</h2>
@@ -2014,25 +1993,48 @@ function webVidTab(){const m=st.media||{};const cur=m.webbot;
  <label>${AE("Video file (mp4, webm or mov, max 30 MB)","ویڈیو فائل (mp4، webm یا mov، 30 MB تک)")}</label><input id="vf_webbot" type="file" accept="video/mp4,video/webm,video/quicktime">
  <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="vbg" checked style="width:auto;margin:0"> ${AE("Remove the background automatically (for a bottle that turns)","بیک گراؤنڈ خودکار ہٹائیں (گھومتی بوتل کے لیے)")}</label>
  <button class="big" onclick="webVidUp()">⬆️ ${AE("Upload","اپ لوڈ")}</button></div>`}
-async function webVidUp(){const cb=document.getElementById("vbg");if(cb&&cb.checked)return webBotUp();
+async function webVidUp(){
+ if(WB_BUSY)return toast(AE("Already working, please wait","کام جاری ہے، انتظار کریں"),4000);
+ const cb=document.getElementById("vbg");const removeBg=!!(cb&&cb.checked);
  const f=(document.getElementById("vf_webbot")||{}).files;if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);
  const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();
  if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);
  if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);
  const title=((document.getElementById("vt_webbot")||{}).value||"").trim().slice(0,80);
- toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);
- try{const name="webbot-"+Date.now()+"."+ext;
-  const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});
+ WB_BUSY=true;
+ try{
+  // 1) upload the video as it is, and clear any old mask so it cannot be paired with the new video
+  toast(AE("Uploading video…","ویڈیو اپ لوڈ ہو رہی ہے…"),60000);
+  const stamp=Date.now();const vname="webbot-"+stamp+"."+ext;
+  const r=await fetch(SB+"/storage/v1/object/aab-media/"+vname,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});
   if(!r.ok)throw new Error("upload "+r.status);
-  const url=SB+"/storage/v1/object/public/aab-media/"+name;
-  const ok1=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbot",p_url:url,p_title:title});
-  const ok2=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:"",p_title:title});
-  if(ok1!=="ok"||ok2!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہ کیا"),6000);
-  toast(AE("Uploaded","اپ لوڈ ہو گئی"),4000);await refresh();render(true);
- }catch(e){toast(errMsg(e),7000)}}
+  const vpub=SB+"/storage/v1/object/public/aab-media/"+vname;
+  const a=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:"",p_title:title});
+  const b=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbot",p_url:vpub,p_title:title});
+  if(a!=="ok"||b!=="ok")throw new Error("save");
+  // 2) optional: build the transparent mask and save it (the video is already live)
+  let note="";
+  if(removeBg){
+   try{
+    const blob=await wbMakeMask(file,(n,tot)=>toast(AE("Removing background… "+n+"/"+tot,"بیک گراؤنڈ ہٹ رہا ہے… "+n+"/"+tot),60000));
+    const mname="webbotm-"+stamp+".png";
+    const r2=await fetch(SB+"/storage/v1/object/aab-media/"+mname,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"image/png","x-upsert":"true"},body:blob});
+    if(!r2.ok)throw new Error("upload "+r2.status);
+    const mpub=SB+"/storage/v1/object/public/aab-media/"+mname;
+    const c=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:mpub,p_title:title});
+    if(c!=="ok")throw new Error("save");
+    note=AE(" Background removed.","  بیک گراؤنڈ ہٹ گیا۔");
+   }catch(e){note=AE(" Background not removed: ","  بیک گراؤنڈ نہیں ہٹا: ")+wbErrText(e)}
+  }
+  toast(AE("Uploaded and live on the website.","اپ لوڈ ہو گئی، ویب سائٹ پر آ گئی۔")+note,9000);
+  await refresh();render(true);
+ }catch(e){
+  toast(AE("Upload failed: ","اپ لوڈ ناکام: ")+wbErrText(e),9000);
+ }finally{WB_BUSY=false}
+}
 async function webVidRemove(){try{const a=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbot",p_url:"",p_title:""});const b=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:"",p_title:""});if(a!=="ok"||b!=="ok")return toast(t("savefail"),5000);toast(AE("Removed","ہٹا دی گئی"),3000);await refresh();render(true)}catch(e){toast(errMsg(e),6000)}}
 Object.assign(T.en,{n_webv:"Website video"});Object.assign(T.ur,{n_webv:"ویب سائٹ ویڈیو"});
-async function mediaUp(k){if(k==="webbot")return webBotUp();const f=(document.getElementById("vf_"+k)||{}).files;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);const name=k+"-"+Date.now()+"."+ext;toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);try{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});if(!r.ok)throw new Error("upload "+r.status);const url=SB+"/storage/v1/object/public/aab-media/"+name;const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہیں کیا"),6000);await refresh();render(true);toast(AE("Video live ✔","ویڈیو چل رہی ہے ✔"))}catch(e){toast(AE("Upload failed: check internet or file size","اپ لوڈ ناکام: انٹرنیٹ یا فائل سائز چیک کریں"),7000)}}
+async function mediaUp(k){if(k==="webbot")return webVidUp();const f=(document.getElementById("vf_"+k)||{}).files;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);const name=k+"-"+Date.now()+"."+ext;toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);try{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});if(!r.ok)throw new Error("upload "+r.status);const url=SB+"/storage/v1/object/public/aab-media/"+name;const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہیں کیا"),6000);await refresh();render(true);toast(AE("Video live ✔","ویڈیو چل رہی ہے ✔"))}catch(e){toast(AE("Upload failed: check internet or file size","اپ لوڈ ناکام: انٹرنیٹ یا فائل سائز چیک کریں"),7000)}}
 async function mediaClear(k){if(!await confirmBox(AE("Remove this video?","یہ ویڈیو ہٹائیں؟")))return;try{const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:"",p_title:""});if(ok!=="ok")return toast(t("ship_bad"),5000);await refresh();render(true);toast(t("dc_done"))}catch(e){toast(errMsg(e),7000)}}
 Object.assign(T.en,{n_vid:"🎬 Videos",n_btn:"🔘 Buttons"});
 Object.assign(T.ur,{n_vid:"🎬 ویڈیوز",n_btn:"🔘 بٹن"});
@@ -2476,7 +2478,11 @@ const payBox=()=>`<div class="card"><h2>${t("payh")}</h2>${st.payOk===false?`<di
 function pickQR(inp){const f=inp.files&&inp.files[0];if(!f)return;if(!/^image\//.test(f.type))return toast(t("qrbad"));const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=async()=>{try{const M=720,k=Math.min(1,M/Math.max(im.width,im.height)),w=Math.round(im.width*k),h=Math.round(im.height*k),c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);let d=c.toDataURL("image/png");if(d.length>420000)d=c.toDataURL("image/jpeg",.92);if(d.length>440000)return toast(t("qrbig"));if(!await rpc("aab_set_qr",{p_id:S.i,p_h:S.h,p_qr:d}))return toast(t("savefail"));await refresh();render(true);toast(t("done"))}catch(e){toast(e&&/ 404$/.test(e.message||"")?t("sqlmiss"):"Error")}};im.onerror=()=>toast(t("qrbad"));im.src=r.result};r.readAsDataURL(f)}
 async function delQR(){try{if(!await rpc("aab_set_qr",{p_id:S.i,p_h:S.h,p_qr:""}))return toast(t("savefail"));await refresh();render(true);toast(t("done"))}catch(e){toast(errMsg(e),7000)}}
 async function setPay(){try{const a=$("#pac").value.trim(),v=parseInt($("#pad").value,10);if(!(v>=0))return toast(t("bad"));if(v>0&&!a)return toast(t("needacct"));if(!await rpc("aab_set_pay",{p_id:S.i,p_h:S.h,p_title:$("#ptt").value.trim(),p_acct:a,p_bank:$("#pbk").value.trim(),p_adv:v}))return toast(t("savefail"));await refresh();render(true);toast(t("done"))}catch(e){toast(e&&/ 404$/.test(e.message||"")?t("sqlmiss"):(e&&e.message?e.message:"Network error"))}}
-function user(){const _h=({chat:chatTab,xls:excelTab,webo:()=>webOrders("user"),new:userNew,wait:userNew,ship:userNew,rev:rvTab,done:userNew,dash,sheet,pw:()=>rsBox()+pwBox()})[SEC.user]();return _h+(["new","wait","ship","done","webo"].includes(SEC.user)?salesBox():"")}
+function user(){const _h=({chat:chatTab,xls:excelTab,webo:()=>webOrders("user"),new:userNew,wait:userNew,ship:userNew,rev:rvTab,done:userNew,dash,sheet,pw:()=>rsBox()+pwBox()})[SEC.user]();return _h+shopStats()}
+function shopStats(){const p=st.pub;if(!p||!p.sales)return "";const s=p.sales,tk=p.tokens||st.tcfg||{};const N=v=>Number(v||0).toLocaleString("en-US");
+ const tiers=(tk.tiers||[]).slice().sort((a,b)=>a.b-b.b);
+ const tokHtml=(tk.on&&tiers.length)?`<div class="card" style="margin-top:12px"><div style="font-weight:700;color:#5a0c12;text-align:center">🪙 ${AE("Tokens per bundles","بنڈلوں پر ٹوکن")}</div><div style="text-align:center;line-height:1.9;margin-top:6px">${tiers.map(x=>`<div>${x.b} ${AE("bundles","بنڈل")} = ${N(x.t)} ${AE("tokens","ٹوکن")}</div>`).join("")}${+tk.extra?`<div class="mu">+${N(tk.extra)} ${AE("tokens for each extra bundle","ٹوکن ہر اضافی بنڈل پر")}</div>`:""}</div></div>`:"";
+ return `<div class="card" style="text-align:center;margin-top:12px"><div style="font-weight:700;color:#5a0c12">📊 ${AE("Shop & website sales","دکانوں اور ویب سائٹ کی سیل")}</div><div style="margin-top:8px">📥 ${AE("Booked","بک شدہ")}: <b dir="ltr">${N(s.booked_b)}</b> ${AE("bottles","بوتلیں")} · <b dir="ltr">${N(s.booked_n)}</b> ${AE("bundles","بنڈل")}</div><div style="margin-top:4px">✅ ${AE("Sold (delivered)","سیل (ڈیلیور ہو چکی)")}: <b dir="ltr">${N(s.sold_b)}</b> ${AE("bottles","بوتلیں")} · <b dir="ltr">${N(s.sold_n)}</b> ${AE("bundles","بنڈل")}</div></div>${tokHtml}`}
 function salesBox(){if(!st.sales||Date.now()-(st.salesAt||0)>30000){if(!st._salesReq){st._salesReq=1;rpc("aab_sales_summary",{}).then(s=>{st._salesReq=0;st.sales=s||{bottles:0,bundles:0};st.salesAt=Date.now();render(true)}).catch(()=>{st._salesReq=0})}if(!st.sales)return ""}
 const s=st.sales;return `<div class="card" style="text-align:center;margin-top:12px"><div style="font-weight:700;color:#5a0c12">${AE("Total sales (website + shops)","کل سیل (ویب سائٹ + دکانیں)")}</div><div style="font-size:18px;margin-top:6px" dir="ltr"><b>${Number(s.bottles||0).toLocaleString("en-US")}</b> ${AE("bottles","بوتلیں")} · <b>${Number(s.bundles||0).toLocaleString("en-US")}</b> ${AE("bundles","بنڈل")}</div></div>`}
 function admin(){return ({tokq:tokQTab,chat:chatTab,reg:regTab,xls:excelTab,webo:()=>webOrders("admin"),web:webEditor,appr:adminAppr,ship:()=>shipTab("admin"),rev:rvTab,tok:tokAdminTab,disc:discAdminTab,dtd:dtdTab,vid:vidAdminTab,webv:webVidTab,btn:btnAdminTab,dash,sheet,prod:prodAdmin,acct:()=>foldBar()+fold("rs",rsBox())+fold("adm",acctBox("admin"))+fold("usr",acctBox("user"))+fold("cus",custBox()),set:()=>foldBar()+fold("net",netBox())+fold("arc",arcBox())+fold("pay",payBox())+fold("pr",priceBox())+fold("tax",taxBox())+fold("ship",shipBox())+fold("ct",ctBox())+fold("site",siteBox())+fold("prt",printBox())+fold("tk",tickerBox())+fold("rc",rcBox())+fold("pw",pwBox()),log:auditView})[SEC.admin]()}
@@ -3407,7 +3413,7 @@ function hdrBar(){
  if(sd&&!sd.querySelector(".sdh"))sd.insertAdjacentHTML("afterbegin",`<div class="sdh">☰ ${L==="ur"?"مینو":"Menu"}</div>`);
 }
 /* ---------- Top 3 big buttons for every app (admin / user / shopkeeper) ---------- */
-const BUILD="10.0";
+const BUILD="11.0";
 const TOP3={admin:[["rev","⭐","n_rev"],["appr","⏳","n_appr"],["ship","🚚","n_ship"]],user:[["new","📥","n_new"],["wait","⏳","n_wait"],["ship","🚚","n_ship"]],customer:[["order","🛒","n_order"],["mine","📦","n_mine"],["tok","🪙","n_tok"]]};
 function topBar(){const a=TOP3[cur];if(!a||!me(cur)||cur==="admin"||cur==="user"||cur==="customer")return"";
   const cnt=x=>st.orders.filter(o=>o.status===x).length;
@@ -3723,3 +3729,4 @@ async function vcToggle(on){const o={},x=st.site||{};Object.keys(x).forEach(k=>{
   if((st.site||{}).tk_vc!==o.tk_vc)toast(AE("Saved on this phone only — the server did not keep this setting.","صرف اس فون پر محفوظ ہوا — سرور نے یہ سیٹنگ محفوظ نہیں کی۔"),8000);
   render(true)}catch(e){toast(errMsg(e),7000)}}
 </script></body></html>
+setInterval(async()=>{try{if(document.hidden||!S||!S.h||!S.r)return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;await refresh();render()}catch(e){}},30000);
