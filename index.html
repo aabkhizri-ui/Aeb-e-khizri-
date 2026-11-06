@@ -3728,5 +3728,5 @@ async function vcToggle(on){const o={},x=st.site||{};Object.keys(x).forEach(k=>{
  try{const ok=await rpc("aab_set_site",{p_id:S.i,p_h:S.h,p_site:o});if(!ok)return toast(t("savefail"),5000);await refresh();
   if((st.site||{}).tk_vc!==o.tk_vc)toast(AE("Saved on this phone only — the server did not keep this setting.","صرف اس فون پر محفوظ ہوا — سرور نے یہ سیٹنگ محفوظ نہیں کی۔"),8000);
   render(true)}catch(e){toast(errMsg(e),7000)}}
-</script></body></html>
 setInterval(async()=>{try{if(document.hidden||!S||!S.h||!S.r)return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;await refresh();render()}catch(e){}},30000);
+</script></body></html>
