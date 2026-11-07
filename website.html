@@ -380,7 +380,7 @@ html,body{max-width:100%;overflow-x:hidden}
     <div><h4><span class="en">Contact</span><span class="ur">رابطہ</span></h4><a id="ftel" href="#" hidden>📞 <span id="ftelt"></span></a><a id="fwa" href="#" hidden target="_blank" rel="noopener">💬 WhatsApp</a><span id="fnone" style="font-size:14px"><span class="en">Use the order form above and we will contact you.</span><span class="ur">اوپر آرڈر فارم استعمال کریں، ہم آپ سے رابطہ کریں گے۔</span></span></div>
   </div>
   <div class="copy">© <span id="yr"></span> Aab-e-Khizri · <span class="en">All rights reserved</span><span class="ur">جملہ حقوق محفوظ ہیں</span></div>
-</div><div style="text-align:center;font-size:12px;opacity:.6;padding:8px">Aab-e-Khizri · v11.0</div>
+</div><div style="text-align:center;font-size:12px;opacity:.6;padding:8px">Aab-e-Khizri · v11.01</div>
 </footer>
 
 <a class="fab" id="fab" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
@@ -456,32 +456,36 @@ if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es
 $("#yr").textContent=new Date().getFullYear();
 var sl="en";try{sl=localStorage.getItem("akw_lang")||((navigator.language||"").toLowerCase().indexOf("ur")===0?"ur":"en")}catch(e){}
 function prow(tb,a,b){var tr=document.createElement("tr"),x=document.createElement("td"),y=document.createElement("td");x.textContent=a;y.textContent=b;tr.appendChild(x);tr.appendChild(y);tb.appendChild(tr)}
-function bottleInit(){var v=document.getElementById("bottleVid"),cv=document.getElementById("bottleCv");if(!v||!cv)return;var ctx=cv.getContext("2d"),mask=null,looping=false;
+function mvRun(c){if(!c||c.dataset.on)return;c.dataset.on="1";
+ var cr={};try{cr=JSON.parse(c.dataset.crop||"{}")||{}}catch(e){}
+ var cx=+cr.x||0,cy=+cr.y||0,cw=+cr.w||100,ch=+cr.h||100,tin=+cr.in||0,tout=+cr.out||0;
+ var v=document.createElement("video");v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload="auto";v.src=c.dataset.src;
+ v.style.cssText="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none";document.body.appendChild(v);
+ var mk=null;if(c.dataset.mask){mk=new Image();mk.src=c.dataset.mask}
+ var ctx=c.getContext("2d"),geo=null;
+ v.onloadedmetadata=function(){var vw=v.videoWidth,vh=v.videoHeight;if(!vw||!vh)return;
+  var sx=Math.round(vw*cx/100),sy=Math.round(vh*cy/100),sw=Math.max(2,Math.round(vw*cw/100)),sh=Math.max(2,Math.round(vh*ch/100));
+  geo={sx:sx,sy:sy,sw:sw,sh:sh,vw:vw,vh:vh};c.width=sw;c.height=sh;try{v.currentTime=tin}catch(e){};var pp=v.play();if(pp&&pp.catch)pp.catch(function(){})};
+ v.ontimeupdate=function(){if(tout>0&&v.currentTime>=tout){try{v.currentTime=tin}catch(e){}}};
+ v.onended=function(){try{v.currentTime=tin}catch(e){};var pp=v.play();if(pp&&pp.catch)pp.catch(function(){})};
+ function frame(){if(!document.body.contains(c)){try{v.pause();v.remove()}catch(e){}return}
+  if(geo&&v.readyState>=2){ctx.globalCompositeOperation="source-over";ctx.clearRect(0,0,c.width,c.height);
+   ctx.drawImage(v,geo.sx,geo.sy,geo.sw,geo.sh,0,0,c.width,c.height);
+   if(mk&&mk.complete&&mk.naturalWidth){var mw=mk.naturalWidth,mh=mk.naturalHeight;
+    ctx.globalCompositeOperation="destination-in";
+    ctx.drawImage(mk,geo.sx/geo.vw*mw,geo.sy/geo.vh*mh,geo.sw/geo.vw*mw,geo.sh/geo.vh*mh,0,0,c.width,c.height);
+    ctx.globalCompositeOperation="source-over"}}
+  requestAnimationFrame(frame)}
+ requestAnimationFrame(frame)}
+function mvStart(){document.querySelectorAll("canvas.mvc").forEach(mvRun)}
+function bottleInit(){var v=document.getElementById("bottleVid"),cv=document.getElementById("bottleCv");if(!v||!cv)return;
  function play(){var p=v.play();if(p&&p.catch)p.catch(function(){})}
- function loop(){if(v.readyState>=2&&v.videoWidth){if(cv.width!==v.videoWidth||cv.height!==v.videoHeight){cv.width=v.videoWidth;cv.height=v.videoHeight}
-   ctx.globalCompositeOperation="source-over";ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(v,0,0,cv.width,cv.height);
-   if(mask&&mask.complete&&mask.naturalWidth){ctx.globalCompositeOperation="destination-in";ctx.drawImage(mask,0,0,cv.width,cv.height);ctx.globalCompositeOperation="source-over"}}
-  requestAnimationFrame(loop)}
- function start(vurl,murl){v.src=vurl;v.load();
-  if(!murl){v.removeAttribute("style");v.setAttribute("style","display:block;height:100%;width:auto;max-width:100%;background:transparent");cv.style.display="none";play();return}
-  mask=new Image();mask.src=murl;
-  v.setAttribute("style","position:absolute;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none");
-  cv.style.display="block";
-  if(!looping){looping=true;requestAnimationFrame(loop)}
-  play()}
- rpc("aab_media_get",{}).then(function(m){if(m&&m.webbot)start(m.webbot,m.webbotm||null);else start("bottle.webm",null)}).catch(function(){start("bottle.webm",null)})}
-var pubLast=null;
-function applyPrice(p){if(!p||!(+p.rate>0))return;RATE=+p.rate;PAID=+p.bundle>0?+p.bundle:PAID;SHIP=+p.ship>=0&&p.ship!==undefined?+p.ship:SHIP;var set=function(sel,v){document.querySelectorAll(sel).forEach(function(e){e.textContent=v})};set("[data-rate]",RATE);set("[data-paid]",PAID);set("[data-free]",FREE);set("[data-ship]",SHIP);try{draw()}catch(e){}}
-function tokBox(tk){var l=$("#tokList"),box=$("#tok-s");if(!l||!box)return;if(!tk||!tk.on||!(tk.tiers||[]).length){box.hidden=true;return}
- l.textContent="";(tk.tiers||[]).slice().sort(function(a,b){return a.b-b.b}).forEach(function(r){var d=document.createElement("div");d.textContent=r.b+" "+T("bundles","بنڈل")+" = "+r.t+" "+T("tokens","ٹوکن");l.appendChild(d)});
- if(+tk.extra){var e=document.createElement("div");e.style.fontSize="13px";e.style.color="#7a5c2e";e.textContent="+"+tk.extra+" "+T("tokens for each extra bundle","ٹوکن ہر اضافی بنڈل پر");l.appendChild(e)}
- box.hidden=false}
-function salesBox(s){if(!s)return;var n=function(v){return Number(v||0).toLocaleString("en-US")};var a=$("#bbot"),b=$("#bbnd"),c=$("#sbot"),d=$("#sbnd");if(a)a.textContent=n(s.booked_b);if(b)b.textContent=n(s.booked_n);if(c)c.textContent=n(s.sold_b);if(d)d.textContent=n(s.sold_n)}
-function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]).then(function(r){var d=r[0]||{},c=r[1]||{};
- var fp=JSON.stringify({w:d.web,t:d.tokens,m:d.media,c:c});
- if(pubLast!==null&&fp!==pubLast){var f=document.activeElement;if(!(f&&/INPUT|TEXTAREA|SELECT/.test(f.tagName))){location.reload();return}}
- pubLast=fp;tokBox(d.tokens);salesBox(d.sales);applyPrice(d.web&&d.web.price)}).catch(function(){})}
-setInterval(function(){if(!document.hidden)pubPoll()},30000);
+ function showRaw(src){cv.style.display="none";v.style.position="";v.style.opacity="";v.style.width="";v.style.height="";v.style.display="block";v.src=src;v.load();play()}
+ rpc("aab_media_get",{}).then(function(m){
+  if(m&&m.webbot){cv.dataset.src=m.webbot;cv.dataset.mask=m.webbotm||"";cv.dataset.crop=JSON.stringify(m.webbotc||{});
+   v.style.display="none";cv.style.display="block";cv.style.height="100%";cv.style.width="auto";cv.style.maxWidth="100%";
+   cv.removeAttribute("data-on");mvRun(cv)}
+  else showRaw("bottle.webm")}).catch(function(){showRaw("bottle.webm")})}
 function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function routeMap(id,st,total,addr,note){
  var stops=[["🧾",T("Order received","آرڈر موصول")],["✅",T("Approved","منظور")],["📦",T("Dispatched","روانہ")],["🚚",T("On the way","راستے میں")],["📍",T("Delivered","پہنچ گیا")]];

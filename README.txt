@@ -45,3 +45,5 @@ v11.0 (fixes): auto-reply now replies at once in English and Urdu (Walaikum Assa
 v11.0 (reset + tracker): all data cleared except the admin login; website tracking shown as a route-map with stops (received, approved, dispatched, on the way, delivered), also on order confirmation.
 
 v11.0 (prices and tokens): admin Website price tab (rate, bottles per bundle, tax, delivery) updates the website and the order calculation; token settings no longer reset to the 10-bundle default while editing; shopkeepers see the website price; save messages confirm.
+
+v11.01: Every uploaded video (website bottle, promo, packing) gets its background removed automatically, and the admin chooses the crop before upload. The shape is kept exactly as cropped (portrait or landscape). Crop and background mask are applied on playback in the app and on the website. Version label now 11.01.

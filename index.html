@@ -449,7 +449,7 @@ header.bar .logo{cursor:pointer}
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v11.0</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v11.01</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -1798,7 +1798,34 @@ function fxStyle(k){const f=fxOf(k);const z=+f.z||1.1,x=f.x==null?50:+f.x,y=f.y=
 function vidTrim(v){try{const i=+v.dataset.in||0;if(i>0&&v.currentTime<i)v.currentTime=i}catch(e){}}
 function vidLoop(v){try{const i=+v.dataset.in||0,o=+v.dataset.out||0;if(o>0&&v.currentTime>=o-0.05)v.currentTime=i}catch(e){}}
 async function mediaBlobs(){let added=false;for(const k of ["promo","pack"]){const u=st.media&&st.media[k];if(!u||_MB[u])continue;try{const r=await fetch(u);if(!r.ok)continue;const b=await r.blob();_MB[u]=URL.createObjectURL(b);added=true}catch(e){}}if(added)render(true)}
-function mvTag(u,cls,k){const f=fxOf(k);return `<video class="${cls||"bt"}" src="${esc(mediaSrc(u))}" data-in="${+f.in||0}" data-out="${+f.out||0}" style="${fxStyle(k)}" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" onloadedmetadata="vidTrim(this)" ontimeupdate="vidLoop(this)" onloadeddata="vidLoaded(this)" onerror="vidErr(this)"></video>`}
+
+// ---- video playback engine: applies the saved crop and the background mask, keeps the shape as chosen ----
+function mvRun(c){if(!c||c.dataset.on)return;c.dataset.on="1";
+ var cr={};try{cr=JSON.parse(c.dataset.crop||"{}")||{}}catch(e){}
+ var cx=+cr.x||0,cy=+cr.y||0,cw=+cr.w||100,ch=+cr.h||100,tin=+cr.in||0,tout=+cr.out||0;
+ var v=document.createElement("video");v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload="auto";v.src=c.dataset.src;
+ v.style.cssText="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none";document.body.appendChild(v);
+ var mk=null;if(c.dataset.mask){mk=new Image();mk.src=c.dataset.mask}
+ var ctx=c.getContext("2d"),geo=null;
+ v.onloadedmetadata=function(){var vw=v.videoWidth,vh=v.videoHeight;if(!vw||!vh)return;
+  var sx=Math.round(vw*cx/100),sy=Math.round(vh*cy/100),sw=Math.max(2,Math.round(vw*cw/100)),sh=Math.max(2,Math.round(vh*ch/100));
+  geo={sx:sx,sy:sy,sw:sw,sh:sh,vw:vw,vh:vh};c.width=sw;c.height=sh;try{v.currentTime=tin}catch(e){};var pp=v.play();if(pp&&pp.catch)pp.catch(function(){})};
+ v.ontimeupdate=function(){if(tout>0&&v.currentTime>=tout){try{v.currentTime=tin}catch(e){}}};
+ v.onended=function(){try{v.currentTime=tin}catch(e){};var pp=v.play();if(pp&&pp.catch)pp.catch(function(){})};
+ function frame(){if(!document.body.contains(c)){try{v.pause();v.remove()}catch(e){}return}
+  if(geo&&v.readyState>=2){ctx.globalCompositeOperation="source-over";ctx.clearRect(0,0,c.width,c.height);
+   ctx.drawImage(v,geo.sx,geo.sy,geo.sw,geo.sh,0,0,c.width,c.height);
+   if(mk&&mk.complete&&mk.naturalWidth){var mw=mk.naturalWidth,mh=mk.naturalHeight;
+    ctx.globalCompositeOperation="destination-in";
+    ctx.drawImage(mk,geo.sx/geo.vw*mw,geo.sy/geo.vh*mh,geo.sw/geo.vw*mw,geo.sh/geo.vh*mh,0,0,c.width,c.height);
+    ctx.globalCompositeOperation="source-over"}}
+  requestAnimationFrame(frame)}
+ requestAnimationFrame(frame)}
+function mvStart(){document.querySelectorAll("canvas.mvc").forEach(mvRun)}
+function mvTag(u,cls,k){const M=st.media||{};const mask=M[k+"m"]||"",crop=M[k+"c"]||null;
+ const cropped=crop&&(crop.x>0||crop.y>0||(+crop.w||100)<100||(+crop.h||100)<100||crop.in>0||crop.out>0);
+ if(mask||cropped){return `<canvas class="${cls||"bt"} mvc" data-src="${esc(mediaSrc(u))}" data-mask="${esc(mask?mediaSrc(mask):"")}" data-crop="${esc(JSON.stringify(crop||{}))}" style="display:block;max-width:100%;height:auto;max-height:70vh;margin:0 auto"></canvas>`}
+ const f=fxOf(k);return `<video class="${cls||"bt"}" src="${esc(mediaSrc(u))}" data-in="${+f.in||0}" data-out="${+f.out||0}" style="${fxStyle(k)}" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" onloadedmetadata="vidTrim(this)" ontimeupdate="vidLoop(this)" onloadeddata="vidLoaded(this)" onerror="vidErr(this)"></video>`}
 function packBlk(){const u=st.media.pack,tt=(st.media.pack_t||"").trim();return `<div class="card" style="padding:10px;overflow:hidden;border-radius:16px">${mvTag(u,"pk","pack")}${tt?`<div class="mu" style="text-align:center;margin-top:6px">${esc(tt)}</div>`:""}</div>`}
 let FXD={};
 function fxDraft(k){if(!FXD[k])FXD[k]=Object.assign({z:1.1,x:50,y:50,in:0,out:0},fxOf(k));return FXD[k]}
@@ -1874,48 +1901,10 @@ function webVidTab(){const m=st.media||{};const cur=m.webbot;
  <div class="card"><h2 style="font-size:16px">🌐 ${AE("Website video","ویب سائٹ ویڈیو")}</h2>
  ${cur?`<video src="${esc(cur)}" controls muted playsinline style="width:100%;max-height:320px;border-radius:12px;background:#111"></video><div class="mu" dir="auto" style="margin-top:6px">${esc(m.webbot_t||"")}</div><button class="no" onclick="webVidRemove()">✖ ${AE("Remove","ہٹائیں")}</button>`:`<div class="mu">${AE("No video yet (the default bottle video is used)","ابھی کوئی ویڈیو نہیں (ڈیفالٹ بوتل ویڈیو چلتی ہے)")}</div>`}
  <label>${AE("Title / note (optional)","عنوان (اختیاری)")}</label><input id="vt_webbot" maxlength="80">
- <label>${AE("Video file (mp4, webm or mov, max 30 MB)","ویڈیو فائل (mp4، webm یا mov، 30 MB تک)")}</label><input id="vf_webbot" type="file" accept="video/mp4,video/webm,video/quicktime">
- <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="vbg" checked style="width:auto;margin:0"> ${AE("Remove the background automatically (for a bottle that turns)","بیک گراؤنڈ خودکار ہٹائیں (گھومتی بوتل کے لیے)")}</label>
+ <label>${AE("Video file (mp4, webm or mov, max 30 MB)","ویڈیو فائل (mp4، webm یا mov، 30 MB تک)")}</label><input id="vf_webbot" type="file" accept="video/mp4,video/webm,video/quicktime" onchange="cropPick('webbot')"><div id="cr_webbot"></div>
+ <div class="mu" style="margin-top:6px">✂️ ${AE("Background is removed automatically. Crop below to choose the part you want.","بیک گراؤنڈ خودکار ہٹتا ہے۔ نیچے کراپ کر کے حصہ منتخب کریں۔")}</div>
  <button class="big" onclick="webVidUp()">⬆️ ${AE("Upload","اپ لوڈ")}</button></div>`}
-async function webVidUp(){
- if(WB_BUSY)return toast(AE("Already working, please wait","کام جاری ہے، انتظار کریں"),4000);
- const cb=document.getElementById("vbg");const removeBg=!!(cb&&cb.checked);
- const f=(document.getElementById("vf_webbot")||{}).files;if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);
- const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();
- if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);
- if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);
- const title=((document.getElementById("vt_webbot")||{}).value||"").trim().slice(0,80);
- WB_BUSY=true;
- try{
-  // 1) upload the video as it is, and clear any old mask so it cannot be paired with the new video
-  toast(AE("Uploading video…","ویڈیو اپ لوڈ ہو رہی ہے…"),60000);
-  const stamp=Date.now();const vname="webbot-"+stamp+"."+ext;
-  const r=await fetch(SB+"/storage/v1/object/aab-media/"+vname,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});
-  if(!r.ok)throw new Error("upload "+r.status);
-  const vpub=SB+"/storage/v1/object/public/aab-media/"+vname;
-  const a=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:"",p_title:title});
-  const b=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbot",p_url:vpub,p_title:title});
-  if(a!=="ok"||b!=="ok")throw new Error("save");
-  // 2) optional: build the transparent mask and save it (the video is already live)
-  let note="";
-  if(removeBg){
-   try{
-    const blob=await wbMakeMask(file,(n,tot)=>toast(AE("Removing background… "+n+"/"+tot,"بیک گراؤنڈ ہٹ رہا ہے… "+n+"/"+tot),60000));
-    const mname="webbotm-"+stamp+".png";
-    const r2=await fetch(SB+"/storage/v1/object/aab-media/"+mname,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"image/png","x-upsert":"true"},body:blob});
-    if(!r2.ok)throw new Error("upload "+r2.status);
-    const mpub=SB+"/storage/v1/object/public/aab-media/"+mname;
-    const c=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:mpub,p_title:title});
-    if(c!=="ok")throw new Error("save");
-    note=AE(" Background removed.","  بیک گراؤنڈ ہٹ گیا۔");
-   }catch(e){note=AE(" Background not removed: ","  بیک گراؤنڈ نہیں ہٹا: ")+wbErrText(e)}
-  }
-  toast(AE("Uploaded and live on the website.","اپ لوڈ ہو گئی، ویب سائٹ پر آ گئی۔")+note,9000);
-  await refresh();render(true);
- }catch(e){
-  toast(AE("Upload failed: ","اپ لوڈ ناکام: ")+wbErrText(e),9000);
- }finally{WB_BUSY=false}
-}
+async function webVidUp(){return cropUpload("webbot")}
 async function webVidRemove(){try{const a=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbot",p_url:"",p_title:""});const b=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:"webbotm",p_url:"",p_title:""});if(a!=="ok"||b!=="ok")return toast(t("savefail"),5000);toast(AE("Removed","ہٹا دی گئی"),3000);await refresh();render(true)}catch(e){toast(errMsg(e),6000)}}
 Object.assign(T.en,{n_webv:"Website video"});Object.assign(T.ur,{n_webv:"ویب سائٹ ویڈیو"});
 function wpData(){const w=((st.pub||{}).web||{}).price||{};return {rate:w.rate||"",bundle:w.bundle||"",tax:w.tax==null?0:w.tax,ship:w.ship==null?0:w.ship}}
@@ -1935,7 +1924,7 @@ async function webPriceSave(){const g=id=>((document.getElementById(id)||{}).val
   if(r!=="ok")return toast(AE("Not saved. Check the values.","محفوظ نہیں ہوا۔ قدریں چیک کریں۔")+" ("+(r||"no access")+")",6000);
   await refresh();render(true);toast(AE("Saved ✔ The website is updated.","محفوظ ہو گیا ✔ ویب سائٹ اپ ڈیٹ ہو گئی۔"),5000)}catch(e){toast(errMsg(e),7000)}}
 Object.assign(T.en,{n_wprice:"Website price"});Object.assign(T.ur,{n_wprice:"ویب سائٹ قیمت"});
-async function mediaUp(k){if(k==="webbot")return webVidUp();const f=(document.getElementById("vf_"+k)||{}).files;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);const name=k+"-"+Date.now()+"."+ext;toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);try{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});if(!r.ok)throw new Error("upload "+r.status);const url=SB+"/storage/v1/object/public/aab-media/"+name;const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہیں کیا"),6000);await refresh();render(true);toast(AE("Video live ✔","ویڈیو چل رہی ہے ✔"))}catch(e){toast(AE("Upload failed: check internet or file size","اپ لوڈ ناکام: انٹرنیٹ یا فائل سائز چیک کریں"),7000)}}
+async function mediaUp(k){return cropUpload(k);const f=(document.getElementById("vf_"+k)||{}).files;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);const name=k+"-"+Date.now()+"."+ext;toast(AE("Uploading…","اپ لوڈ ہو رہی ہے…"),60000);try{const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});if(!r.ok)throw new Error("upload "+r.status);const url=SB+"/storage/v1/object/public/aab-media/"+name;const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہیں کیا"),6000);await refresh();render(true);toast(AE("Video live ✔","ویڈیو چل رہی ہے ✔"))}catch(e){toast(AE("Upload failed: check internet or file size","اپ لوڈ ناکام: انٹرنیٹ یا فائل سائز چیک کریں"),7000)}}
 async function mediaClear(k){if(!await confirmBox(AE("Remove this video?","یہ ویڈیو ہٹائیں؟")))return;try{const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:"",p_title:""});if(ok!=="ok")return toast(t("ship_bad"),5000);await refresh();render(true);toast(t("dc_done"))}catch(e){toast(errMsg(e),7000)}}
 Object.assign(T.en,{n_vid:"🎬 Videos",n_btn:"🔘 Buttons"});
 Object.assign(T.ur,{n_vid:"🎬 ویڈیوز",n_btn:"🔘 بٹن"});
@@ -1952,21 +1941,42 @@ function cropLive(k){const g=id=>+document.getElementById(id+"_"+k).value;let c=
 function cropMark(k,w){const v=document.getElementById("cv_"+k),c=CRV[k];if(!v||!c)return;const t=Math.round(v.currentTime*10)/10;if(w==="s")c.s=t;else c.e=t;const a=document.getElementById("cs_"+k+"v"),b=document.getElementById("ce_"+k+"v");if(a)a.textContent=c.s+"s";if(b)b.textContent=c.e?c.e+"s":AE("end","آخر")}
 function cropReset(k){const c=CRV[k];if(!c)return;c.s=0;c.e=0;["cx","cy"].forEach(id=>document.getElementById(id+"_"+k).value=0);["cw","ch"].forEach(id=>document.getElementById(id+"_"+k).value=100);cropLive(k);const a=document.getElementById("cs_"+k+"v"),b=document.getElementById("ce_"+k+"v");if(a)a.textContent="0s";if(b)b.textContent=AE("end","آخر")}
 function waitEv(el,ev){return new Promise((ok,no)=>{el.addEventListener(ev,ok,{once:true});setTimeout(()=>no(new Error("timeout")),20000)})}
-async function cropUpload(k){const c=CRV[k];if(!c||!c.file)return toast(AE("Choose a video first","پہلے ویڈیو چنیں"),4000);
- const file=c.file;const ext=(file.name.split(".").pop()||"").toLowerCase();
+async function cropUpload(k){
+ if(WB_BUSY)return toast(AE("Already working, please wait","کام جاری ہے، انتظار کریں"),4000);
+ const inp=document.getElementById("vf_"+k);const f=inp&&inp.files;
+ if(!f||!f[0])return toast(AE("Choose a video file first","پہلے ویڈیو فائل چنیں"),5000);
+ const file=f[0];const ext=(file.name.split(".").pop()||"").toLowerCase();
  if(!["mp4","webm","mov"].includes(ext))return toast(AE("Only mp4, webm or mov","صرف mp4، webm یا mov"),5000);
  if(file.size>30*1024*1024)return toast(AE("Video is bigger than 30 MB","ویڈیو 30 MB سے بڑی ہے"),6000);
- toast(AE("Uploading… keep this page open","اپ لوڈ ہو رہی ہے… یہ صفحہ کھلا رکھیں"),60000);
- try{const name=k+"-"+Date.now()+"."+ext;
-  const r=await fetch(SB+"/storage/v1/object/aab-media/"+name,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});
+ const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);
+ const c=(CRV[k]&&CRV[k].file===file)?CRV[k]:{cx:0,cy:0,cw:100,ch:100,s:0,e:0};
+ const crop={x:+c.cx||0,y:+c.cy||0,w:+c.cw||100,h:+c.ch||100,in:+c.s||0,out:+c.e||0};
+ WB_BUSY=true;
+ try{
+  toast(AE("Uploading video…","ویڈیو اپ لوڈ ہو رہی ہے…"),60000);
+  const stamp=Date.now();const vname=k+"-"+stamp+"."+ext;
+  const r=await fetch(SB+"/storage/v1/object/aab-media/"+vname,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":file.type||"video/mp4","x-upsert":"true"},body:file});
   if(!r.ok)throw new Error("upload "+r.status);
-  const url=SB+"/storage/v1/object/public/aab-media/"+name;const title=((document.getElementById("vt_"+k)||{}).value||"").trim().slice(0,80);
-  const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:url,p_title:title});
-  if(ok!=="ok")return toast(AE("Saved, but the server refused it","محفوظ ہوا، لیکن سرور نے منظور نہ کیا"),6000);
-  const z=Math.min(4,Math.max(1,100/Math.max(1,c.cw)));const x=Math.min(100,Math.max(0,c.cx+c.cw/2)),y=Math.min(100,Math.max(0,c.cy+c.ch/2));
-  CRV[k]=null;FXD[k]={z:+z.toFixed(2),x:Math.round(x),y:Math.round(y),in:c.s||0,out:c.e||0};
-  await fxSave(k);
- }catch(e){toast(errMsg(e),7000)}}
+  const vpub=SB+"/storage/v1/object/public/aab-media/"+vname;
+  // old mask goes first, so it can never sit on top of the new video
+  await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k+"m",p_url:""});
+  const ok=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k,p_url:vpub,p_title:title,p_crop:crop});
+  if(ok!=="ok")throw new Error("save");
+  let note="";
+  try{
+   const blob=await wbMakeMask(file,(n,tot)=>toast(AE("Removing background… "+n+"/"+tot,"بیک گراؤنڈ ہٹ رہا ہے… "+n+"/"+tot),60000));
+   const mname=k+"m-"+stamp+".png";
+   const r2=await fetch(SB+"/storage/v1/object/aab-media/"+mname,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"image/png","x-upsert":"true"},body:blob});
+   if(!r2.ok)throw new Error("upload "+r2.status);
+   const c2=await rpc("aab_media_set",{p_id:S.i,p_h:S.h,p_key:k+"m",p_url:SB+"/storage/v1/object/public/aab-media/"+mname});
+   if(c2!=="ok")throw new Error("save");
+   note=AE(" Background removed.","  بیک گراؤنڈ ہٹ گیا۔");
+  }catch(e){note=AE(" Background not removed: ","  بیک گراؤنڈ نہیں ہٹا: ")+wbErrText(e)}
+  toast(AE("Uploaded and live.","اپ لوڈ ہو گئی، لائیو ہے۔")+note,9000);
+  CRV[k]=null;await refresh();render(true);
+ }catch(e){toast(AE("Upload failed: ","اپ لوڈ ناکام: ")+wbErrText(e),9000)}
+ finally{WB_BUSY=false}
+}
 
 function pcrPick(){const f=(document.getElementById("pf_img")||{}).files;const box=document.getElementById("pcr");if(!box)return;if(!f||!f[0]){box.innerHTML="";return}const file=f[0];if(!/^image\//.test(file.type))return toast(AE("Choose a photo","تصویر چنیں"),4000);
  CRI={file,url:URL.createObjectURL(file),cx:0,cy:0,cw:100,ch:100};
@@ -2072,6 +2082,7 @@ function render(force){
  const keep={};document.querySelectorAll("#app input,#app textarea").forEach(e=>{if(e.id&&e.type!=="file")keep[e.id]=e.value});
  $("#app").innerHTML=me(cur)?topBar()+({customer,user,admin})[cur]():loginView(cur);
  for(const k in keep){const e=document.getElementById(k);if(e&&e.type!=="file")e.value=keep[k]}
+ try{mvStart()}catch(e){}
  if($("#cq")){if(window.__re){const r=window.__re;window.__re=null;$("#cq").value=Math.max(+r.qty||1,st.cfg.min_qty);const a=$("#ca");if(a&&r.addr)a.value=r.addr}calc()}if($("#psum"))psum()}
 function custOrder(){const c=me("customer");return `${noticeBar()}${promoBtnsHtml()}<div class="card hero">${st.media&&st.media.promo?mvTag(st.media.promo,"bt btv","promo"):st.shopVid?`<video class="bt btv" src="${vidSrc(st.shopVid)}" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" onloadeddata="vidLoaded(this)" onerror="vidErr(this)"></video>`:""}<div>
 <div style="font-weight:700;font-size:18px">${esc(sv("title","آبِ خضری · Cumin Water"))}</div>
@@ -3202,7 +3213,7 @@ function tokQTab(){
    +(H.length?`<h2 style="font-size:16px;margin-top:18px">${t("tq_hist")}</h2>`+H.map(x=>`<div class="card" style="padding:10px 14px"><div class="row"><b>${x.status==="approved"?"✅":"❌"} ${esc(x.oid)}</b><b dir="ltr">${x.status==="approved"?"+"+x.amt:"—"}</b></div><div class="mu">${esc(x.cid)} · ${x.status==="approved"?t("tq_approved"):t("tq_rejected")} · ${fmtT(x.at)}</div></div>`).join(""):"")}
 
 /* ═══ v9.5 · What's new (shown once per version) ═══ */
-Object.assign(T.en,{wn_h:"What's new in v11.0",wn_ok:"OK, got it",wn_l:["🎬 Website bottle video: upload from Admin → 🌐 Website video; background removed automatically, video shows live on the website","🪙 Token table shows on the website and in the shopkeeper app; admin changes update everywhere","📊 Shopkeeper: booked and sold bottles and bundles at the bottom of every tab","🔄 App and website refresh themselves every 30 seconds, so admin changes show up without reinstalling","🖨️ Printable receipt on the website; WhatsApp button and sales totals on the website","🛠️ Fixes: upload errors, file-input error, storage permission for website video, stray text on the login page"]});Object.assign(T.ur,{wn_h:"v11.0 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["🎬 ویب سائٹ کی بوتل ویڈیو: ایڈمن → 🌐 Website video سے اپ لوڈ کریں؛ بیک گراؤنڈ خودکار ہٹتا ہے، ویڈیو ویب سائٹ پر لائیو آتی ہے","🪙 ٹوکن ٹیبل ویب سائٹ اور شاپکیپر ایپ میں دکھتا ہے؛ ایڈمن کی تبدیلی ہر جگہ اپ ڈیٹ ہوتی ہے","📊 شاپکیپر: ہر ٹیب کے نیچے بک شدہ اور سیل شدہ بوتلیں اور بنڈل","🔄 ایپ اور ویب سائٹ ہر 30 سیکنڈ میں خود ریفریش ہوتے ہیں","🖨️ ویب سائٹ پر پرنٹ ایبل رسید، WhatsApp بٹن اور سیل کا حساب","🛠️ درستگی: اپ لوڈ کی خرابیاں، فائل ان پٹ کی خرابی، ویڈیو کی اجازت، لاگ ان پیج پر غیر ضروری متن"]}); function whatsNew(){try{if(!S||!S.r||localStorage.getItem("aab_wn")===BUILD)return;if(document.getElementById("wnb"))return;
+Object.assign(T.en,{wn_h:"What's new in v11.01",wn_ok:"OK, got it",wn_l:["🎬 Website bottle video: upload from Admin → 🌐 Website video; background removed automatically, video shows live on the website","🪙 Token table shows on the website and in the shopkeeper app; admin changes update everywhere","📊 Shopkeeper: booked and sold bottles and bundles at the bottom of every tab","🔄 App and website refresh themselves every 30 seconds, so admin changes show up without reinstalling","🖨️ Printable receipt on the website; WhatsApp button and sales totals on the website","🛠️ Fixes: upload errors, file-input error, storage permission for website video, stray text on the login page"]});Object.assign(T.ur,{wn_h:"v11.01 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["🎬 ویب سائٹ کی بوتل ویڈیو: ایڈمن → 🌐 Website video سے اپ لوڈ کریں؛ بیک گراؤنڈ خودکار ہٹتا ہے، ویڈیو ویب سائٹ پر لائیو آتی ہے","🪙 ٹوکن ٹیبل ویب سائٹ اور شاپکیپر ایپ میں دکھتا ہے؛ ایڈمن کی تبدیلی ہر جگہ اپ ڈیٹ ہوتی ہے","📊 شاپکیپر: ہر ٹیب کے نیچے بک شدہ اور سیل شدہ بوتلیں اور بنڈل","🔄 ایپ اور ویب سائٹ ہر 30 سیکنڈ میں خود ریفریش ہوتے ہیں","🖨️ ویب سائٹ پر پرنٹ ایبل رسید، WhatsApp بٹن اور سیل کا حساب","🛠️ درستگی: اپ لوڈ کی خرابیاں، فائل ان پٹ کی خرابی، ویڈیو کی اجازت، لاگ ان پیج پر غیر ضروری متن"]}); function whatsNew(){try{if(!S||!S.r||localStorage.getItem("aab_wn")===BUILD)return;if(document.getElementById("wnb"))return;
   const d=document.createElement("div");d.id="wnb";d.style.cssText="position:fixed;inset:0;background:#000a;z-index:140;display:flex;align-items:center;justify-content:center;padding:16px";
   d.innerHTML=`<div class="card" style="max-width:420px;max-height:84vh;overflow:auto"><h2 style="margin-top:0">🆕 ${t("wn_h")}</h2>${t("wn_l").map(x=>`<div style="margin:8px 0">${x}</div>`).join("")}<button class="big" id="wnok">${t("wn_ok")}</button></div>`;
   document.body.appendChild(d);document.getElementById("wnok").onclick=()=>{try{localStorage.setItem("aab_wn",BUILD)}catch(e){}d.remove()}}catch(e){}}
@@ -3313,7 +3324,7 @@ function hdrBar(){
  if(sd&&!sd.querySelector(".sdh"))sd.insertAdjacentHTML("afterbegin",`<div class="sdh">☰ ${L==="ur"?"مینو":"Menu"}</div>`);
 }
 /* ---------- Top 3 big buttons for every app (admin / user / shopkeeper) ---------- */
-const BUILD="11.0";
+const BUILD="11.01";
 const TOP3={admin:[["rev","⭐","n_rev"],["appr","⏳","n_appr"],["ship","🚚","n_ship"]],user:[["new","📥","n_new"],["wait","⏳","n_wait"],["ship","🚚","n_ship"]],customer:[["order","🛒","n_order"],["mine","📦","n_mine"],["tok","🪙","n_tok"]]};
 function topBar(){const a=TOP3[cur];if(!a||!me(cur)||cur==="admin"||cur==="user"||cur==="customer")return"";
   const cnt=x=>st.orders.filter(o=>o.status===x).length;
