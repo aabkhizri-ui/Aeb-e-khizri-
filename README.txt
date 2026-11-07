@@ -47,3 +47,9 @@ v11.0 (reset + tracker): all data cleared except the admin login; website tracki
 v11.0 (prices and tokens): admin Website price tab (rate, bottles per bundle, tax, delivery) updates the website and the order calculation; token settings no longer reset to the 10-bundle default while editing; shopkeepers see the website price; save messages confirm.
 
 v11.01: Every uploaded video (website bottle, promo, packing) gets its background removed automatically, and the admin chooses the crop before upload. The shape is kept exactly as cropped (portrait or landscape). Crop and background mask are applied on playback in the app and on the website. Version label now 11.01.
+
+v11.01 (update): customer IDs start at 100; order progress shows all stages in one line (New, Waiting for approval, Approved, Dispatch, Shipping, On the way, Delivered); website shows live rates, bundle size, delivery, tokens and new-customer offer; website live-update functions restored; all data cleared except admin.
+
+v11.01 (discounts): a discount given to a customer and the new-customer offer are fixed for one full year; they cannot be lowered, switched off or removed before the year ends (the server enforces this). The admin sees a clear message when a change is blocked.
+
+v11.01 (new-customer offer): admin sets a percentage and the first N new customers (0 = no limit). Each new customer gets the discount automatically on approval. When N customers have received it the offer ends automatically. The website shows the offer and how many are left.

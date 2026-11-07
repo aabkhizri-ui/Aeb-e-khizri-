@@ -220,6 +220,16 @@ html,body{max-width:100%;overflow-x:hidden}
 .wamid-s{background:#f8f0df;padding:18px 0;text-align:center;overflow:hidden}
 .wa-pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;box-sizing:border-box;padding:11px 20px;border-radius:999px;background:linear-gradient(135deg,#f3d37a,#e0b35a);color:#4a0a10;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 6px 16px rgba(90,12,18,.12);white-space:normal;text-align:center;line-height:1.3}
 .wa-pill:active{transform:translateY(1px)}
+.rates-s{padding:22px 0 8px}
+.rates-h{text-align:center;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;color:#5a0c12;margin-bottom:12px}
+.rates-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:560px;margin:0 auto}
+.rc{background:#fff;border:1px solid #e8d6b0;border-radius:16px;padding:12px 14px;text-align:center;box-shadow:0 8px 20px rgba(90,12,18,.07)}
+.rc small{display:block;color:#7a5c2e;font-size:12.5px;margin-bottom:4px}
+.rc b{color:#5a0c12;font-size:20px}
+.rc.wide{grid-column:1/-1;max-width:560px;margin:10px auto 0}
+.rc-t{font-weight:700;color:#5a0c12;margin-bottom:6px}
+#rt_promo{color:#2e7d4f;font-size:15px}
+@media (max-width:420px){.rates-g{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -300,6 +310,7 @@ html,body{max-width:100%;overflow-x:hidden}
 </div></section>
 
 <section class="bottle-s" id="bottle-s"><div class="wrap" style="text-align:center"><div style="position:relative;display:inline-block;height:min(62vh,460px);max-width:100%"><video id="bottleVid" muted loop playsinline preload="auto" aria-label="Aab-e-Khizri Cumin Water" style="display:block;height:100%;width:auto;max-width:100%;background:transparent"></video><canvas id="bottleCv" style="display:none;height:100%;width:auto;max-width:100%"></canvas></div></div></section>
+<section id="rates-s" class="rates-s"><div class="wrap"><div class="rates-h"><span class="en">Current rates &amp; offers</span><span class="ur">موجودہ ریٹ اور آفرز</span></div><div class="rates-g"><div class="rc"><small><span class="en">Rate per bottle</span><span class="ur">فی بوتل ریٹ</span></small><b id="rt_rate" dir="ltr">–</b></div><div class="rc"><small><span class="en">Bottles per bundle</span><span class="ur">فی بنڈل بوتلیں</span></small><b id="rt_bundle" dir="ltr">–</b></div><div class="rc"><small><span class="en">Delivery per order</span><span class="ur">فی آرڈر ڈیلیوری</span></small><b id="rt_ship" dir="ltr">–</b></div><div class="rc" id="rt_taxbox" hidden><small><span class="en">Tax</span><span class="ur">ٹیکس</span></small><b id="rt_tax" dir="ltr">–</b></div></div><div class="rc wide" id="rt_promo_box" hidden><b id="rt_promo"></b></div><div class="rc wide"><div class="rc-t">🪙 <span class="en">Reward tokens (1 token = ₨ 1)</span><span class="ur">انعامی ٹوکن (1 ٹوکن = ₨ 1)</span></div><div id="tokList" dir="ltr" style="line-height:1.9"></div><div id="tokNone" class="mu"></div></div></div></section>
 <section class="order" id="order"><div class="wrap">
   <div class="head center rv"><span class="eyebrow"><span class="en">Order online</span><span class="ur">آن لائن آرڈر</span></span><h2><span class="en">Place your order</span><span class="ur">اپنا آرڈر دیں</span></h2><p class="lead"><span class="en">Choose your bundles and fill in your details. We will confirm shortly.</span><span class="ur">اپنے بنڈل چنیں اور معلومات لکھیں۔ ہم جلد تصدیق کریں گے۔</span></p></div>
   <div class="fg">
@@ -371,7 +382,7 @@ html,body{max-width:100%;overflow-x:hidden}
   </div>
 </div></section>
 
-<section id="tok-s" hidden><div class="wrap" style="max-width:520px;margin:0 auto"><div style="background:#fff;border:1px solid #e3cba5;border-radius:16px;padding:16px 18px;text-align:center"><div style="font-weight:700;color:#5a0c12;margin-bottom:8px">🪙 <span class="en">Token rewards</span><span class="ur">ٹوکن انعامات</span></div><div id="tokList" style="line-height:1.9"></div></div></div></section>
+
 <section id="sales"><div class="wrap" style="max-width:520px;margin:0 auto"><div style="background:#fff;border:1px solid #e3cba5;border-radius:16px;padding:16px 18px;text-align:center;box-shadow:0 8px 22px rgba(90,12,18,.08)"><div style="font-weight:700;color:#5a0c12;margin-bottom:10px"><span class="en">Our sales so far</span><span class="ur">اب تک کی ہماری سیل</span></div><div style="font-size:13px;color:#5a0c12;margin-bottom:6px"><span class="en">Booked</span><span class="ur">بک شدہ</span></div><div style="display:flex;gap:12px;justify-content:center"><div style="flex:1;background:#f8f0df;border-radius:12px;padding:10px"><div style="font-size:22px;font-weight:700;color:#5a0c12" id="bbot" dir="ltr">–</div><div style="font-size:13px"><span class="en">Bottles</span><span class="ur">بوتلیں</span></div></div><div style="flex:1;background:#f8f0df;border-radius:12px;padding:10px"><div style="font-size:22px;font-weight:700;color:#5a0c12" id="bbnd" dir="ltr">–</div><div style="font-size:13px"><span class="en">Bundles</span><span class="ur">بنڈل</span></div></div></div><div style="font-size:13px;color:#5a0c12;margin:12px 0 6px"><span class="en">Sold (delivered)</span><span class="ur">سیل (ڈیلیور ہو چکی)</span></div><div style="display:flex;gap:12px;justify-content:center"><div style="flex:1;background:#f8f0df;border-radius:12px;padding:10px"><div style="font-size:22px;font-weight:700;color:#5a0c12" id="sbot" dir="ltr">–</div><div style="font-size:13px"><span class="en">Bottles</span><span class="ur">بوتلیں</span></div></div><div style="flex:1;background:#f8f0df;border-radius:12px;padding:10px"><div style="font-size:22px;font-weight:700;color:#5a0c12" id="sbnd" dir="ltr">–</div><div style="font-size:13px"><span class="en">Bundles</span><span class="ur">بنڈل</span></div></div></div></div></div></section>
 <footer id="contact"><div class="wrap">
   <div class="fgd">
@@ -486,6 +497,38 @@ function bottleInit(){var v=document.getElementById("bottleVid"),cv=document.get
    v.style.display="none";cv.style.display="block";cv.style.height="100%";cv.style.width="auto";cv.style.maxWidth="100%";
    cv.removeAttribute("data-on");mvRun(cv)}
   else showRaw("bottle.webm")}).catch(function(){showRaw("bottle.webm")})}
+var pubLast=null;
+function waFix(x){x=String(x||"").replace(/\D/g,"");if(x.length===11&&x.charAt(0)==="0")x="92"+x.slice(1);return x}
+function applyPrice(p){if(!p||!(+p.rate>0))return;RATE=+p.rate;PAID=+p.bundle>0?+p.bundle:PAID;SHIP=(p.ship!=null&&+p.ship>=0)?+p.ship:SHIP;
+ var set=function(sel,v){document.querySelectorAll(sel).forEach(function(e){e.textContent=v})};
+ set("[data-rate]",RATE);set("[data-paid]",PAID);set("[data-free]",FREE);set("[data-ship]",SHIP);
+ try{draw()}catch(e){}}
+function tokBox(tk){var L=$("#tokList"),N=$("#tokNone");if(!L)return;L.textContent="";
+ if(!tk||!tk.on||!(tk.tiers||[]).length){if(N)N.textContent=T("Token rewards are not active right now.","ابھی ٹوکن انعام فعال نہیں ہیں۔");return}
+ if(N)N.textContent="";
+ (tk.tiers||[]).slice().sort(function(a,b){return a.b-b.b}).forEach(function(r){var d=document.createElement("div");d.textContent=r.b+" "+T("bundles","بنڈل")+" = "+r.t+" "+T("tokens","ٹوکن");L.appendChild(d)});
+ if(+tk.extra){var e=document.createElement("div");e.style.fontSize="13px";e.style.color="#7a5c2e";e.textContent="+"+tk.extra+" "+T("tokens for each extra bundle","ٹوکن ہر اضافی بنڈل پر");L.appendChild(e)}}
+function ratesBox(d){var p=(d&&d.web&&d.web.price)||{};var set=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v};
+ set("rt_rate",p.rate?"₨ "+Number(p.rate).toLocaleString("en-US"):"–");
+ set("rt_bundle",p.bundle?String(p.bundle):"–");
+ set("rt_ship",p.ship!=null?"₨ "+Number(p.ship).toLocaleString("en-US"):"–");
+ var tb=document.getElementById("rt_taxbox");if(tb)tb.hidden=!(+p.tax>0);if(+p.tax>0)set("rt_tax",p.tax+"%");
+ var pr=(d&&d.promo)||{},box=document.getElementById("rt_promo_box");
+ var cap=+pr.cap||0,used=+pr.used||0;
+ var live=!!pr.on&&+pr.pct>0&&(cap===0||used<cap);
+ if(box)box.hidden=!live;
+ if(live){var left=cap>0?(cap-used):0;
+  set("rt_promo",cap>0
+   ?T(pr.pct+"% off for the first "+cap+" new customers · "+left+" left","پہلے "+cap+" نئے کسٹمرز کے لیے "+pr.pct+"% چھوٹ · "+left+" باقی")
+   :T(pr.pct+"% off for new customers","نئے کسٹمرز کے لیے "+pr.pct+"% چھوٹ"))}}
+function salesBox(s){if(!s)return;var n=function(v){return Number(v||0).toLocaleString("en-US")};var a=$("#bbot"),b=$("#bbnd"),c=$("#sbot"),d=$("#sbnd");if(a)a.textContent=n(s.booked_b);if(b)b.textContent=n(s.booked_n);if(c)c.textContent=n(s.sold_b);if(d)d.textContent=n(s.sold_n)}
+function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]).then(function(r){var d=r[0]||{},c=r[1]||{};
+ var fp=JSON.stringify({w:d.web,t:d.tokens,m:d.media,p:d.promo,c:c});
+ if(pubLast!==null&&fp!==pubLast){var f=document.activeElement;if(!(f&&/INPUT|TEXTAREA|SELECT/.test(f.tagName))){location.reload();return}}
+ pubLast=fp;
+ var num=waFix(c.p||"");var wm=$("#wamid");if(wm&&num){wm.href="https://wa.me/"+num;wm.hidden=false;var ws=$("#wamid-s");if(ws)ws.hidden=false}
+ tokBox(d.tokens);salesBox(d.sales);ratesBox(d);applyPrice(d.web&&d.web.price)}).catch(function(){})}
+setInterval(function(){if(!document.hidden)pubPoll()},30000);
 function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function routeMap(id,st,total,addr,note){
  var stops=[["🧾",T("Order received","آرڈر موصول")],["✅",T("Approved","منظور")],["📦",T("Dispatched","روانہ")],["🚚",T("On the way","راستے میں")],["📍",T("Delivered","پہنچ گیا")]];
