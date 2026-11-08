@@ -63,3 +63,5 @@ v11.01 (places): cities, villages and areas come from the places list (11 cities
 v11.02: The default bottle video is removed. The website shows the bottle video only after the admin uploads one. Version 11.02.
 
 v11.02 (fixes): bill and claim photos open the live camera. Admin action failures show the real reason (token approval now explains a missing bill photo) instead of "Wrong ID or password", which now appears only on the login screen.
+
+v11.02 (bills): the delivery bill photo and message now reach the admin (order cards and the token review) and the shopkeeper sees it received. The admin sees when a bill has not arrived yet.
