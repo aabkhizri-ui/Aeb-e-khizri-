@@ -53,3 +53,5 @@ v11.01 (update): customer IDs start at 100; order progress shows all stages in o
 v11.01 (discounts): a discount given to a customer and the new-customer offer are fixed for one full year; they cannot be lowered, switched off or removed before the year ends (the server enforces this). The admin sees a clear message when a change is blocked.
 
 v11.01 (new-customer offer): admin sets a percentage and the first N new customers (0 = no limit). Each new customer gets the discount automatically on approval. When N customers have received it the offer ends automatically. The website shows the offer and how many are left.
+
+v11.01 (shopkeeper): every delivered order shows its 7-day delivery deadline (overdue is highlighted). After delivery the shopkeeper uploads the bill photo with a message; tokens are added only after the bill photo is uploaded. Claims: the admin switches them on or off in the new Claims tab; when on, shopkeepers submit a claim with a photo, the number of bottles, a reason (leakage, second expiry, third leak, other) and a note; the admin approves or rejects with a note.
