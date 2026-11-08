@@ -337,7 +337,8 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="line"><span><span class="en">Price</span><span class="ur">قیمت</span> (<span id="s5a">6</span> × ₨ 300)</span><b id="s5">₨ 1,800</b></div>
       <div class="line"><span><span class="en">Shipping</span><span class="ur">شپنگ</span></span><b id="s6">₨ 300</b></div>
       <div class="line tot"><span><span class="en">Total to pay</span><span class="ur">کل ادائیگی</span></span><b id="s7">₨ 2,100</b></div>
-      <div class="secure">🔒 <span><span class="en">Pay on delivery. We confirm every order.</span><span class="ur">ڈیلیوری پر ادائیگی۔ ہم ہر آرڈر کی تصدیق کرتے ہیں۔</span></span></div>
+      <div id="tokE" style="margin:8px 0;font-weight:700;color:#2e7d4f;text-align:center"></div>
+       <div class="secure">🔒 <span><span class="en">Pay on delivery. We confirm every order.</span><span class="ur">ڈیلیوری پر ادائیگی۔ ہم ہر آرڈر کی تصدیق کرتے ہیں۔</span></span></div>
     </aside>
   </div>
 </div></section>
@@ -392,7 +393,7 @@ html,body{max-width:100%;overflow-x:hidden}
     <div><h4><span class="en">Contact</span><span class="ur">رابطہ</span></h4><a id="ftel" href="#" hidden>📞 <span id="ftelt"></span></a><a id="fwa" href="#" hidden target="_blank" rel="noopener">💬 WhatsApp</a><span id="fnone" style="font-size:14px"><span class="en">Use the order form above and we will contact you.</span><span class="ur">اوپر آرڈر فارم استعمال کریں، ہم آپ سے رابطہ کریں گے۔</span></span></div>
   </div>
   <div class="copy">© <span id="yr"></span> Aab-e-Khizri · <span class="en">All rights reserved</span><span class="ur">جملہ حقوق محفوظ ہیں</span></div>
-</div><div style="text-align:center;font-size:12px;opacity:.6;padding:8px">Aab-e-Khizri · v11.02</div>
+</div><div style="text-align:center;font-size:12px;opacity:.6;padding:8px">Aab-e-Khizri · v11.05</div>
 </footer>
 
 <a class="fab" id="fab" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
@@ -412,7 +413,9 @@ function rs(n){return "\u20A8 "+Math.round(n).toLocaleString("en-US")}
 function rpc(fn,body){return fetch(SB+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"},body:JSON.stringify({p:body||{}})}).then(function(r){if(!r.ok)throw r.status;return r.json()})}
 function normPK(x){x=String(x||"").replace(/\D/g,"");if(x.slice(0,2)==="92"&&x.length===12)x="0"+x.slice(2);if(x.length===10&&x.charAt(0)==="3")x="0"+x;return x}
 function okPK(x){return /^03\d{9}$/.test(normPK(x))}
-function draw(){var paid=B*PAID,free=B*FREE,sub=paid*RATE,tot=sub+SHIP;
+var TOKCFG=null;
+function tokFor(b){var c=TOKCFG;if(!c||!c.on||!(c.tiers||[]).length)return 0;var tiers=c.tiers.slice().sort(function(x,y){return x.b-y.b});var best=null;tiers.forEach(function(x){if(x.b<=b)best=x});if(!best){return 0}var v=+best.t||0;var top=tiers[tiers.length-1];if(b>top.b&&+c.extra>0)v+=(b-top.b)*(+c.extra);return v}
+function draw(){var paid=B*PAID,free=B*FREE,sub=paid*RATE,tot=sub+SHIP;var tk=tokFor(B);var te=$("#tokE");if(te)te.textContent=tk>0?T("You will earn "+tk.toLocaleString("en-US")+" tokens after delivery and the bill is verified.","ڈیلیوری اور بل کی تصدیق کے بعد آپ کو "+tk.toLocaleString("en-US")+" ٹوکن ملیں گے۔"):"";
  $("#bn").textContent=B;["bq","bq2"].forEach(function(i){$("#"+i).textContent=PAID});["bf","bf2"].forEach(function(i){$("#"+i).textContent=FREE});
  $("#s1").textContent=B;$("#s2").textContent=paid;$("#s3").textContent="+"+free;$("#s4").textContent=paid+free;$("#s5a").textContent=paid;$("#s5").textContent=rs(sub);$("#s6").textContent=rs(SHIP);$("#s7").textContent=rs(tot)}
 function fillCities(){var s=$("#fC"),cur=s.value;s.innerHTML='<option value="">'+T("Select your city","اپنا شہر چنیں")+'</option>'+CITIES.map(function(c){return '<option value="'+c[0]+'">'+(lang==="ur"?c[1]:c[0])+'</option>'}).join("");s.value=cur}
@@ -534,7 +537,7 @@ function salesBox(s){if(!s)return;var n=function(v){return Number(v||0).toLocale
 function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]).then(function(r){var d=r[0]||{},c=r[1]||{};
  var fp=JSON.stringify({w:d.web,t:d.tokens,m:d.media,p:d.promo,c:c});
  if(pubLast!==null&&fp!==pubLast){var f=document.activeElement;if(!(f&&/INPUT|TEXTAREA|SELECT/.test(f.tagName))){location.reload();return}}
- pubLast=fp;AREAS=d.areas||{};fillAreas();
+ pubLast=fp;AREAS=d.areas||{};TOKCFG=d.tokens||null;fillAreas();
  var num=waFix(c.p||"");var wm=$("#wamid");if(wm&&num){wm.href="https://wa.me/"+num;wm.hidden=false;var ws=$("#wamid-s");if(ws)ws.hidden=false}
  tokBox(d.tokens);salesBox(d.sales);ratesBox(d);applyPrice(d.web&&d.web.price)}).catch(function(){})}
 setInterval(function(){if(!document.hidden)pubPoll()},30000);
