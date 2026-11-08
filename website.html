@@ -322,7 +322,8 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="f"><label for="fP"><span class="en">Phone number</span><span class="ur">فون نمبر</span></label><input id="fP" type="tel" inputmode="tel" autocomplete="tel" data-ph-en="03XX XXXXXXX" data-ph-ur="03XX XXXXXXX"></div>
       </div>
       <div class="f"><label for="fC"><span class="en">City</span><span class="ur">شہر</span></label><select id="fC"></select></div>
-      <div class="f"><label for="fA"><span class="en">Delivery address</span><span class="ur">ڈیلیوری کا پتہ</span></label><textarea id="fA" data-ph-en="Area, street, house number" data-ph-ur="علاقہ، گلی، مکان نمبر"></textarea></div>
+      <div class="f"><label for="fAr"><span class="en">Village / area</span><span class="ur">گاؤں / علاقہ</span></label><select id="fAr"></select></div>
+<div class="f"><label for="fA"><span class="en">Delivery address</span><span class="ur">ڈیلیوری کا پتہ</span></label><textarea id="fA" data-ph-en="Area, street, house number" data-ph-ur="علاقہ، گلی، مکان نمبر"></textarea></div>
       <button class="btn btn-maroon" id="go" type="button" style="width:100%;font-size:16px"><span class="en">Place order</span><span class="ur">آرڈر بھیجیں</span></button>
       <div class="msg" id="msg" role="status"></div>
       <div class="success" id="ok"><div>✅ <span class="en">Order received. Your order number is</span><span class="ur">آرڈر موصول ہو گیا۔ آپ کا آرڈر نمبر ہے</span></div><div class="no" id="oid">W00000</div><div id="otot"></div>
@@ -433,9 +434,9 @@ $("#go").addEventListener("click",function(){
  if(!cy){m.textContent=T("Please select your city.","براہِ کرم اپنا شہر چنیں۔");return}
  if(a.length<5){m.textContent=T("Please enter your full address.","براہِ کرم پورا پتہ لکھیں۔");return}
  btn.disabled=true;m.textContent=T("Sending your order...","آرڈر بھیجا جا رہا ہے...");
- rpc("aab_web_place",{p_name:n,p_phone:normPK(p),p_addr:(cy==="Other"?a:cy+", "+a),p_bundles:B}).then(function(r){
+ rpc("aab_web_place",{p_name:n,p_phone:normPK(p),p_addr:(cy==="Other"?fullA():cy+", "+fullA()),p_bundles:B}).then(function(r){
   btn.disabled=false;
-  if(r&&r.ok){m.textContent="";last={id:r.id,total:r.total,name:n,phone:normPK(p),b:B,addr:(cy==="Other"?a:cy+", "+a)};
+  if(r&&r.ok){m.textContent="";last={id:r.id,total:r.total,name:n,phone:normPK(p),b:B,addr:(cy==="Other"?fullA():cy+", "+fullA())};
   var okx=$("#ok");if(okx){var oldm=okx.querySelector(".rmap");if(oldm)oldm.remove();okx.insertAdjacentHTML("afterbegin",routeMap(r.id,"new",r.total,last.addr,""))}
    $("#oid").textContent=r.id;$("#otot").textContent=T("Total to pay: ","کل ادائیگی: ")+rs(r.total)+T(" (pay on delivery)"," (ڈیلیوری پر)");
    $("#ok").classList.add("show");$("#ok").scrollIntoView({behavior:"smooth",block:"center"});
@@ -497,9 +498,14 @@ function bottleInit(){var v=document.getElementById("bottleVid"),cv=document.get
    v.style.display="none";cv.style.display="block";cv.style.height="100%";cv.style.width="auto";cv.style.maxWidth="100%";
    cv.removeAttribute("data-on");mvRun(cv)}
   else showRaw("bottle.webm")}).catch(function(){showRaw("bottle.webm")})}
-var pubLast=null;
+var pubLast=null;var AREAS={};
+function fillAreas(){var s=$("#fAr");if(!s)return;var cy=$("#fC").value,list=(AREAS&&AREAS[cy])||[],cur=s.value;
+ s.innerHTML='<option value="">'+T("Select village / area","گاؤں / علاقہ چنیں")+'</option>'+list.map(function(x){return '<option value="'+escH(x)+'">'+escH(x)+'</option>'}).join("")+'<option value="__other">'+T("Other (write below)","دوسرا (نیچے لکھیں)")+'</option>';
+ if(list.indexOf(cur)>-1||cur==="__other")s.value=cur}
+function fullA(){var av=$("#fAr")?$("#fAr").value:"",tx=$("#fA").value.trim();if(!av||av==="__other")return tx;return tx?av+", "+tx:av}
+document.addEventListener("change",function(e){if(e.target&&e.target.id==="fC")fillAreas()});
 function waFix(x){x=String(x||"").replace(/\D/g,"");if(x.length===11&&x.charAt(0)==="0")x="92"+x.slice(1);return x}
-function applyPrice(p){if(!p||!(+p.rate>0))return;RATE=+p.rate;PAID=+p.bundle>0?+p.bundle:PAID;SHIP=(p.ship!=null&&+p.ship>=0)?+p.ship:SHIP;
+function applyPrice(p){if(!p||!(+p.rate>0))return;RATE=+p.rate;PAID=+p.bundle>0?+p.bundle:PAID;if(p.free!=null&&+p.free>=0)FREE=+p.free;SHIP=(p.ship!=null&&+p.ship>=0)?+p.ship:SHIP;
  var set=function(sel,v){document.querySelectorAll(sel).forEach(function(e){e.textContent=v})};
  set("[data-rate]",RATE);set("[data-paid]",PAID);set("[data-free]",FREE);set("[data-ship]",SHIP);
  try{draw()}catch(e){}}
@@ -525,7 +531,7 @@ function salesBox(s){if(!s)return;var n=function(v){return Number(v||0).toLocale
 function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]).then(function(r){var d=r[0]||{},c=r[1]||{};
  var fp=JSON.stringify({w:d.web,t:d.tokens,m:d.media,p:d.promo,c:c});
  if(pubLast!==null&&fp!==pubLast){var f=document.activeElement;if(!(f&&/INPUT|TEXTAREA|SELECT/.test(f.tagName))){location.reload();return}}
- pubLast=fp;
+ pubLast=fp;AREAS=d.areas||{};fillAreas();
  var num=waFix(c.p||"");var wm=$("#wamid");if(wm&&num){wm.href="https://wa.me/"+num;wm.hidden=false;var ws=$("#wamid-s");if(ws)ws.hidden=false}
  tokBox(d.tokens);salesBox(d.sales);ratesBox(d);applyPrice(d.web&&d.web.price)}).catch(function(){})}
 setInterval(function(){if(!document.hidden)pubPoll()},30000);
