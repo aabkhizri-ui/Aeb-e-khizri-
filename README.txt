@@ -57,3 +57,9 @@ v11.01 (new-customer offer): admin sets a percentage and the first N new custome
 v11.01 (shopkeeper): every delivered order shows its 7-day delivery deadline (overdue is highlighted). After delivery the shopkeeper uploads the bill photo with a message; tokens are added only after the bill photo is uploaded. Claims: the admin switches them on or off in the new Claims tab; when on, shopkeepers submit a claim with a photo, the number of bottles, a reason (leakage, second expiry, third leak, other) and a note; the admin approves or rejects with a note.
 
 v11.01 (pricing and areas): base rate 250, 12 bottles per bundle with 4 free, bulk 240+ bottles at 200 (app). Customer discount period is one year from the day it was given. Claim reasons: bottle leakage, secondary expiry, mouse cut. Order form has a village/area list per city (editable by admin in Villages & areas). Website price tab has free bottles.
+
+v11.01 (places): cities, villages and areas come from the places list (11 cities, 141 entries). Choose a city, then its villages/areas/cities appear, then type the house address. Kamalia added to the city list. The admin edits the list in Cities, villages and areas.
+
+v11.02: The default bottle video is removed. The website shows the bottle video only after the admin uploads one. Version 11.02.
+
+v11.02 (fixes): bill and claim photos open the live camera. Admin action failures show the real reason (token approval now explains a missing bill photo) instead of "Wrong ID or password", which now appears only on the login screen.

@@ -309,7 +309,7 @@ html,body{max-width:100%;overflow-x:hidden}
   </div>
 </div></section>
 
-<section class="bottle-s" id="bottle-s"><div class="wrap" style="text-align:center"><div style="position:relative;display:inline-block;height:min(62vh,460px);max-width:100%"><video id="bottleVid" muted loop playsinline preload="auto" aria-label="Aab-e-Khizri Cumin Water" style="display:block;height:100%;width:auto;max-width:100%;background:transparent"></video><canvas id="bottleCv" style="display:none;height:100%;width:auto;max-width:100%"></canvas></div></div></section>
+<section class="bottle-s" id="bottle-s" hidden><div class="wrap" style="text-align:center"><div style="position:relative;display:inline-block;height:min(62vh,460px);max-width:100%"><video id="bottleVid" muted loop playsinline preload="auto" aria-label="Aab-e-Khizri Cumin Water" style="display:block;height:100%;width:auto;max-width:100%;background:transparent"></video><canvas id="bottleCv" style="display:none;height:100%;width:auto;max-width:100%"></canvas></div></div></section>
 <section id="rates-s" class="rates-s"><div class="wrap"><div class="rates-h"><span class="en">Current rates &amp; offers</span><span class="ur">موجودہ ریٹ اور آفرز</span></div><div class="rates-g"><div class="rc"><small><span class="en">Rate per bottle</span><span class="ur">فی بوتل ریٹ</span></small><b id="rt_rate" dir="ltr">–</b></div><div class="rc"><small><span class="en">Bottles per bundle</span><span class="ur">فی بنڈل بوتلیں</span></small><b id="rt_bundle" dir="ltr">–</b></div><div class="rc"><small><span class="en">Delivery per order</span><span class="ur">فی آرڈر ڈیلیوری</span></small><b id="rt_ship" dir="ltr">–</b></div><div class="rc" id="rt_taxbox" hidden><small><span class="en">Tax</span><span class="ur">ٹیکس</span></small><b id="rt_tax" dir="ltr">–</b></div></div><div class="rc wide" id="rt_promo_box" hidden><b id="rt_promo"></b></div><div class="rc wide"><div class="rc-t">🪙 <span class="en">Reward tokens (1 token = ₨ 1)</span><span class="ur">انعامی ٹوکن (1 ٹوکن = ₨ 1)</span></div><div id="tokList" dir="ltr" style="line-height:1.9"></div><div id="tokNone" class="mu"></div></div></div></section>
 <section class="order" id="order"><div class="wrap">
   <div class="head center rv"><span class="eyebrow"><span class="en">Order online</span><span class="ur">آن لائن آرڈر</span></span><h2><span class="en">Place your order</span><span class="ur">اپنا آرڈر دیں</span></h2><p class="lead"><span class="en">Choose your bundles and fill in your details. We will confirm shortly.</span><span class="ur">اپنے بنڈل چنیں اور معلومات لکھیں۔ ہم جلد تصدیق کریں گے۔</span></p></div>
@@ -392,7 +392,7 @@ html,body{max-width:100%;overflow-x:hidden}
     <div><h4><span class="en">Contact</span><span class="ur">رابطہ</span></h4><a id="ftel" href="#" hidden>📞 <span id="ftelt"></span></a><a id="fwa" href="#" hidden target="_blank" rel="noopener">💬 WhatsApp</a><span id="fnone" style="font-size:14px"><span class="en">Use the order form above and we will contact you.</span><span class="ur">اوپر آرڈر فارم استعمال کریں، ہم آپ سے رابطہ کریں گے۔</span></span></div>
   </div>
   <div class="copy">© <span id="yr"></span> Aab-e-Khizri · <span class="en">All rights reserved</span><span class="ur">جملہ حقوق محفوظ ہیں</span></div>
-</div><div style="text-align:center;font-size:12px;opacity:.6;padding:8px">Aab-e-Khizri · v11.01</div>
+</div><div style="text-align:center;font-size:12px;opacity:.6;padding:8px">Aab-e-Khizri · v11.02</div>
 </footer>
 
 <a class="fab" id="fab" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
@@ -405,7 +405,7 @@ var SB="https://pxbqszxpbreyxtsnslrw.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5c
 var RATE=300, PAID=6, FREE=2, SHIP=300;
 var $=function(s){return document.querySelector(s)},$$=function(s){return document.querySelectorAll(s)};
 var lang="en",B=1,WA="";
-var CITIES=[["Wazirabad","وزیرآباد"],["Gujranwala","گوجرانوالہ"],["Sialkot","سیالکوٹ"],["Gujrat","گجرات"],["Lahore","لاہور"],["Sheikhupura","شیخوپورہ"],["Jhelum","جہلم"],["Mandi Bahauddin","منڈی بہاؤالدین"],["Hafizabad","حافظ آباد"],["Narowal","نارووال"],["Kasur","قصور"],["Faisalabad","فیصل آباد"],["Sargodha","سرگودھا"],["Multan","ملتان"],["Bahawalpur","بہاولپور"],["Rawalpindi","راولپنڈی"],["Islamabad","اسلام آباد"],["Peshawar","پشاور"],["Karachi","کراچی"],["Hyderabad","حیدرآباد"],["Quetta","کوئٹہ"],["Other","دوسرا شہر"]];
+var CITIES=[["Wazirabad","وزیرآباد"],["Gujranwala","گوجرانوالہ"],["Sialkot","سیالکوٹ"],["Gujrat","گجرات"],["Kamalia","کمالیہ"],["Lahore","لاہور"],["Sheikhupura","شیخوپورہ"],["Jhelum","جہلم"],["Mandi Bahauddin","منڈی بہاؤالدین"],["Hafizabad","حافظ آباد"],["Narowal","نارووال"],["Kasur","قصور"],["Faisalabad","فیصل آباد"],["Sargodha","سرگودھا"],["Multan","ملتان"],["Bahawalpur","بہاولپور"],["Rawalpindi","راولپنڈی"],["Islamabad","اسلام آباد"],["Peshawar","پشاور"],["Karachi","کراچی"],["Hyderabad","حیدرآباد"],["Quetta","کوئٹہ"],["Other","دوسرا شہر"]];
 var TS={new:["Received","موصول ہو گیا"],submitted:["Being processed","پروسیسنگ میں"],approved:["Approved","منظور ہو گیا"],dispatched:["Dispatched","روانہ کر دیا گیا"],shipped:["Shipped","شپ ہو گیا"],delivered:["Delivered","پہنچ گیا"],rejected:["Cancelled","منسوخ"]};
 var T=function(en,ur){return lang==="ur"?ur:en};
 function rs(n){return "\u20A8 "+Math.round(n).toLocaleString("en-US")}
@@ -490,18 +490,21 @@ function mvRun(c){if(!c||c.dataset.on)return;c.dataset.on="1";
   requestAnimationFrame(frame)}
  requestAnimationFrame(frame)}
 function mvStart(){document.querySelectorAll("canvas.mvc").forEach(mvRun)}
-function bottleInit(){var v=document.getElementById("bottleVid"),cv=document.getElementById("bottleCv");if(!v||!cv)return;
- function play(){var p=v.play();if(p&&p.catch)p.catch(function(){})}
- function showRaw(src){cv.style.display="none";v.style.position="";v.style.opacity="";v.style.width="";v.style.height="";v.style.display="block";v.src=src;v.load();play()}
+function bottleInit(){var sec=document.getElementById("bottle-s"),v=document.getElementById("bottleVid"),cv=document.getElementById("bottleCv");if(!sec||!v||!cv)return;
+ function hide(){sec.hidden=true;cv.style.display="none";v.style.display="none";try{v.pause();v.removeAttribute("src");v.load()}catch(e){}}
  rpc("aab_media_get",{}).then(function(m){
   if(m&&m.webbot){cv.dataset.src=m.webbot;cv.dataset.mask=m.webbotm||"";cv.dataset.crop=JSON.stringify(m.webbotc||{});
-   v.style.display="none";cv.style.display="block";cv.style.height="100%";cv.style.width="auto";cv.style.maxWidth="100%";
+   sec.hidden=false;v.style.display="none";cv.style.display="block";cv.style.height="100%";cv.style.width="auto";cv.style.maxWidth="100%";
    cv.removeAttribute("data-on");mvRun(cv)}
-  else showRaw("bottle.webm")}).catch(function(){showRaw("bottle.webm")})}
+  else hide()}).catch(function(){hide()})}
+
 var pubLast=null;var AREAS={};
-function fillAreas(){var s=$("#fAr");if(!s)return;var cy=$("#fC").value,list=(AREAS&&AREAS[cy])||[],cur=s.value;
- s.innerHTML='<option value="">'+T("Select village / area","گاؤں / علاقہ چنیں")+'</option>'+list.map(function(x){return '<option value="'+escH(x)+'">'+escH(x)+'</option>'}).join("")+'<option value="__other">'+T("Other (write below)","دوسرا (نیچے لکھیں)")+'</option>';
- if(list.indexOf(cur)>-1||cur==="__other")s.value=cur}
+function fillAreas(){var s=$("#fAr");if(!s)return;var cy=$("#fC").value,raw=(AREAS&&AREAS[cy])||[],cur=s.value;
+ var ty=function(x){return x==="City"?T("City","شہر"):x==="Village"?T("Village","گاؤں"):T("Area","علاقہ")};
+ var list=raw.map(function(x){return typeof x==="string"?{n:x,t:"Area"}:x}).filter(function(x){return x&&x.n});
+ var vals=list.map(function(x){return x.n+" ("+ty(x.t)+")"});
+ s.innerHTML='<option value="">'+T("Select village / area","گاؤں / علاقہ چنیں")+'</option>'+vals.map(function(v){return '<option value="'+escH(v)+'">'+escH(v)+'</option>'}).join("")+'<option value="__other">'+T("Other (write below)","دوسرا (نیچے لکھیں)")+'</option>';
+ if(vals.indexOf(cur)>-1||cur==="__other")s.value=cur}
 function fullA(){var av=$("#fAr")?$("#fAr").value:"",tx=$("#fA").value.trim();if(!av||av==="__other")return tx;return tx?av+", "+tx:av}
 document.addEventListener("change",function(e){if(e.target&&e.target.id==="fC")fillAreas()});
 function waFix(x){x=String(x||"").replace(/\D/g,"");if(x.length===11&&x.charAt(0)==="0")x="92"+x.slice(1);return x}
