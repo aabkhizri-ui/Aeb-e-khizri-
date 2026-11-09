@@ -67,3 +67,9 @@ v11.02 (fixes): bill and claim photos open the live camera. Admin action failure
 v11.02 (bills): the delivery bill photo and message now reach the admin (order cards and the token review) and the shopkeeper sees it received. The admin sees when a bill has not arrived yet.
 
 v10.05 (variant 11.05): all activity data cleared; accounts (customers, shopkeepers, admin, user) and settings kept. Admin verifies the delivery bill (Verify / Not valid) before tokens can be approved. Website price tab holds the bundle-to-token table. Website order shows the tokens for the chosen bundles.
+
+Website offer: 12 bottles per bundle with 4 free (all website text updated, DB price bundle 12, free 4).
+
+Logo updated everywhere: app header and login, website, print slip, app icons (all roles), banners and videos. New logo has a transparent background.
+
+Role names: the home-screen name and page title show Aab-e-Khizri for customers, Aab-e-Khizri User for users, and Aab-e-Khizri Admin for the admin. The install button shows the role name.
