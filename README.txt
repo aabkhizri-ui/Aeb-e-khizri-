@@ -73,3 +73,7 @@ Website offer: 12 bottles per bundle with 4 free (all website text updated, DB p
 Logo updated everywhere: app header and login, website, print slip, app icons (all roles), banners and videos. New logo has a transparent background.
 
 Role names: the home-screen name and page title show Aab-e-Khizri for customers, Aab-e-Khizri User for users, and Aab-e-Khizri Admin for the admin. The install button shows the role name.
+
+Logo: white background, clean circle, used everywhere.
+
+Website offer is 6 bottles + 2 free per bundle (website text, calculator and website video). The shopkeeper app and video keep 12 + 4.
