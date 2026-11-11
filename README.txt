@@ -81,3 +81,5 @@ Website offer is 6 bottles + 2 free per bundle (website text, calculator and web
 Shop directory (phase 1): admin sets each shop name, city, village/area, photo and Show flag in the Shops tab. The website shows "Shops near you" for the chosen city and area, nearest area first. Phone numbers are never shown on the website.
 
 Shops and logos: registration asks for the shop name, city and village/area (with the photo the form already takes). The admin approval card shows the shop name first. On approval the shop details move to the shopkeeper account; the admin turns Show on the website in the Shops tab. Admin and user logos are uploaded in the Logos tab with the white background removed. The website lists the shops for the chosen city and area, nearest first, without phone numbers.
+
+Nearest shops: the website asks the visitor for location once. The nearest shops (by the location taken at registration) are shown with the distance; if location is not allowed, the chosen city and area are used. Phone numbers are never shown.

@@ -230,7 +230,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .rc-t{font-weight:700;color:#5a0c12;margin-bottom:6px}
 #rt_promo{color:#2e7d4f;font-size:15px}
 @media (max-width:420px){.rates-g{grid-template-columns:1fr}}
-.shops-s{padding:14px 0 6px}.shops-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px;margin:0 auto}.shop{background:#fff;border:1px solid #e8d6b0;border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(90,12,18,.07);text-align:center}.shop .ph{height:110px;background:#f4fbff;display:flex;align-items:center;justify-content:center;color:#7a5c2e;font-size:34px}.shop img{width:100%;height:110px;object-fit:cover;display:block}.shop .nm{font-weight:800;color:#5a0c12;padding:8px 8px 2px;font-size:15px}.shop .lc{color:#7a5c2e;font-size:12.5px;padding:0 8px 10px}.shops-n{grid-column:1/-1;text-align:center;color:#7a5c2e}</style>
+.shops-s{padding:14px 0 6px}.shops-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px;margin:0 auto}.shop{background:#fff;border:1px solid #e8d6b0;border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(90,12,18,.07);text-align:center}.shop .ph{height:110px;background:#f4fbff;display:flex;align-items:center;justify-content:center;color:#7a5c2e;font-size:34px}.shop img{width:100%;height:110px;object-fit:cover;display:block}.shop .nm{font-weight:800;color:#5a0c12;padding:8px 8px 2px;font-size:15px}.shop .lc{color:#7a5c2e;font-size:12.5px;padding:0 8px 10px}.shops-n{grid-column:1/-1;text-align:center;color:#7a5c2e}.shop .km{color:#2e7d4f;font-weight:700;font-size:12.5px;padding:0 8px 10px}</style>
 </head>
 <body>
 
@@ -503,14 +503,21 @@ function bottleInit(){var sec=document.getElementById("bottle-s"),v=document.get
   else hide()}).catch(function(){hide()})}
 
 function plainArea(v){return String(v||"").replace(/\s*\((City|Village|Area|شہر|گاؤں|علاقہ)\)\s*$/,"").trim()}
-function loadShops(){var city=$("#fC")?$("#fC").value:"",area=plainArea($("#fAr")?$("#fAr").value:"");var sec=document.getElementById("shopsSec"),box=document.getElementById("shopsBox");if(!sec||!box)return;
- if(!city||city==="Other"){sec.hidden=true;return}
+var VIS=null;
+function shopCard(s){var ph=s.photo?'<img src="'+escH(s.photo)+'" alt="">':'<div class="ph">🏪</div>';
+ var km=(s.km!=null)?'<div class="km">📍 '+escH(String(s.km))+' km '+escH(T("away","دور"))+'</div>':'';
+ return '<div class="shop">'+ph+'<div class="nm">'+escH(s.name)+'</div><div class="lc">'+(s.area?escH(s.area)+', ':'')+escH(s.city||'')+'</div>'+km+'</div>'}
+function loadShops(){var sec=document.getElementById("shopsSec"),box=document.getElementById("shopsBox");if(!sec||!box)return;
+ var city=$("#fC")?$("#fC").value:"",area=plainArea($("#fAr")?$("#fAr").value:"");
+ var args={};if(VIS){args.p_lat=VIS.lat;args.p_lng=VIS.lng}
+ else{if(!city||city==="Other"){sec.hidden=true;return}args.p_city=city;args.p_area=area}
  sec.hidden=false;
- rpc("aab_shops_list",{p_city:city,p_area:area}).then(function(list){
-  if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="shops-n">'+escH(T("No shop is listed in this city yet.","اس شہر کی دکان ابھی درج نہیں ہے۔"))+'</div>';return}
-  box.innerHTML=list.map(function(s){var ph=s.photo?'<img src="'+escH(s.photo)+'" alt="">':'<div class="ph">🏪</div>';
-   return '<div class="shop">'+ph+'<div class="nm">'+escH(s.name)+'</div><div class="lc">📍 '+escH(s.area||"")+(s.area?', ':'')+escH(s.city||"")+'</div></div>'}).join("")
+ rpc("aab_shops_list",args).then(function(list){
+  if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="shops-n">'+escH(T("No shop is listed near you yet.","آپ کے قریب کوئی دکان ابھی درج نہیں ہے۔"))+'</div>';return}
+  box.innerHTML=list.map(shopCard).join("")
  }).catch(function(){box.innerHTML=""})}
+function findNearMe(){if(!navigator.geolocation)return;
+ navigator.geolocation.getCurrentPosition(function(pos){VIS={lat:pos.coords.latitude,lng:pos.coords.longitude};loadShops()},function(){VIS=null;loadShops()},{enableHighAccuracy:false,timeout:9000,maximumAge:600000})}
 var pubLast=null;var AREAS={};
 function fillAreas(){var s=$("#fAr");if(!s)return;var cy=$("#fC").value,raw=(AREAS&&AREAS[cy])||[],cur=s.value;
  var ty=function(x){return x==="City"?T("City","شہر"):x==="Village"?T("Village","گاؤں"):T("Area","علاقہ")};
@@ -551,6 +558,7 @@ function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]
  var num=waFix(c.p||"");var wm=$("#wamid");if(wm&&num){wm.href="https://wa.me/"+num;wm.hidden=false;var ws=$("#wamid-s");if(ws)ws.hidden=false}
  tokBox(d.tokens);salesBox(d.sales);ratesBox(d);applyPrice(d.web&&d.web.price)}).catch(function(){})}
 setInterval(function(){if(!document.hidden)pubPoll()},30000);
+setTimeout(findNearMe,800);
 function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function routeMap(id,st,total,addr,note){
  var stops=[["🧾",T("Order received","آرڈر موصول")],["✅",T("Approved","منظور")],["📦",T("Dispatched","روانہ")],["🚚",T("On the way","راستے میں")],["📍",T("Delivered","پہنچ گیا")]];
