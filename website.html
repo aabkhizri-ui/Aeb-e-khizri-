@@ -230,7 +230,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .rc-t{font-weight:700;color:#5a0c12;margin-bottom:6px}
 #rt_promo{color:#2e7d4f;font-size:15px}
 @media (max-width:420px){.rates-g{grid-template-columns:1fr}}
-</style>
+.shops-s{padding:14px 0 6px}.shops-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px;margin:0 auto}.shop{background:#fff;border:1px solid #e8d6b0;border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(90,12,18,.07);text-align:center}.shop .ph{height:110px;background:#f4fbff;display:flex;align-items:center;justify-content:center;color:#7a5c2e;font-size:34px}.shop img{width:100%;height:110px;object-fit:cover;display:block}.shop .nm{font-weight:800;color:#5a0c12;padding:8px 8px 2px;font-size:15px}.shop .lc{color:#7a5c2e;font-size:12.5px;padding:0 8px 10px}.shops-n{grid-column:1/-1;text-align:center;color:#7a5c2e}</style>
 </head>
 <body>
 
@@ -311,6 +311,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
 <section class="bottle-s" id="bottle-s" hidden><div class="wrap" style="text-align:center"><div style="position:relative;display:inline-block;height:min(62vh,460px);max-width:100%"><video id="bottleVid" muted loop playsinline preload="auto" aria-label="Aab-e-Khizri Cumin Water" style="display:block;height:100%;width:auto;max-width:100%;background:transparent"></video><canvas id="bottleCv" style="display:none;height:100%;width:auto;max-width:100%"></canvas></div></div></section>
 <section id="rates-s" class="rates-s"><div class="wrap"><div class="rates-h"><span class="en">Current rates &amp; offers</span><span class="ur">موجودہ ریٹ اور آفرز</span></div><div class="rates-g"><div class="rc"><small><span class="en">Rate per bottle</span><span class="ur">فی بوتل ریٹ</span></small><b id="rt_rate" dir="ltr">–</b></div><div class="rc"><small><span class="en">Bottles per bundle</span><span class="ur">فی بنڈل بوتلیں</span></small><b id="rt_bundle" dir="ltr">–</b></div><div class="rc"><small><span class="en">Delivery per order</span><span class="ur">فی آرڈر ڈیلیوری</span></small><b id="rt_ship" dir="ltr">–</b></div><div class="rc" id="rt_taxbox" hidden><small><span class="en">Tax</span><span class="ur">ٹیکس</span></small><b id="rt_tax" dir="ltr">–</b></div></div><div class="rc wide" id="rt_promo_box" hidden><b id="rt_promo"></b></div><div class="rc wide"><div class="rc-t">🪙 <span class="en">Reward tokens (1 token = ₨ 1)</span><span class="ur">انعامی ٹوکن (1 ٹوکن = ₨ 1)</span></div><div id="tokList" dir="ltr" style="line-height:1.9"></div><div id="tokNone" class="mu"></div></div></div></section>
+<section id="shopsSec" class="shops-s" hidden><div class="wrap"><div class="rates-h"><span class="en">Shops near you</span><span class="ur">آپ کے قریب کی دکانیں</span></div><div id="shopsBox" class="shops-g"></div></div></section>
 <section class="order" id="order"><div class="wrap">
   <div class="head center rv"><span class="eyebrow"><span class="en">Order online</span><span class="ur">آن لائن آرڈر</span></span><h2><span class="en">Place your order</span><span class="ur">اپنا آرڈر دیں</span></h2><p class="lead"><span class="en">Choose your bundles and fill in your details. We will confirm shortly.</span><span class="ur">اپنے بنڈل چنیں اور معلومات لکھیں۔ ہم جلد تصدیق کریں گے۔</span></p></div>
   <div class="fg">
@@ -501,6 +502,15 @@ function bottleInit(){var sec=document.getElementById("bottle-s"),v=document.get
    cv.removeAttribute("data-on");mvRun(cv)}
   else hide()}).catch(function(){hide()})}
 
+function plainArea(v){return String(v||"").replace(/\s*\((City|Village|Area|شہر|گاؤں|علاقہ)\)\s*$/,"").trim()}
+function loadShops(){var city=$("#fC")?$("#fC").value:"",area=plainArea($("#fAr")?$("#fAr").value:"");var sec=document.getElementById("shopsSec"),box=document.getElementById("shopsBox");if(!sec||!box)return;
+ if(!city||city==="Other"){sec.hidden=true;return}
+ sec.hidden=false;
+ rpc("aab_shops_list",{p_city:city,p_area:area}).then(function(list){
+  if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="shops-n">'+escH(T("No shop is listed in this city yet.","اس شہر کی دکان ابھی درج نہیں ہے۔"))+'</div>';return}
+  box.innerHTML=list.map(function(s){var ph=s.photo?'<img src="'+escH(s.photo)+'" alt="">':'<div class="ph">🏪</div>';
+   return '<div class="shop">'+ph+'<div class="nm">'+escH(s.name)+'</div><div class="lc">📍 '+escH(s.area||"")+(s.area?', ':'')+escH(s.city||"")+'</div></div>'}).join("")
+ }).catch(function(){box.innerHTML=""})}
 var pubLast=null;var AREAS={};
 function fillAreas(){var s=$("#fAr");if(!s)return;var cy=$("#fC").value,raw=(AREAS&&AREAS[cy])||[],cur=s.value;
  var ty=function(x){return x==="City"?T("City","شہر"):x==="Village"?T("Village","گاؤں"):T("Area","علاقہ")};
@@ -509,7 +519,7 @@ function fillAreas(){var s=$("#fAr");if(!s)return;var cy=$("#fC").value,raw=(ARE
  s.innerHTML='<option value="">'+T("Select village / area","گاؤں / علاقہ چنیں")+'</option>'+vals.map(function(v){return '<option value="'+escH(v)+'">'+escH(v)+'</option>'}).join("")+'<option value="__other">'+T("Other (write below)","دوسرا (نیچے لکھیں)")+'</option>';
  if(vals.indexOf(cur)>-1||cur==="__other")s.value=cur}
 function fullA(){var av=$("#fAr")?$("#fAr").value:"",tx=$("#fA").value.trim();if(!av||av==="__other")return tx;return tx?av+", "+tx:av}
-document.addEventListener("change",function(e){if(e.target&&e.target.id==="fC")fillAreas()});
+document.addEventListener("change",function(e){if(e.target&&e.target.id==="fC"){fillAreas();loadShops()}if(e.target&&e.target.id==="fAr")loadShops()});
 function waFix(x){x=String(x||"").replace(/\D/g,"");if(x.length===11&&x.charAt(0)==="0")x="92"+x.slice(1);return x}
 function applyPrice(p){if(!p||!(+p.rate>0))return;RATE=+p.rate;PAID=+p.bundle>0?+p.bundle:PAID;if(p.free!=null&&+p.free>=0)FREE=+p.free;SHIP=(p.ship!=null&&+p.ship>=0)?+p.ship:SHIP;
  var set=function(sel,v){document.querySelectorAll(sel).forEach(function(e){e.textContent=v})};

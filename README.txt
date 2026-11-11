@@ -77,3 +77,7 @@ Role names: the home-screen name and page title show Aab-e-Khizri for customers,
 Logo: white background, clean circle, used everywhere.
 
 Website offer is 6 bottles + 2 free per bundle (website text, calculator and website video). The shopkeeper app and video keep 12 + 4.
+
+Shop directory (phase 1): admin sets each shop name, city, village/area, photo and Show flag in the Shops tab. The website shows "Shops near you" for the chosen city and area, nearest area first. Phone numbers are never shown on the website.
+
+Shops and logos: registration asks for the shop name, city and village/area (with the photo the form already takes). The admin approval card shows the shop name first. On approval the shop details move to the shopkeeper account; the admin turns Show on the website in the Shops tab. Admin and user logos are uploaded in the Logos tab with the white background removed. The website lists the shops for the chosen city and area, nearest first, without phone numbers.
