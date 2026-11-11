@@ -230,7 +230,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .rc-t{font-weight:700;color:#5a0c12;margin-bottom:6px}
 #rt_promo{color:#2e7d4f;font-size:15px}
 @media (max-width:420px){.rates-g{grid-template-columns:1fr}}
-.shops-s{padding:14px 0 6px}.shops-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px;margin:0 auto}.shop{background:#fff;border:1px solid #e8d6b0;border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(90,12,18,.07);text-align:center}.shop .ph{height:110px;background:#f4fbff;display:flex;align-items:center;justify-content:center;color:#7a5c2e;font-size:34px}.shop img{width:100%;height:110px;object-fit:cover;display:block}.shop .nm{font-weight:800;color:#5a0c12;padding:8px 8px 2px;font-size:15px}.shop .lc{color:#7a5c2e;font-size:12.5px;padding:0 8px 10px}.shops-n{grid-column:1/-1;text-align:center;color:#7a5c2e}.shop .km{color:#2e7d4f;font-weight:700;font-size:12.5px;padding:0 8px 10px}</style>
+.shops-s{padding:14px 0 6px}.shops-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:620px;margin:0 auto}.shop{background:#fff;border:1px solid #e8d6b0;border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(90,12,18,.07);text-align:center}.shop .ph{height:110px;background:#f4fbff;display:flex;align-items:center;justify-content:center;color:#7a5c2e;font-size:34px}.shop img{width:100%;height:110px;object-fit:cover;display:block}.shop .nm{font-weight:800;color:#5a0c12;padding:8px 8px 2px;font-size:15px}.shop .lc{color:#7a5c2e;font-size:12.5px;padding:0 8px 10px}.shops-n{grid-column:1/-1;text-align:center;color:#7a5c2e}.shop .mapb{display:inline-block;margin:0 8px 10px;background:#0f6fa0;color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700}.shop .km{color:#2e7d4f;font-weight:700;font-size:12.5px;padding:0 8px 10px}</style>
 </head>
 <body>
 
@@ -504,9 +504,12 @@ function bottleInit(){var sec=document.getElementById("bottle-s"),v=document.get
 
 function plainArea(v){return String(v||"").replace(/\s*\((City|Village|Area|شہر|گاؤں|علاقہ)\)\s*$/,"").trim()}
 var VIS=null;
+function shopMapUrl(s){if(s.lat!=null&&s.lng!=null)return 'https://www.google.com/maps?q='+encodeURIComponent(s.lat+','+s.lng);
+ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((s.name||'')+' '+(s.area||'')+' '+(s.city||''))}
 function shopCard(s){var ph=s.photo?'<img src="'+escH(s.photo)+'" alt="">':'<div class="ph">🏪</div>';
  var km=(s.km!=null)?'<div class="km">📍 '+escH(String(s.km))+' km '+escH(T("away","دور"))+'</div>':'';
- return '<div class="shop">'+ph+'<div class="nm">'+escH(s.name)+'</div><div class="lc">'+(s.area?escH(s.area)+', ':'')+escH(s.city||'')+'</div>'+km+'</div>'}
+ var where=(s.area?escH(s.area)+', ':'')+escH(s.city||'');
+ return '<a class="shop" href="'+escH(shopMapUrl(s))+'" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">'+ph+'<div class="nm">'+escH(s.name)+'</div><div class="lc">'+where+'</div>'+km+'<div class="mapb">🗺️ '+escH(T("Open on map","نقشے پر کھولیں"))+'</div></a>'}
 function loadShops(){var sec=document.getElementById("shopsSec"),box=document.getElementById("shopsBox");if(!sec||!box)return;
  var city=$("#fC")?$("#fC").value:"",area=plainArea($("#fAr")?$("#fAr").value:"");
  var args={};if(VIS){args.p_lat=VIS.lat;args.p_lng=VIS.lng}

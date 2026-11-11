@@ -83,3 +83,5 @@ Shop directory (phase 1): admin sets each shop name, city, village/area, photo a
 Shops and logos: registration asks for the shop name, city and village/area (with the photo the form already takes). The admin approval card shows the shop name first. On approval the shop details move to the shopkeeper account; the admin turns Show on the website in the Shops tab. Admin and user logos are uploaded in the Logos tab with the white background removed. The website lists the shops for the chosen city and area, nearest first, without phone numbers.
 
 Nearest shops: the website asks the visitor for location once. The nearest shops (by the location taken at registration) are shown with the distance; if location is not allowed, the chosen city and area are used. Phone numbers are never shown.
+
+Shop cards open the map when tapped: exact coordinates when the shop location is known, otherwise a map search by the shop name and place.
