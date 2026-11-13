@@ -85,3 +85,5 @@ Shops and logos: registration asks for the shop name, city and village/area (wit
 Nearest shops: the website asks the visitor for location once. The nearest shops (by the location taken at registration) are shown with the distance; if location is not allowed, the chosen city and area are used. Phone numbers are never shown.
 
 Shop cards open the map when tapped: exact coordinates when the shop location is known, otherwise a map search by the shop name and place.
+
+Website visits: one count per browser per day, stored without name, phone or IP. The admin sees the day, visits, people and a short anonymous visitor code in the Visits tab.

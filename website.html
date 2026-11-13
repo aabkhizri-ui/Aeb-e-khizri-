@@ -560,6 +560,10 @@ function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]
  pubLast=fp;AREAS=d.areas||{};TOKCFG=d.tokens||null;fillAreas();
  var num=waFix(c.p||"");var wm=$("#wamid");if(wm&&num){wm.href="https://wa.me/"+num;wm.hidden=false;var ws=$("#wamid-s");if(ws)ws.hidden=false}
  tokBox(d.tokens);salesBox(d.sales);ratesBox(d);applyPrice(d.web&&d.web.price)}).catch(function(){})}
+function logVisit(){try{var v=localStorage.getItem("aab_vid");if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem("aab_vid",v)}
+ var k="aab_vd_"+new Date().toISOString().slice(0,10);if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1");
+ rpc("aab_visit_log",{p_vid:v,p_path:"website"}).catch(function(){})}catch(e){}}
+setTimeout(logVisit,1200);
 setInterval(function(){if(!document.hidden)pubPoll()},30000);
 setTimeout(findNearMe,800);
 function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
