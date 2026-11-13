@@ -87,3 +87,5 @@ Nearest shops: the website asks the visitor for location once. The nearest shops
 Shop cards open the map when tapped: exact coordinates when the shop location is known, otherwise a map search by the shop name and place.
 
 Website visits: one count per browser per day, stored without name, phone or IP. The admin sees the day, visits, people and a short anonymous visitor code in the Visits tab.
+
+Visits tab: total people and total visits, people by city (nearest known city, from the visitor location if allowed, otherwise Unknown), and the daily list. No name, phone or coordinates are stored.

@@ -519,8 +519,8 @@ function loadShops(){var sec=document.getElementById("shopsSec"),box=document.ge
   if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="shops-n">'+escH(T("No shop is listed near you yet.","آپ کے قریب کوئی دکان ابھی درج نہیں ہے۔"))+'</div>';return}
   box.innerHTML=list.map(shopCard).join("")
  }).catch(function(){box.innerHTML=""})}
-function findNearMe(){if(!navigator.geolocation)return;
- navigator.geolocation.getCurrentPosition(function(pos){VIS={lat:pos.coords.latitude,lng:pos.coords.longitude};loadShops()},function(){VIS=null;loadShops()},{enableHighAccuracy:false,timeout:9000,maximumAge:600000})}
+function findNearMe(){if(!navigator.geolocation){logVisit("Unknown");return}
+ navigator.geolocation.getCurrentPosition(function(pos){VIS={lat:pos.coords.latitude,lng:pos.coords.longitude};logVisit(nearestCity(VIS.lat,VIS.lng));loadShops()},function(){VIS=null;logVisit("Unknown");loadShops()},{enableHighAccuracy:false,timeout:9000,maximumAge:600000})}
 var pubLast=null;var AREAS={};
 function fillAreas(){var s=$("#fAr");if(!s)return;var cy=$("#fC").value,raw=(AREAS&&AREAS[cy])||[],cur=s.value;
  var ty=function(x){return x==="City"?T("City","شہر"):x==="Village"?T("Village","گاؤں"):T("Area","علاقہ")};
@@ -560,10 +560,11 @@ function pubPoll(){Promise.all([rpc("aab_public_info",{}),rpc("aab_contact",{})]
  pubLast=fp;AREAS=d.areas||{};TOKCFG=d.tokens||null;fillAreas();
  var num=waFix(c.p||"");var wm=$("#wamid");if(wm&&num){wm.href="https://wa.me/"+num;wm.hidden=false;var ws=$("#wamid-s");if(ws)ws.hidden=false}
  tokBox(d.tokens);salesBox(d.sales);ratesBox(d);applyPrice(d.web&&d.web.price)}).catch(function(){})}
-function logVisit(){try{var v=localStorage.getItem("aab_vid");if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem("aab_vid",v)}
+var CITY_XY={"Wazirabad":[32.44,74.12],"Kamalia":[31.07,72.65],"Sialkot":[32.49,74.53],"Gujrat":[32.57,74.08],"Jhelum":[32.93,73.73],"Mandi Bahauddin":[32.59,73.49],"Hafizabad":[32.07,73.69],"Narowal":[32.10,74.87],"Gujranwala":[32.16,74.19],"Islamabad":[33.69,73.04],"Rawalpindi":[33.60,73.05]};
+function nearestCity(lat,lng){var best=null,bd=1e9;Object.keys(CITY_XY).forEach(function(c){var a=CITY_XY[c],dl=(a[0]-lat)*Math.PI/180,dg=(a[1]-lng)*Math.PI/180;var h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(lat*Math.PI/180)*Math.cos(a[0]*Math.PI/180)*Math.sin(dg/2)*Math.sin(dg/2);var d=6371*2*Math.asin(Math.sqrt(h));if(d<bd){bd=d;best=c}});return bd<=80?best:"Other area"}
+function logVisit(city){try{var v=localStorage.getItem("aab_vid");if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem("aab_vid",v)}
  var k="aab_vd_"+new Date().toISOString().slice(0,10);if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1");
- rpc("aab_visit_log",{p_vid:v,p_path:"website"}).catch(function(){})}catch(e){}}
-setTimeout(logVisit,1200);
+ rpc("aab_visit_log",{p_vid:v,p_path:"website",p_city:city||"Unknown"}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden)pubPoll()},30000);
 setTimeout(findNearMe,800);
 function escH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
