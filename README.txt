@@ -89,3 +89,9 @@ Shop cards open the map when tapped: exact coordinates when the shop location is
 Website visits: one count per browser per day, stored without name, phone or IP. The admin sees the day, visits, people and a short anonymous visitor code in the Visits tab.
 
 Visits tab: total people and total visits, people by city (nearest known city, from the visitor location if allowed, otherwise Unknown), and the daily list. No name, phone or coordinates are stored.
+
+Users and bookers (phase 2): admin creates a user or order booker with a numeric ID and a 6 to 12 character password, assigns shops to bookers, and approves or rejects phone, address and GPS location changes.
+
+Order booker login (phase 3): the booker picks Order Booker on the role screen, logs in with the numeric ID and password the admin gave, and sees the shops assigned to them. The booking screen comes next.
+
+Booker booking screen (phase 4): the booker books an order for an assigned shop, or for any shop as Unplanned. Needs server/booker_orders.sql to be run once in the Supabase SQL Editor.
