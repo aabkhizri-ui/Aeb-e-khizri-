@@ -2078,11 +2078,11 @@ async function bookerBook(){const v=id=>((document.getElementById(id)||{}).value
  try{const r=await rpc("aab_booker_place",{p_id:S.i,p_h:S.h,p_shop:shop,p_qty:q,p_unplanned:unp,p_addr:v("bk_addr"),p_tok:parseInt(v("bk_tok"),10)||0});
   if(!/^[A-Za-z0-9_-]{4,}$/.test(String(r))||["denied","notassigned","noshop","noaddr","bad","min","limit","nopay","txn","size"].includes(r))return toast(bookerRes(r),7000);
   toast(AE("Order booked ✔ "+r,"آرڈر بک ہو گیا ✔ "+r),5000);await refresh();render(true)}catch(e){toast(errMsg(e),6000)}}
-var BKTAB="book",BKINFO=null;
+var BKTAB="book",BKINFO=null,BKSEL="";
 function bkProds(){const P=st.products||[];if(!P.length)return "";
  return `<h2>${AE("New products","نئی پروڈکٹس")}</h2>`+P.map(p=>`<div class="card"><div class="row"><b>${esc(p.name)}</b>${+p.price?`<span class="price" style="font-size:20px;margin:0">₨${+p.price}</span>`:""}</div>${p.desc?`<div class="mu">${esc(p.desc)}</div>`:""}${p.html_content?`<div style="margin-top:10px">${cleanHtml(p.html_content)}</div>`:""}</div>`).join("")}
 function bkRate(q){const c=st.cfg||{};return q>=(c.bulk_from||1e9)?(c.rate_bulk||c.rate||0):(c.rate||0)}
-async function bkShopChange(){const sh=(document.getElementById("bk_shop")||{}).value||"";BKINFO=null;if(!sh){render(true);return}
+async function bkShopChange(){const sh=(document.getElementById("bk_shop")||{}).value||"";BKSEL=sh;BKINFO=null;if(!sh){render(true);return}
  try{BKINFO=await rpc("aab_booker_shop_info",{p_id:S.i,p_h:S.h,p_shop:sh,p_unplanned:false})}catch(e){}render(true)}
 function bkStep(kind,dir){const el=document.getElementById("bk_qty");if(!el)return;const c=st.cfg||{};const step=kind==="bundle"?(c.bundle||12):1;let v=(parseInt(el.value,10)||0)+dir*step;if(v<0)v=0;el.value=v;document.getElementById("bk_prev").innerHTML=bkPreview()}
 function bkPreview(){const q=parseInt(((document.getElementById("bk_qty")||{}).value||"0"),10)||0;const c=st.cfg||{};if(q<1)return "";
@@ -2106,12 +2106,12 @@ function bkTopBar(){const it=[["book","📝",AE("Booking","بکنگ")],["newshop
   `<button onclick="logout()" style="border:0;border-radius:999px;padding:8px 12px;font-weight:700;font-size:14px;background:#b3261e;color:#fff">🚪 ${AE("Log out","لاگ آؤٹ")}</button></div>`}
 function bookerView(){return bkTopBar()+bookerBody()}
 function bookerBody(){if(BKTAB==="pw")return bkPwForm();if(BKTAB==="newshop")return bkShopForm("new");if(BKTAB==="editshop")return bkShopForm("edit");if(BKTAB==="book"&&st.products&&st.products.length){}const A=st.assigned||[],O=st.bookerOrders||[];
- const opts=A.map(id=>`<option value="${esc(id)}">${esc(id)}</option>`).join("");
+ const opts=A.map(id=>`<option value="${esc(id)}"${id===BKSEL?" selected":""}>${esc(id)}</option>`).join("");
  return `<div class="card" style="text-align:center"><div style="font-size:40px">📦</div><h2>${AE("Order booker","آرڈر بوکر")}</h2><div class="mu" dir="ltr">${esc(S.i||"")}${S.n?" · "+esc(S.n):""}</div>
   </div>`+
  bkProds()+bkOffers()+
  `<div class="card" style="margin-top:10px"><h2>📝 ${AE("Book an order","آرڈر بُک کریں")}</h2>
- <label>${AE("Assigned shop","تفویض شدہ دکان")}</label><select id="bk_shop" onchange="bkShopChange()"><option value="">— ${AE("choose","چنیں")} —</option>${opts}</select>
+ <label>${AE("Assigned shop","تفویض شدہ دکان")}</label><select id="bk_shop" onchange="bkShopChange()"><option value=""${BKSEL?"":" selected"}>— ${AE("choose","چنیں")} —</option>${opts}</select>
  ${bkInfoHtml()}
  <label style="display:flex;gap:8px;align-items:center;margin-top:8px"><input type="checkbox" id="bk_unp" style="width:auto;margin:0"> ${AE("Unplanned shop (not assigned to me)","غیر منصوبہ دکان (مجھے تفویض نہیں)")}</label>
  <label>${AE("Shop ID (for unplanned)","دکان کی آئی ڈی (غیر منصوبہ کے لیے)")}</label><input id="bk_shop_m" dir="ltr" inputmode="numeric" placeholder="03XXXXXXXXX">

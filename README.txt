@@ -115,3 +115,5 @@ Order booker: bottle and bundle steppers like the shopkeeper; tokens to use on t
 Order screens (shopkeeper and order booker): when bundles are on, only the bundle stepper shows; the bottle count follows the bundles.
 
 v11.06: booker app (login, booking with tokens, bundles, products, new/edit shop requests, password change, logout), admin Users & Bookers tab (create, assign, approve shop requests, password reset), Links tab, bundles-only order screens, safe login tagline.
+
+Booker: the chosen assigned shop stays selected after the screen redraws.
