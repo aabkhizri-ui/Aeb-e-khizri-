@@ -95,3 +95,5 @@ Users and bookers (phase 2): admin creates a user or order booker with a numeric
 Order booker login (phase 3): the booker picks Order Booker on the role screen, logs in with the numeric ID and password the admin gave, and sees the shops assigned to them. The booking screen comes next.
 
 Booker booking screen (phase 4): the booker books an order for an assigned shop, or for any shop as Unplanned. Needs server/booker_orders.sql to be run once in the Supabase SQL Editor.
+
+Booker app: open the link with #booker, then install. Login header and banners use a safe tagline (no health claim).

@@ -1,0 +1,25 @@
+{
+ "id": "booker-v1",
+ "name": "Aab-e-Khizri Booker",
+ "short_name": "Khizri Booker",
+ "start_url": "./#booker",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#ffffff",
+ "theme_color": "#a5d3ee",
+ "icons": [
+  {
+   "src": "icon-192-user.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512-user.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  }
+ ]
+}
