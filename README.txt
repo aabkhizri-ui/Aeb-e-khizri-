@@ -97,3 +97,5 @@ Order booker login (phase 3): the booker picks Order Booker on the role screen, 
 Booker booking screen (phase 4): the booker books an order for an assigned shop, or for any shop as Unplanned. Needs server/booker_orders.sql to be run once in the Supabase SQL Editor.
 
 Booker app: open the link with #booker, then install. Login header and banners use a safe tagline (no health claim).
+
+Links tab in admin: customer, booker, user, admin and website links, built from the current address (works on GitHub Pages, Netlify and others).
