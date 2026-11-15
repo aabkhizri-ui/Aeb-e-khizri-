@@ -101,3 +101,7 @@ Booker app: open the link with #booker, then install. Login header and banners u
 Links tab in admin: customer, booker, user, admin and website links, built from the current address (works on GitHub Pages, Netlify and others).
 
 Booker: the #booker link opens the Order Booker login (numeric ID and password, no phone number), and the booker screens use dark blue.
+
+Booker (phase 5): same rates, bundles, free bottles, offers and token tiers as the shopkeeper; discount and tokens of the chosen shop; booking page first; New shop and Edit shop requests are under Menu and go to admin approval (aab_shop_req). Run server SQL aab_booker_shop_info and aab_booker_shop_req (applied).
+
+Final set: booker logout and password change (menu and top bar), admin approval of booker new/edit shop requests, admin password reset for users and bookers. Shop approved as new is active in the booker account with no password until the shopkeeper sets one.
