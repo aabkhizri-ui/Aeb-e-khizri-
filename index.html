@@ -449,7 +449,7 @@ html[data-role="booker"]{--g:#0b2f5b;--g2:#1d4f91;--bg:#e9f0f9;--tx:#0b2545;--mu
 <div class="rcard" onclick="pickRole('user')"><span class="ri">🧑‍💼</span><div><div class="rt" id="rut"></div><div class="rs" id="rus"></div></div></div>
 <div class="rcard" onclick="pickRole('booker')"><span class="ri">📦</span><div><div class="rt" id="rbk"></div><div class="rs" id="rbks"></div></div></div> <div class="rcard" onclick="pickRole('admin')"><span class="ri">🛡️</span><div><div class="rt" id="rat"></div><div class="rs" id="ras"></div></div></div></div></div>
 <div class="shell" id="shell" style="display:none"><div class="mainc"><main id="app"></main></div><aside id="side"></aside></div>
-<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v11.05</div>
+<div id="ver" style="text-align:center;opacity:.55;font-size:11px;padding:14px 0 24px" dir="ltr">Aab-e-Khizri · v11.06</div>
 <div class="toast" id="toast"></div>
 <script>(function(){var M={},C={};function R(n){n=n.replace('./','');if(n==='QRCode')n='index';if(C[n])return C[n].exports;var m=C[n]={exports:{}};M[n](m,m.exports,R);return m.exports}
 M['QRMode']=function(module,exports,require){module.exports = {
@@ -2075,17 +2075,21 @@ async function bookerBook(){const v=id=>((document.getElementById(id)||{}).value
  const shop=unp?v("bk_shop_m"):v("bk_shop");const q=parseInt(v("bk_qty"),10)||0;
  if(!shop)return toast(AE("Choose or enter the shop","دکان چنیں یا آئی ڈی لکھیں"),4000);
  if(q<1)return toast(AE("Enter the number of bottles","بوتلوں کی تعداد لکھیں"),4000);
- try{const r=await rpc("aab_booker_place",{p_id:S.i,p_h:S.h,p_shop:shop,p_qty:q,p_unplanned:unp,p_addr:v("bk_addr")});
-  if(!/^[A-Za-z0-9_-]{4,}$/.test(String(r))||["denied","notassigned","noshop","noaddr","bad","min","limit"].includes(r))return toast(bookerRes(r),7000);
+ try{const r=await rpc("aab_booker_place",{p_id:S.i,p_h:S.h,p_shop:shop,p_qty:q,p_unplanned:unp,p_addr:v("bk_addr"),p_tok:parseInt(v("bk_tok"),10)||0});
+  if(!/^[A-Za-z0-9_-]{4,}$/.test(String(r))||["denied","notassigned","noshop","noaddr","bad","min","limit","nopay","txn","size"].includes(r))return toast(bookerRes(r),7000);
   toast(AE("Order booked ✔ "+r,"آرڈر بک ہو گیا ✔ "+r),5000);await refresh();render(true)}catch(e){toast(errMsg(e),6000)}}
 var BKTAB="book",BKINFO=null;
+function bkProds(){const P=st.products||[];if(!P.length)return "";
+ return `<h2>${AE("New products","نئی پروڈکٹس")}</h2>`+P.map(p=>`<div class="card"><div class="row"><b>${esc(p.name)}</b>${+p.price?`<span class="price" style="font-size:20px;margin:0">₨${+p.price}</span>`:""}</div>${p.desc?`<div class="mu">${esc(p.desc)}</div>`:""}${p.html_content?`<div style="margin-top:10px">${cleanHtml(p.html_content)}</div>`:""}</div>`).join("")}
 function bkRate(q){const c=st.cfg||{};return q>=(c.bulk_from||1e9)?(c.rate_bulk||c.rate||0):(c.rate||0)}
 async function bkShopChange(){const sh=(document.getElementById("bk_shop")||{}).value||"";BKINFO=null;if(!sh){render(true);return}
  try{BKINFO=await rpc("aab_booker_shop_info",{p_id:S.i,p_h:S.h,p_shop:sh,p_unplanned:false})}catch(e){}render(true)}
+function bkStep(kind,dir){const el=document.getElementById("bk_qty");if(!el)return;const c=st.cfg||{};const step=kind==="bundle"?(c.bundle||12):1;let v=(parseInt(el.value,10)||0)+dir*step;if(v<0)v=0;el.value=v;document.getElementById("bk_prev").innerHTML=bkPreview()}
 function bkPreview(){const q=parseInt(((document.getElementById("bk_qty")||{}).value||"0"),10)||0;const c=st.cfg||{};if(q<1)return "";
+ const mn=c.min_qty||1,bs=c.bundle||0,bn=bs?Math.floor(q/bs):0,left=bs?q%bs:q;const minTxt=q<mn?`<div class="nextb w" style="margin-top:8px">ℹ️ ${AE("Minimum order is "+mn+" bottles.","کم از کم آرڈر "+mn+" بوتلیں ہے۔")}</div>`:"";
  const rate=bkRate(q),gross=q*rate;const d=BKINFO&&BKINFO.disc;const pct=(d&&d.st==="approved")?(+d.pct||0):0;const disc=Math.round(gross*pct/100);
  const free=c.free_per?Math.floor(q/c.free_per)*(c.free_qty||0):0;
- return `<div class="nextb g" style="margin-top:8px">💰 ${q} × ₨ ${rate} = ₨ ${gross}${pct?` · ${AE("discount","رعایت")} ${pct}% (−₨ ${disc}) = ₨ ${gross-disc}`:""}${free?` · 🎁 ${AE("free bottles","مفت بوتلیں")}: ${free}`:""}${c.bundle?` · ${AE("bundle","بنڈل")}: ${c.bundle}`:""}</div>`}
+ return `<div class="nextb g" style="margin-top:8px"><div>${q} × ₨${rate} = ₨${gross}</div>${pct?`<div>🏷️ ${AE("Discount","رعایت")} (${pct}%): − ₨${disc}</div>`:""}<div><b>${AE("Total","کل")}: ₨ ${gross-disc}</b></div>${bs?`<span class="pill" style="display:inline-block;margin-top:4px">📦 ${bn} ${AE("bundle","بنڈل")}${left?` + ${left} ${AE("bottles","بوتلیں")}`:""}</span>`:""}${free?`<div>🎁 ${AE("You get","آپ کو ملتی ہیں")} ${free} ${AE("free bottles","مفت بوتلیں")} (${AE("total","کل")} ${q+free})</div>`:""}</div>${minTxt}`}
 function bkOffers(){const P=st.pub||{};const pr=P.promo||{};const tk=(P.tokens&&P.tokens.tiers)||[];
  const promo=pr.on?`<div class="nextb" style="margin-top:6px">🎉 ${AE("New customer offer","نئے گاہک کی پیشکش")}: ${pr.pct}%</div>`:"";
  const tiers=tk.length&&P.tokens.on?`<div class="mu" style="margin-top:8px"><b>🪙 ${AE("Tokens per bundles","بنڈل پر ٹوکن")}</b>${tk.map(x=>`<div class="row" style="justify-content:space-between"><span>${x.b} ${AE("bundles","بنڈل")}</span><b>${x.t}</b></div>`).join("")}</div>`:"";
@@ -2095,18 +2099,29 @@ function bkInfoHtml(){const I=BKINFO;if(!I)return "";const d=I.disc,tk=I.tokens;
  const dl=(d&&d.st==="approved"&&d.pct)?`<div class="nextb g">🏷️ ${AE("This shop's discount","اس دکان کی رعایت")}: ${d.pct}%</div>`:`<div class="mu">${AE("This shop has no discount now.","اس دکان کی ابھی کوئی رعایت نہیں۔")}</div>`;
  const bal=tk&&(tk.bal!=null?tk.bal:(tk.balance!=null?tk.balance:(tk.tokens!=null?tk.tokens:null)));
  return dl+(bal!=null?`<div class="mu">🪙 ${AE("Tokens","ٹوکن")}: ${bal}</div>`:"")}
-function bookerView(){if(BKTAB==="menu")return bookerMenu();if(BKTAB==="pw")return bkPwForm();if(BKTAB==="newshop")return bkShopForm("new");if(BKTAB==="editshop")return bkShopForm("edit");const A=st.assigned||[],O=st.bookerOrders||[];
+function bkTopBar(){const it=[["book","📝",AE("Booking","بکنگ")],["newshop","🏪",AE("New shop","نئی دکان")],["editshop","✏️",AE("Edit shop","دکان میں تبدیلی")],["pw","🔑",AE("Password","پاسورڈ")]];
+ const on=k=>(BKTAB===k||(BKTAB==="menu"&&k==="book"))?"background:#e0a533;color:#0b2f5b":"background:#fff;color:#0b2f5b";
+ return `<div style="position:sticky;top:0;z-index:6;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;background:#0b2f5b;padding:8px;border-radius:14px;margin-bottom:10px">`+
+  it.map(x=>`<button onclick="BKTAB='${x[0]}';render(true)" style="border:0;border-radius:999px;padding:8px 12px;font-weight:700;font-size:14px;${on(x[0])}">${x[1]} ${x[2]}</button>`).join("")+
+  `<button onclick="logout()" style="border:0;border-radius:999px;padding:8px 12px;font-weight:700;font-size:14px;background:#b3261e;color:#fff">🚪 ${AE("Log out","لاگ آؤٹ")}</button></div>`}
+function bookerView(){return bkTopBar()+bookerBody()}
+function bookerBody(){if(BKTAB==="pw")return bkPwForm();if(BKTAB==="newshop")return bkShopForm("new");if(BKTAB==="editshop")return bkShopForm("edit");if(BKTAB==="book"&&st.products&&st.products.length){}const A=st.assigned||[],O=st.bookerOrders||[];
  const opts=A.map(id=>`<option value="${esc(id)}">${esc(id)}</option>`).join("");
  return `<div class="card" style="text-align:center"><div style="font-size:40px">📦</div><h2>${AE("Order booker","آرڈر بوکر")}</h2><div class="mu" dir="ltr">${esc(S.i||"")}${S.n?" · "+esc(S.n):""}</div>
-  <div class="row" style="gap:8px;justify-content:center;margin-top:8px"><button class="ok" onclick="BKTAB='menu';render(true)">☰ ${AE("Menu","مینیو")}</button><button class="no" onclick="logout()">🚪 ${AE("Log out","لاگ آؤٹ")}</button></div></div>`+
- bkOffers()+
+  </div>`+
+ bkProds()+bkOffers()+
  `<div class="card" style="margin-top:10px"><h2>📝 ${AE("Book an order","آرڈر بُک کریں")}</h2>
  <label>${AE("Assigned shop","تفویض شدہ دکان")}</label><select id="bk_shop" onchange="bkShopChange()"><option value="">— ${AE("choose","چنیں")} —</option>${opts}</select>
  ${bkInfoHtml()}
  <label style="display:flex;gap:8px;align-items:center;margin-top:8px"><input type="checkbox" id="bk_unp" style="width:auto;margin:0"> ${AE("Unplanned shop (not assigned to me)","غیر منصوبہ دکان (مجھے تفویض نہیں)")}</label>
  <label>${AE("Shop ID (for unplanned)","دکان کی آئی ڈی (غیر منصوبہ کے لیے)")}</label><input id="bk_shop_m" dir="ltr" inputmode="numeric" placeholder="03XXXXXXXXX">
- <label>${AE("Bottles","بوتلیں")}</label><input id="bk_qty" type="number" min="1" inputmode="numeric" dir="ltr" oninput="document.getElementById('bk_prev').innerHTML=bkPreview()" value="${(st.cfg&&st.cfg.min_qty)||""}">
+ <div style="display:none">
+ <label>${AE("Bottles","بوتلیں")}</label>
+ <div class="row" style="gap:8px"><button class="ok" style="width:56px" onclick="bkStep('bottle',-1)">−</button><input id="bk_qty" type="number" min="0" inputmode="numeric" dir="ltr" style="text-align:center;font-weight:800" oninput="document.getElementById('bk_prev').innerHTML=bkPreview()" value="${(st.cfg&&st.cfg.min_qty)||""}"><button class="ok" style="width:56px" onclick="bkStep('bottle',1)">+</button></div>
+ </div>
+ <div class="row" style="gap:8px;margin-top:6px"><span class="mu">📦 ${AE("Bundles","بنڈل")}</span><button class="ok" style="width:56px" onclick="bkStep('bundle',-1)">−</button><button class="ok" style="width:56px" onclick="bkStep('bundle',1)">+</button><span class="mu">${AE("1 bundle","1 بنڈل")} = ${(st.cfg&&st.cfg.bundle)||""} ${AE("bottles","بوتلیں")}</span></div>
  <div id="bk_prev">${bkPreview()}</div>
+ <label>${AE("Tokens to use on this order","اس آرڈر میں استعمال ہونے والے ٹوکن")}</label><input id="bk_tok" type="number" min="0" inputmode="numeric" dir="ltr" placeholder="0">
  <label>${AE("Delivery address (only if the shop has none)","ڈیلیوری کا پتہ (صرف اگر دکان کا پتہ نہ ہو)")}</label><input id="bk_addr" maxlength="200">
  <button class="big" onclick="bookerBook()">📤 ${AE("Book order","آرڈر بُک کریں")}</button></div>`+
  `<div class="card" style="margin-top:10px"><b>🧾 ${AE("Orders I booked","میرے بُک کیے ہوئے آرڈر")}</b>${O.length?O.map(o=>`<div style="border-top:1px solid #eee;padding:6px 0"><b dir="ltr">${esc(o.id)}</b> · <span dir="ltr">${esc(o.shop)}</span> · ${o.qty} ${AE("bottles","بوتلیں")} · ${esc(o.status||"")}${o.unplanned?` · <span style="color:#b07a00">${AE("unplanned","غیر منصوبہ")}</span>`:""}</div>`).join(""):`<div class="mu">${AE("No orders yet","ابھی کوئی آرڈر نہیں")}</div>`}</div>`}
@@ -2336,7 +2351,7 @@ ${contactCard()}${st.media&&st.media.pack?packBlk():""}<div class="card" id="ord
 <label>${t("ph")}</label>${phIn("cp","",c.replace("+92",""))}
 <label>${L==="ur"?"شہر":"City"}</label><select id="cc" onchange="setCity(this.value)">${cityOpts()}</select><label>${L==="ur"?"گاؤں / علاقہ":"Village / area"}</label><select id="carea">${areaOpts()}</select>
 <label>${t("ad")}</label><textarea id="ca" rows="2"></textarea>
-<label>${t("bt")} <b style="color:#f6c32b">(${t("m6")})</b></label><div style="display:flex;gap:8px;align-items:stretch"><button type="button" class="pr" style="min-width:52px;font-size:22px" onclick="stepQ(-1)">−</button><input id="cq" type="number" min="${st.cfg.min_qty}" value="${st.cfg.min_qty}" dir="ltr" oninput="calc()" style="text-align:center"><button type="button" class="pr" style="min-width:52px;font-size:22px" onclick="stepQ(1)">+</button></div>${BS()?`<div class="row" style="margin-top:8px;justify-content:flex-start;gap:8px"><span class="mu">${t("bndl")}</span><button type="button" class="pr" style="min-width:44px" onclick="stepB(-1)">−</button><button type="button" class="pr" style="min-width:44px" onclick="stepB(1)">+</button><span class="mu">${t("bndh").replace("{n}",BS())}</span></div>`:""}${szSel()}<div class="mu" style="margin-top:4px">ℹ️ ${t("m6h")}</div>
+${BS()?"":`<label>${t("bt")} <b style="color:#f6c32b">(${t("m6")})</b></label><div style="display:flex;gap:8px;align-items:stretch"><button type="button" class="pr" style="min-width:52px;font-size:22px" onclick="stepQ(-1)">−</button><input id="cq" type="number" min="${st.cfg.min_qty}" value="${st.cfg.min_qty}" dir="ltr" oninput="calc()" style="text-align:center"><button type="button" class="pr" style="min-width:52px;font-size:22px" onclick="stepQ(1)">+</button></div>`}${BS()?`<div class="row" style="margin-top:8px;justify-content:flex-start;gap:8px"><span class="mu">${t("bndl")}</span><button type="button" class="pr" style="min-width:44px" onclick="stepB(-1)">−</button><button type="button" class="pr" style="min-width:44px" onclick="stepB(1)">+</button><span class="mu">${t("bndh").replace("{n}",BS())}</span></div>`:""}${szSel()}<div class="mu" style="margin-top:4px">ℹ️ ${t("m6h")}</div>
 <div class="tot" id="tot"></div><div id="payb"></div>
 ${discForm()}<div id="tokw">${tokForm()}</div>
 ${st.pay.adv>0?`<label>${t("txn")}</label><input id="ctx" dir="ltr" autocomplete="off"><div class="mu" style="margin-top:4px">ℹ️ ${t("txnh")}</div>`:""}
@@ -3475,7 +3490,7 @@ function tokQTab(){
    +(H.length?`<h2 style="font-size:16px;margin-top:18px">${t("tq_hist")}</h2>`+H.map(x=>`<div class="card" style="padding:10px 14px"><div class="row"><b>${x.status==="approved"?"✅":"❌"} ${esc(x.oid)}</b><b dir="ltr">${x.status==="approved"?"+"+x.amt:"—"}</b></div><div class="mu">${esc(x.cid)} · ${x.status==="approved"?t("tq_approved"):t("tq_rejected")} · ${fmtT(x.at)}</div></div>`).join(""):"")}
 
 /* ═══ v9.5 · What's new (shown once per version) ═══ */
-Object.assign(T.en,{wn_h:"What's new in v11.05",wn_ok:"OK, got it",wn_l:["🎬 Website bottle video: upload from Admin → 🌐 Website video; background removed automatically, video shows live on the website","🪙 Token table shows on the website and in the shopkeeper app; admin changes update everywhere","📊 Shopkeeper: booked and sold bottles and bundles at the bottom of every tab","🔄 App and website refresh themselves every 30 seconds, so admin changes show up without reinstalling","🖨️ Printable receipt on the website; WhatsApp button and sales totals on the website","🛠️ Fixes: upload errors, file-input error, storage permission for website video, stray text on the login page"]});Object.assign(T.ur,{wn_h:"v11.05 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["🎬 ویب سائٹ کی بوتل ویڈیو: ایڈمن → 🌐 Website video سے اپ لوڈ کریں؛ بیک گراؤنڈ خودکار ہٹتا ہے، ویڈیو ویب سائٹ پر لائیو آتی ہے","🪙 ٹوکن ٹیبل ویب سائٹ اور شاپکیپر ایپ میں دکھتا ہے؛ ایڈمن کی تبدیلی ہر جگہ اپ ڈیٹ ہوتی ہے","📊 شاپکیپر: ہر ٹیب کے نیچے بک شدہ اور سیل شدہ بوتلیں اور بنڈل","🔄 ایپ اور ویب سائٹ ہر 30 سیکنڈ میں خود ریفریش ہوتے ہیں","🖨️ ویب سائٹ پر پرنٹ ایبل رسید، WhatsApp بٹن اور سیل کا حساب","🛠️ درستگی: اپ لوڈ کی خرابیاں، فائل ان پٹ کی خرابی، ویڈیو کی اجازت، لاگ ان پیج پر غیر ضروری متن"]}); function whatsNew(){try{if(!S||!S.r||localStorage.getItem("aab_wn")===BUILD)return;if(document.getElementById("wnb"))return;
+Object.assign(T.en,{wn_h:"What's new in v11.06",wn_ok:"OK, got it",wn_l:["🎬 Website bottle video: upload from Admin → 🌐 Website video; background removed automatically, video shows live on the website","🪙 Token table shows on the website and in the shopkeeper app; admin changes update everywhere","📊 Shopkeeper: booked and sold bottles and bundles at the bottom of every tab","🔄 App and website refresh themselves every 30 seconds, so admin changes show up without reinstalling","🖨️ Printable receipt on the website; WhatsApp button and sales totals on the website","🛠️ Fixes: upload errors, file-input error, storage permission for website video, stray text on the login page"]});Object.assign(T.ur,{wn_h:"v11.06 میں نیا کیا ہے",wn_ok:"ٹھیک ہے",wn_l:["🎬 ویب سائٹ کی بوتل ویڈیو: ایڈمن → 🌐 Website video سے اپ لوڈ کریں؛ بیک گراؤنڈ خودکار ہٹتا ہے، ویڈیو ویب سائٹ پر لائیو آتی ہے","🪙 ٹوکن ٹیبل ویب سائٹ اور شاپکیپر ایپ میں دکھتا ہے؛ ایڈمن کی تبدیلی ہر جگہ اپ ڈیٹ ہوتی ہے","📊 شاپکیپر: ہر ٹیب کے نیچے بک شدہ اور سیل شدہ بوتلیں اور بنڈل","🔄 ایپ اور ویب سائٹ ہر 30 سیکنڈ میں خود ریفریش ہوتے ہیں","🖨️ ویب سائٹ پر پرنٹ ایبل رسید، WhatsApp بٹن اور سیل کا حساب","🛠️ درستگی: اپ لوڈ کی خرابیاں، فائل ان پٹ کی خرابی، ویڈیو کی اجازت، لاگ ان پیج پر غیر ضروری متن"]}); function whatsNew(){try{if(!S||!S.r||localStorage.getItem("aab_wn")===BUILD)return;if(document.getElementById("wnb"))return;
   const d=document.createElement("div");d.id="wnb";d.style.cssText="position:fixed;inset:0;background:#000a;z-index:140;display:flex;align-items:center;justify-content:center;padding:16px";
   d.innerHTML=`<div class="card" style="max-width:420px;max-height:84vh;overflow:auto"><h2 style="margin-top:0">🆕 ${t("wn_h")}</h2>${t("wn_l").map(x=>`<div style="margin:8px 0">${x}</div>`).join("")}<button class="big" id="wnok">${t("wn_ok")}</button></div>`;
   document.body.appendChild(d);document.getElementById("wnok").onclick=()=>{try{localStorage.setItem("aab_wn",BUILD)}catch(e){}d.remove()}}catch(e){}}

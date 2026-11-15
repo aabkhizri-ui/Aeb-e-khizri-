@@ -105,3 +105,13 @@ Booker: the #booker link opens the Order Booker login (numeric ID and password, 
 Booker (phase 5): same rates, bundles, free bottles, offers and token tiers as the shopkeeper; discount and tokens of the chosen shop; booking page first; New shop and Edit shop requests are under Menu and go to admin approval (aab_shop_req). Run server SQL aab_booker_shop_info and aab_booker_shop_req (applied).
 
 Final set: booker logout and password change (menu and top bar), admin approval of booker new/edit shop requests, admin password reset for users and bookers. Shop approved as new is active in the booker account with no password until the shopkeeper sets one.
+
+Order booker: the menu bar is at the top of the booker screen (Booking, New shop, Edit shop, Password, Log out), like the user menu.
+
+Order booker: new products show on the booking screen; the order summary shows bottles, bundles, discount, total, free bottles and the minimum like the shopkeeper.
+
+Order booker: bottle and bundle steppers like the shopkeeper; tokens to use on the order.
+
+Order screens (shopkeeper and order booker): when bundles are on, only the bundle stepper shows; the bottle count follows the bundles.
+
+v11.06: booker app (login, booking with tokens, bundles, products, new/edit shop requests, password change, logout), admin Users & Bookers tab (create, assign, approve shop requests, password reset), Links tab, bundles-only order screens, safe login tagline.
