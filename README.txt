@@ -99,3 +99,5 @@ Booker booking screen (phase 4): the booker books an order for an assigned shop,
 Booker app: open the link with #booker, then install. Login header and banners use a safe tagline (no health claim).
 
 Links tab in admin: customer, booker, user, admin and website links, built from the current address (works on GitHub Pages, Netlify and others).
+
+Booker: the #booker link opens the Order Booker login (numeric ID and password, no phone number), and the booker screens use dark blue.
