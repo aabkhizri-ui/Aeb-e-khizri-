@@ -137,3 +137,13 @@ Booking screen like the reference: day tabs (Su to All), search, outlet list wit
 Booker outlet list and order screen show shopkeeper ID, name, owner, phone, location (area, city and GPS point).
 
 Booker after login: the large logo header block is hidden; the small top bar is the only header.
+
+Fix: the shopkeeper order quantity field is always present (hidden when bundles are on), so orders place again.
+
+Print: each slip shows Booked by (booker ID and name, or the shopkeeper ID and name). Every print ends with Printed by: the logged-in user ID and name.
+
+Print: Booked by and Printed by show only the name (no ID).
+
+Login screen: fits the phone screen without scrolling.
+
+Booker home KPIs: today (outlets, on duty, orders, bottles, amount), coverage ring (outlets booked today), this month (orders, bottles, amount, delivered, pending).
