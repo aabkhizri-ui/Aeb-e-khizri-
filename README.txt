@@ -167,3 +167,5 @@ Booker home follows the reference: light blue ring at top, Today card with the s
 Booker colour: dark blue top bar and accents, white cards.
 
 Booker outlets: green when booked today, red when closed today, grey when off, white when open. Open or close shop button on the order screen.
+
+Final check: every database function the app calls exists; every button function is defined; all scripts and JSON files parse.
