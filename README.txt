@@ -129,3 +129,5 @@ Login: white top with the logo, a curved band in the role colour, white card. Bo
 Booker home screen after login: gradient header with menu, avatar, rows for user ID, name, designation, shops assigned and day, and a Start booking button.
 
 Booker: one menu only (the 3-line button in the top bar); the small logo sits at the top left; the big header block on the home screen is removed.
+
+Booker app in the reference format: one header with the drawer menu; Home with a Today card (assigned outlets, outlets today, orders today, bottles, amount, pending) and three big buttons (Outlets, Booking, Reports); Outlets with Su-to-Sat day tabs, Active/Off status and a direction button (no phone numbers); Reports with Summary and Order list. Needs server/booker_shops_info.sql run once for names.
