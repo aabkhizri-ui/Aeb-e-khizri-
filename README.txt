@@ -125,3 +125,5 @@ Booker: claims are filed from the booker Claim tab (shop, reason, bottles, note,
 Login look: blue top from light to dark with a curved bottom, logo in a circle, white sheet sliding up, rounded fields and a big blue button. Applied only when nobody is logged in.
 
 Login: white top with the logo, a curved band in the role colour, white card. Booker: the top buttons are in a 3-line menu.
+
+Booker home screen after login: gradient header with menu, avatar, rows for user ID, name, designation, shops assigned and day, and a Start booking button.
