@@ -131,3 +131,7 @@ Booker home screen after login: gradient header with menu, avatar, rows for user
 Booker: one menu only (the 3-line button in the top bar); the small logo sits at the top left; the big header block on the home screen is removed.
 
 Booker app in the reference format: one header with the drawer menu; Home with a Today card (assigned outlets, outlets today, orders today, bottles, amount, pending) and three big buttons (Outlets, Booking, Reports); Outlets with Su-to-Sat day tabs, Active/Off status and a direction button (no phone numbers); Reports with Summary and Order list. Needs server/booker_shops_info.sql run once for names.
+
+Booking screen like the reference: day tabs (Su to All), search, outlet list with Active and direction, tap an outlet to open the order screen (bottles and bundles, summary, discount, address, Book). Outlets screen is the same list.
+
+Booker outlet list and order screen show shopkeeper ID, name, owner, phone, location (area, city and GPS point).
