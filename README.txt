@@ -127,3 +127,5 @@ Login look: blue top from light to dark with a curved bottom, logo in a circle, 
 Login: white top with the logo, a curved band in the role colour, white card. Booker: the top buttons are in a 3-line menu.
 
 Booker home screen after login: gradient header with menu, avatar, rows for user ID, name, designation, shops assigned and day, and a Start booking button.
+
+Booker: one menu only (the 3-line button in the top bar); the small logo sits at the top left; the big header block on the home screen is removed.
