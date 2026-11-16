@@ -123,3 +123,5 @@ Booker colour changed to purple, to be different from the shopkeeper and admin s
 Booker: claims are filed from the booker Claim tab (shop, reason, bottles, note, photo). Days: admin ticks the working days of each shop (Mon to Sun); the booker sees only the shops open on the chosen day and can book only on the shop working day (today). Outlet/phone choice and tokens removed from the booker order form.
 
 Login look: blue top from light to dark with a curved bottom, logo in a circle, white sheet sliding up, rounded fields and a big blue button. Applied only when nobody is logged in.
+
+Login: white top with the logo, a curved band in the role colour, white card. Booker: the top buttons are in a 3-line menu.
