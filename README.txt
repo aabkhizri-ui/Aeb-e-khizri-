@@ -149,3 +149,5 @@ Login screen: fits the phone screen without scrolling.
 Booker home KPIs: today (outlets, on duty, orders, bottles, amount), coverage ring (outlets booked today), this month (orders, bottles, amount, delivered, pending).
 
 Fixed: booking screens (outlet list, outlet order, reports) had been removed by a home-screen edit, so the booker could not act; restored. Tagline removed; booker dark light red; shopkeeper light blue; booking day tab opens on today.
+
+Admin shop days: saved as 1,3,5 and the real error shows if it fails. Login: one look from the three references (white top with logo, wave, coloured band, white card, full-width button).
