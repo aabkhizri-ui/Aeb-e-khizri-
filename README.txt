@@ -169,3 +169,7 @@ Booker colour: dark blue top bar and accents, white cards.
 Booker outlets: green when booked today, red when closed today, grey when off, white when open. Open or close shop button on the order screen.
 
 Final check: every database function the app calls exists; every button function is defined; all scripts and JSON files parse.
+
+Booked shop cannot be closed for the day; close button shows a message. All entered data cleared (kept: admin and user accounts and settings). Backup in aab_backup_20261116.
+
+Login fits one phone screen with no scrolling; version shown at the bottom.
