@@ -163,3 +163,7 @@ Booker home: six steps like the guide: login, sync, start day (check in / check 
 Attendance saved on the server (check in and out). Admin sees the team: each booker attendance (last 14 days), and today orders, bottles and amount.
 
 Booker home follows the reference: light blue ring at top, Today card with the same row names, and Outlets, Booking, Reports buttons. Check in removed from the home screen.
+
+Booker colour: dark blue top bar and accents, white cards.
+
+Booker outlets: green when booked today, red when closed today, grey when off, white when open. Open or close shop button on the order screen.
