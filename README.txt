@@ -147,3 +147,5 @@ Print: Booked by and Printed by show only the name (no ID).
 Login screen: fits the phone screen without scrolling.
 
 Booker home KPIs: today (outlets, on duty, orders, bottles, amount), coverage ring (outlets booked today), this month (orders, bottles, amount, delivered, pending).
+
+Fixed: booking screens (outlet list, outlet order, reports) had been removed by a home-screen edit, so the booker could not act; restored. Tagline removed; booker dark light red; shopkeeper light blue; booking day tab opens on today.
