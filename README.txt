@@ -151,3 +151,7 @@ Booker home KPIs: today (outlets, on duty, orders, bottles, amount), coverage ri
 Fixed: booking screens (outlet list, outlet order, reports) had been removed by a home-screen edit, so the booker could not act; restored. Tagline removed; booker dark light red; shopkeeper light blue; booking day tab opens on today.
 
 Admin shop days: saved as 1,3,5 and the real error shows if it fails. Login: one look from the three references (white top with logo, wave, coloured band, white card, full-width button).
+
+Login in three screens: welcome (Login / Register), then the form, then the existing welcome after sign in. Dark gradient look.
+
+Booker: no red inside the cards (dark blue and light blue instead, cards white). Outlet cards are rounded with a blue side bar and bigger text.
