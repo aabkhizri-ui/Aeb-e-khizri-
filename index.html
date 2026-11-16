@@ -2210,6 +2210,23 @@ function bkTopBar(){const sec=BKTAB==="home"?"":`<button onclick="BKTAB='home';B
 async function bkSync(){try{await refresh();render(true);toast(AE("Data updated ✔","ڈیٹا اپڈیٹ ✔"),2500)}catch(e){toast(errMsg(e),5000)}}
 function bookerView(){return bkTopBar()+bookerBody()}
 function bkDowToday(){return ((new Date().getDay()+6)%7)+1}
+function bkAttKey(){return "aab_att_"+(S.i||"")}
+function bkAttGet(){const today=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Karachi"});try{const a=JSON.parse(localStorage.getItem(bkAttKey())||"null");if(a&&a.date===today)return a}catch(e){}return {date:today}}
+function bkAttSet(a){try{localStorage.setItem(bkAttKey(),JSON.stringify(a))}catch(e){}}
+function bkAttend(kind){const a=bkAttGet();const now=Date.now();
+ if(kind==="in"){if(a.in)return toast(AE("Already checked in today","آج پہلے سے حاضری لگ چکی ہے"),3000);a.in=now}
+ else{if(!a.in)return toast(AE("Check in first","پہلے حاضری لگائیں"),3000);if(a.out)return toast(AE("Already checked out","آج جانے کی حاضری لگ چکی ہے"),3000);a.out=now}
+ bkAttSet(a);render(true);toast(kind==="in"?AE("Checked in ✔","حاضری لگ گئی ✔"):AE("Checked out ✔","جانے کی حاضری ✔"),2500)}
+function bkTime(ms){return ms?new Date(ms).toLocaleTimeString("en-GB",{timeZone:"Asia/Karachi",hour:"2-digit",minute:"2-digit"}):""}
+function bkSteps(){const a=bkAttGet();const step=(n,ic,title,body,done)=>`<div style="display:flex;gap:12px;align-items:center;background:#fff;border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 6px 16px rgba(15,23,42,.08);border:1px solid #e2e8f0"><div style="width:38px;height:38px;border-radius:50%;background:${done?"#bbf7d0":"#fef3c7"};display:flex;align-items:center;justify-content:center;font-weight:800;color:#0f172a">${done?"✓":n}</div><div style="flex:1;min-width:0"><b style="color:#0f172a">${ic} ${title}</b><div class="mu">${body}</div></div></div>`;
+ const btn=(lbl,fn,dis)=>`<button ${dis?"disabled":""} onclick="${fn}" style="border:0;border-radius:999px;padding:9px 14px;font-weight:800;font-size:13px;background:${dis?"#e2e8f0":"#fde68a"};color:#422006">${lbl}</button>`;
+ return `<div style="margin-bottom:6px;font-weight:800;color:#0f172a">${AE("Your day","آپ کا دن")}</div>`+
+  step(1,"🔐",AE("Login","لاگ ان"),AE("Done","ہو گیا"),true)+
+  step(2,"🔄",AE("Sync data","ڈیٹا اپڈیٹ"),`<div style="margin-top:6px">${btn(AE("Sync now","ابھی اپڈیٹ کریں"),"bkSync()")}</div>`,false)+
+  step(3,"📅",AE("Start day: check in","دن شروع: حاضری"),`${a.in?AE("In at ","آمد ")+bkTime(a.in)+(a.out?AE(" · Out at ","، روانگی ")+bkTime(a.out):""):AE("Not checked in yet","ابھی حاضری نہیں لگی")}<div style="margin-top:6px;display:flex;gap:8px">${btn(AE("Check in","حاضری"),"bkAttend('in')",!!a.in)}${btn(AE("Check out","روانگی"),"bkAttend('out')",!a.in||!!a.out)}</div>`,!!a.in)+
+  step(4,"📍",AE("View outlet list","دکانوں کی فہرست"),`<div style="margin-top:6px">${btn(AE("Open outlets","دکانیں کھولیں"),"BKTAB='shops';render(true)")}</div>`,false)+
+  step(5,"📝",AE("Record orders","آرڈر درج کریں"),`<div style="margin-top:6px">${btn(AE("Open booking","بکنگ کھولیں"),"BKTAB='book';render(true)")}</div>`,false)+
+  step(6,"📊",AE("Review performance","کارکردگی دیکھیں"),`<div style="margin-top:6px">${btn(AE("Open reports","رپورٹ کھولیں"),"BKTAB='reports';render(true)")}</div>`,false)}
 function bkHome(){const A=st.assigned||[],O=st.bookerOrders||[],D=st.bkDays||{};const dt=bkDowToday();
  const kar=d=>new Date(d).toLocaleDateString("en-CA",{timeZone:"Asia/Karachi"});const todayK=kar(Date.now());const monK=todayK.slice(0,7);
  const live=O.filter(o=>o.status!=="cancelled");
@@ -2222,7 +2239,7 @@ function bkHome(){const A=st.assigned||[],O=st.bookerOrders||[],D=st.bkDays||{};
  const delivered=O.filter(o=>o.ship==="delivered").length, pending=O.filter(o=>!["delivered","cancelled"].includes(o.status)&&o.ship!=="delivered").length;
  const card=(l,v,c)=>`<div style="flex:1;min-width:0;background:${c||"#f5f3ff"};border-radius:14px;padding:12px 10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#1e1b4b">${v}</div><div style="font-size:12px;color:#6b7280">${l}</div></div>`;
  const ring=`<div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:10px"><div style="width:74px;height:74px;border-radius:50%;background:conic-gradient(#7c3aed ${coverage*3.6}deg,#e5e7eb 0);display:flex;align-items:center;justify-content:center"><div style="width:56px;height:56px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:#1e1b4b">${coverage}%</div></div><div><b style="color:#1e1b4b">${AE("Coverage today","آج کی کوریج")}</b><div class="mu">${bookedShops.size} / ${shopsToday.length} ${AE("outlets booked","دکانوں پر بکنگ")}</div></div></div>`;
- return `<div style="background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 8px 22px rgba(30,27,75,.12);margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:16px;color:#1e1b4b">${AE("Today","آج")}</b><span class="mu">${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][dt-1]}</span></div>`+
+ return bkSteps()+`<div style="background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 8px 22px rgba(30,27,75,.12);margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:16px;color:#1e1b4b">${AE("Today","آج")}</b><span class="mu">${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][dt-1]}</span></div>`+
   `<div style="display:flex;gap:8px;margin-bottom:8px">${card(AE("Outlets","دکانیں"),A.length)}${card(AE("On duty","ڈیوٹی"),shopsToday.length)}${card(AE("Orders","آرڈر"),todayOrd.length)}</div>`+
   `<div style="display:flex;gap:8px">${card(AE("Bottles","بوتلیں"),sum(todayOrd,"qty"))}${card(AE("Amount","رقم"),"₨ "+sum(todayOrd,"total"))}</div></div>`+
   ring+

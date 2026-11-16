@@ -157,3 +157,5 @@ Login in three screens: welcome (Login / Register), then the form, then the exis
 Booker: no red inside the cards (dark blue and light blue instead, cards white). Outlet cards are rounded with a blue side bar and bigger text.
 
 Booker: white background, light blue and light yellow accents, cards white.
+
+Booker home: six steps like the guide: login, sync, start day (check in / check out), outlets, orders, performance. Check-in is kept on the phone for the day.
