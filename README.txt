@@ -159,3 +159,7 @@ Booker: no red inside the cards (dark blue and light blue instead, cards white).
 Booker: white background, light blue and light yellow accents, cards white.
 
 Booker home: six steps like the guide: login, sync, start day (check in / check out), outlets, orders, performance. Check-in is kept on the phone for the day.
+
+Attendance saved on the server (check in and out). Admin sees the team: each booker attendance (last 14 days), and today orders, bottles and amount.
+
+Booker home follows the reference: light blue ring at top, Today card with the same row names, and Outlets, Booking, Reports buttons. Check in removed from the home screen.
