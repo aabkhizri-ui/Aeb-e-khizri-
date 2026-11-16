@@ -135,3 +135,5 @@ Booker app in the reference format: one header with the drawer menu; Home with a
 Booking screen like the reference: day tabs (Su to All), search, outlet list with Active and direction, tap an outlet to open the order screen (bottles and bundles, summary, discount, address, Book). Outlets screen is the same list.
 
 Booker outlet list and order screen show shopkeeper ID, name, owner, phone, location (area, city and GPS point).
+
+Booker after login: the large logo header block is hidden; the small top bar is the only header.
