@@ -155,3 +155,5 @@ Admin shop days: saved as 1,3,5 and the real error shows if it fails. Login: one
 Login in three screens: welcome (Login / Register), then the form, then the existing welcome after sign in. Dark gradient look.
 
 Booker: no red inside the cards (dark blue and light blue instead, cards white). Outlet cards are rounded with a blue side bar and bigger text.
+
+Booker: white background, light blue and light yellow accents, cards white.
