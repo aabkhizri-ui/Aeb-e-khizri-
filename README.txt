@@ -117,3 +117,9 @@ Order screens (shopkeeper and order booker): when bundles are on, only the bundl
 v11.06: booker app (login, booking with tokens, bundles, products, new/edit shop requests, password change, logout), admin Users & Bookers tab (create, assign, approve shop requests, password reset), Links tab, bundles-only order screens, safe login tagline.
 
 Booker: the chosen assigned shop stays selected after the screen redraws.
+
+Booker colour changed to purple, to be different from the shopkeeper and admin screens.
+
+Booker: claims are filed from the booker Claim tab (shop, reason, bottles, note, photo). Days: admin ticks the working days of each shop (Mon to Sun); the booker sees only the shops open on the chosen day and can book only on the shop working day (today). Outlet/phone choice and tokens removed from the booker order form.
+
+Login look: blue top from light to dark with a curved bottom, logo in a circle, white sheet sliding up, rounded fields and a big blue button. Applied only when nobody is logged in.
